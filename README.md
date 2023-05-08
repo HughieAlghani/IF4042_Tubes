@@ -2,13 +2,14 @@
 
 ## Preparation:
 1. Ganti path sesuai path di lokal kalian:
-    - lib/spec.default
-    - lib/spec.expcoll
-    - src/test_lisa/base_make_lisa
-    - src/test_lisa/base_test_lisa
-2. Buka terminal
+    - smart.exp/lib/spec.default
+    - smart.exp/lib/spec.expcoll
+    - smart.exp/src/test_lisa/base_make_lisa
+    - smart.exp/src/test_lisa/base_test_lisa
+2. Ubah nilai num_wanted di smart.exp/lib/spec.expcoll menjadi 30
+3. Buka terminal
     - Masuk ke path /smart.exp/src/bin, lalu run 'chmod +x smart'
-    - Masuk ke path /smart.exp/src/test_lisa, lalu run 'chmod +x make_lisa'
+    - Masuk ke path /smart.exp/src/test_lisa, lalu run './gen_lisa.sh' dan run 'chmod +x make_lisa'
 
 ## Make Test Collection Weighting Scheme
 1. Buka terminal
