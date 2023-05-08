@@ -1,0 +1,178 @@
+#               LIBRARY MAKEFILE
+########################################################
+
+# Module name
+LIBNAME = libindexing
+
+# Files for this particular library module
+PREPARSE = pp_preparse.o pp_smart.o pp_news.o pp_expnews.o pp_mail.o \
+           pp_fw.o pp_fw_sec.o pp_sgml.o pp_parts.o pp_docsmart.o
+NEXTID   = next_vecid_1.o next_vecid.o
+ADDDISP  = add_disp.o
+TOKEN    = token_std.o
+PARSE    = parse_std.o parse_full.o parse_no.o parse_asis.o parse_name.o
+PHRASE   = phrase_ch.o phrase_ch2.o phrase_adj.o
+STEM     = triestem.o trie_suff.o trie_recode.o remove_s.o
+STOP     = stop_dict.o
+MAKEVEC  = makevec.o makevecsent.o makevecsp.o
+OUTPUT   = store_vec.o store_vaux.o store_aux.o
+TOP      = index_coll.o index_exp.o
+INDEX    = index_vec.o index_pp.o
+UTIL     = parse_util.o
+
+LIBFILES  = $(PREPARSE) $(NEXTID) $(ADDDISP) $(TOKEN) $(PARSE)  $(UTIL) \
+        $(STEM) $(STOP) $(MAKEVEC) $(WEIGHT) $(OUTPUT) $(TOP) $(INDEX)
+firstentry: all
+
+trie_suff.c : suffcode.rules ../utility/make_trie
+	echo "suffix_trie" > suffcode.temp
+	awk '{suff = ""; for (i = length($$1); i > 0; i--) {\
+            suff = suff substr($$1,i,1); } print suff, $$2; }' \
+            suffcode.rules | sort >> suffcode.temp
+	../utility/make_trie < suffcode.temp > trie_suff.c
+	/bin/rm -f suffcode.temp
+
+trie_recode.c : recode.rules ../utility/make_trie
+	echo "recode_trie" > recode.temp
+	awk '{suff = ""; for (i = length($$1); i > 0; i--) {\
+	    suff = suff substr($$1,i,1); } print suff, $$2; }' \
+	    recode.rules | sort >> recode.temp
+	../utility/make_trie < recode.temp > trie_recode.c
+	/bin/rm -f recode.temp
+
+../utility/make_trie:
+	(cd ../utility; make make_trie)
+
+
+#############################################################################
+# START BFLY STUFF
+#
+# Anything between the START and END lines is preserved when the makefile
+# is remade.  These lines are executed AFTER the stuff from the general
+# makefile.
+#
+# Add bfly-specific modules for this library here...
+
+
+BFLY_LIBFILES = $(LIBFILES)
+
+
+######################################################################
+# END BFLY STUFF
+#  All code below this line (except for automatically created dependencies)
+#  is independent of this particular makefile, and should not be changed!
+#############################################################################
+
+# Flags normally set in top level makefile.  Make sure you want these
+# default if you compile locally in this directory
+PREFIX = /usr/u/smart/new/allan/bfly
+BIN = $(PREFIX)/bin
+LIB = $(PREFIX)/lib
+H   = -I../h
+
+# Version numbers
+MAJOR = 10
+MINOR = 1
+
+# Sun shared libraries with cc
+#CC     = cc
+#CFLAGS = -g -pic -L$(LIB) $H
+#LIBEXT = so
+
+# Static libraries with gcc
+#CC       = gcc
+#CFLAGS   = $H -L$(LIB) -g -traditional -Wall
+#LIBEXT   = a
+
+# Libraries on the butterfly
+CC	= cc
+CFLAGS	= $H -L$(LIB) -g -DBFLY
+LIBEXT	= a
+
+
+# Other macros used in some or all makefiles
+PRINT  = print
+AR     = -ar
+ARFLAGS= urv
+RANLIB = ranlib
+
+# For use in GNU make; in other makes, this does very little...
+# makes a list of "arc.a(libfile.o) arc.a(libfile2.o)..."
+ARC_LIBFILES = $(foreach obj,$(BFLY_LIBFILES),$(LIB)/$(LIBNAME).a($(obj)))
+
+# Entry points install and all are the same.  If you want to "make install"
+# a non-test version in this directory alone, YOU MUST SPECIFY "PREFIX=..." ON
+# THE COMMAND LINE  where ".../lib" gives the location you wish the
+# library placed.  By default it will end up in the test directory.
+
+install all:  $(LIB)/$(LIBNAME).$(LIBEXT)
+
+#########################################################################
+# Compilation of Libraries                                              #
+# ##Note that a copy of the library is NOT kept in the current directory. #
+# ##    This seems necessary to handle shared libraries                       #
+#########################################################################
+$(LIB)/$(LIBNAME).a: $(ARC_LIBFILES)
+	$(RANLIB) $(LIB)/$(LIBNAME).a
+
+$(LIBNAME).so: $(BFLY_LIBFILES)
+	$(LD) $(BFLY_LIBFILES) -o $(LIBNAME).so.$(MAJOR).$(MINOR)
+	$(LD) $(BFLY_LIBFILES) -o $(LIB)/$(LIBNAME).so.$(MAJOR).$(MINOR)
+
+
+#########################################################################
+# Putting the .o into the .a file...
+#########################################################################
+(%.o): %.c
+	$(CC) -c $(CFLAGS) $<
+	$(AR) $(ARFLAGS) $@ $%
+	$(RM) $%
+
+#########################################################################
+# Saving program versions                                               #
+#########################################################################
+rcs:
+	-ci -q "-mAutomatic checkin" *.c
+
+#########################################################################
+# Odds and ends                                                         #
+#########################################################################
+clean:
+	/bin/rm -f *.o *.BAK *~ $(LIBNAME).a $(LIBNAME).so
+
+print: # $(FILES) makefile
+	$(PRINT) $?
+	cat >print </dev/null
+
+lint:
+	$(LINT) -I../h -C$(LIBNAME) *.c
+	mv llib-l$(LIBNAME).ln $(LIB)
+
+
+#########################################################################
+# Determining program dependencies                                      #
+#########################################################################
+depend:
+	grep '^#[ ]*include' *.c \
+		| sed -e 's?:[^"]*"\([^"]*\)".*?: \$H/\1?' \
+			-e '/</d' \
+		        -e 's/\.c/.o/' \
+		        -e 's/\.y/.o/' \
+		        -e 's/\.l/.o/' \
+		> makedep
+	echo '/^# DO NOT DELETE THIS LINE/+2,$$d' >eddep
+	echo '$$r makedep' >>eddep
+	echo 'w' >>eddep
+	cp makefile makefile.bak
+	ed - makefile < eddep
+	/bin/rm eddep makedep
+	echo '# DEPENDENCIES MUST END AT END OF FILE' >> makefile
+	echo '# IF YOU PUT STUFF HERE IT WILL GO AWAY' >> makefile
+	echo '# see make depend above' >> makefile
+
+# DO NOT DELETE THIS LINE -- make depend uses it
+
+# DEPENDENCIES MUST END AT END OF FILE
+# IF YOU PUT STUFF HERE IT WILL GO AWAY
+# see make depend above
+

@@ -1,0 +1,54 @@
+#!/bin/csh -f
+# ismart database        (short for smart inter coll/database/spec.int)
+#
+#     if database begins with '/' then it is full pathname, else it
+#       is path relative to current directory, else it is relative to 
+#       a standard directory
+#
+# set echo verbose
+#
+# If you're really curious about what's happening inside the system, try
+#     smart retrieve coll/database/spec trace 4
+# (where coll/database might be /home/smart/indexed_colls/fw)
+
+set coll = /home/smart.11.0/indexed_colls
+set bin = /home/smart.11.0/src/bin
+
+if ($#argv < 1) then
+    echo "\
+Usage:  ismart database \
+    where database is one of `/bin/ls $coll`"
+    exit 1
+endif
+
+if ($1 =~ /*) then
+    set database = $1
+else if ( $?SMPATH ) then
+    foreach dir ($SMPATH)
+        if (-d $dir/$1) then
+            set database = $cwd/$1
+            break
+        endif
+    end
+else if ( -d $coll/$1 ) then
+    set database = $coll/$1
+else
+    echo "Usage: ismart database \
+    where database is one of `/bin/ls $coll`"
+    exit 1
+endif
+
+if ( -e $database/spec.int ) then
+    spec_file = $database/spec.int
+else if ( -e $database/spec ) then
+    spec_file = $database/spec
+else
+    echo "Sorry, $database is not set up as a collection"
+    exit
+endif
+
+$bin/smart inter $spec_file
+
+#echo "Thank you.  If you have comments, suggestions or questions, please\
+#mail to chrisb@cs.cornell.edu"
+

@@ -1,0 +1,49 @@
+#! /bin/csh -f
+# Shell script to perform simple retrieval
+# set echo verbose
+
+set coll = /amd/beyla/a/trec
+set smartdir = /amd/beyla/d/smart.11.0
+set database = /amd/beyla/b/trec/trec.ntc
+set temp_dir = /amd/beyla/d/trec/tmp
+set qrels_dir = /amd/beyla/c/trec/trec.docno
+
+set lib = $smartdir/lib
+#set bin = $smartdir/src/diropt/bin
+set bin = $smartdir/src/bin
+
+set qrels_file = $qrels_dir/qrels
+
+set tr_file = ./run_eval.tr.ntc.ntc
+set output_method = ret_tr
+set rr_file = "-"
+
+# For full rr evaluation, un-comment the collowing lines
+# set output_method = ret_tr_rr
+# set rr_file = ./run_eval.rr.ntc.ntc
+
+set num_wanted = 200
+set inv_file = inv.ntc
+set query_file = query.ntc
+
+cat > run_eval.spec << EOF
+include_file    $database/spec 
+qrels_file      $qrels_file
+tr_file         $tr_file
+rr_file         $rr_file
+inv_file        $inv_file
+query_file      $query_file
+num_wanted      $num_wanted
+retrieve.output retrieve.output.$output_method
+smart.trace      2
+global_accounting 5
+run_name        ntc.ntc.$num_wanted
+EOF
+
+/bin/rm -f $tr_file $tr_file.var $rr_file $rr_file.var
+
+$bin/smart retrieve run_eval.spec
+
+$bin/smprint tr_eval run_eval.spec
+
+time

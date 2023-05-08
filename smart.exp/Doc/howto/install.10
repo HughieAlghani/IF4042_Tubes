@@ -1,0 +1,83 @@
+Installing SMART
+
+If you don't have a copy of SMART, you can pick it up using 
+anonymous ftp from ftp.cs.cornell.edu.
+
+If you need any of the standard test collections, they're in
+        ~ftp/pub/smart/<collection>
+
+To get smart running, you'll need to
+1. Edit pathnames in
+        src/makefile          - PREFIX needs changing
+        src/makebin.templ     - PREFIX needs changing
+        src/makelib.templ     - PREFIX needs changing
+        lib/spec.default      - first line
+        lib/spec.expcoll      - first line
+
+2. Edit compiler options in 
+        src/makefile
+        src/makebin.templ
+        src/makelib.templ 
+It is currently set up to compile with non-optimized gcc.  You
+should be able to just comment that section out, and uncomment
+the cc section to switch to cc.  Note that you do not want
+dynamic linking under Sun's cc (very slow).
+
+3. Possibly edit 
+        src/h/param.h
+The only machine dependent define is
+        #define MMAP
+I don't know if mmap will work on non-Sun systems.  It's an
+excellent option to have on Suns.
+
+4. cd src 
+
+5. Run "make makefiles" to construct the makefiles in the
+subdirectories.  
+
+6."make" 
+
+7. Test by looking at 
+        Sample/adi/test_adi
+        Sample/adi/make_adi
+Change pathnames as appropriate in make_adi, and run test_adi.
+Test_adi indexes the adi collection (actually done through
+make_adi), runs a pair of retrieval runs, and then
+runs a set of commands through the user interface of smart.
+Differences between your output and a copy of valid output are
+reported.  There should be no differences reported except due to
+pathnames and differences in lengths of files saved due to
+pathnames.
+
+8. There are some handy one-line shell scripts in "scripts".  You
+may want to install them in an accessible place.  All will need
+pathname changes.  I would recommend running 
+        scripts/make_docsmart
+to create an indexed collection of smart procedure documentation.
+        scripts/docsmart
+can then be used to access the collection, or you should be able
+to use
+        scripts/ismart docsmart
+to run the full verson of smart on it, depending on how you set
+things up.
+        scripts/smprint
+is a handy shorthand for examining SMART objects.
+
+
+To get a feeling for what smart is doing, read the documentation
+in Doc/overview.  
+
+
+Mail questions, comments, and problems to 
+        smart@cs.cornell.edu
+
+For the near future, my work on the release will be confined to
+improving documentation and fixing any bugs you find.  I'll
+continue to add features to SMART as the features become useful
+to us in our own research.  At the moment, I'm not planning any
+research involving WAIS, or a good user interface, so those
+features may depend on your participation, which is certainly
+welcome!
+
+Good luck!
+                                        ChrisB

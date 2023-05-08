@@ -1,0 +1,494 @@
+Administering a smart collection
+
+Creating a collection
+
+The most difficult task in all of SMART is collection creation.
+Unfortunately, it is the task first encountered, since the rest
+of the system won't do you much good without a collection!
+
+To create a collection, the major subtasks are to tell smart
+1. where to find the documents, what format the documents are in, 
+and how to convert them into a standard format.
+2. what the indexable information in the document is, how it
+should be indexed, and how the indexed documents should be stored.
+3. what format the queries will be in, and how they should be
+indexed.
+4. what retrieval method should be used to compare queries
+against documents.
+5. what should be displayed in what format to either an
+interactive user or an experimenter after retrieval is done.
+
+This information is conveyed to SMART by a collection
+specification file.  So the creation of this file is the primary
+job of collection creation.  A spec file is composed of lines of
+the form
+        parameter_name parameter_value
+where parameter_value can take on many types including procedure.
+
+Here's the spec file for the adi collection (from
+smart/src/test_adi/indexed.good/spec, line numbers added here).
+1  ## INFORMATION LOCATIONS
+2  database              /home/smart/smart.11.0/src/test_adi/indexed
+3  include_file          /home/smart/smart.11.0/lib/spec.expcoll
+4  doc_loc               /home/smart/smart.11.0/src/test_adi/indexed/doc_loc
+5  query_loc             /home/smart/smart.11.0/src/test_adi/indexed/query_loc
+6  qrels_text_file       /home/smart/smart.11.0/src/test_adi/coll/qrels.text
+7  
+8  ## ADI DOCDESC
+9  #### GENERIC PREPARSER
+10 num_pp_sections                 6
+11 pp_section.0.string             ".I"
+12 pp_section.0.action             discard
+13 pp_section.0.oneline_flag       true
+14 pp_section.0.newdoc_flag        true
+15 pp_section.1.string             ".A"
+16 pp_section.1.section_name       a
+17 pp_section.2.string             ".B"
+18 pp_section.2.section_name       b
+19 pp_section.3.string             ".W"
+20 pp_section.3.section_name       w
+21 pp_section.4.string             ".T"
+22 pp_section.4.section_name       t
+23 pp_section.5.string             ".O"
+24 pp_section.5.action             discard
+25 
+26 #### DESCRIPTION OF PARSE INPUT
+27 index.num_sections              4
+28 index.section.0.name            a
+29 index.section.1.name            b
+30 index.section.2.name            w
+31   index.section.2.method        index.parse_sect.full
+32   index.section.2.word.ctype    0
+33   index.section.2.proper.ctype  0
+34 index.section.3.name            t
+35   index.section.3.method        index.parse_sect.full
+36   index.section.3.word.ctype    0
+37   index.section.3.proper.ctype  0
+38 title_section 3
+39 
+40 #### DESCRIPTION OF FINAL VECTORS
+41 num_ctypes                      1
+42 
+43 ## ALTERATIONS OF STANDARD PARAMETERS
+44 dict_file_size                  3563
+45 
+46 ## ALTERATIONS OF STANDARD PROCEDURES
+
+
+Line 2 gives the pathname of the database directory.  All
+non-located (ie, not beginning with a '.' or '/') filenames are
+assumed to be relative to this directory.  (Note: this is almost
+guaranteed to pop up unexpectedly and catch an experimenter
+eventually!)
+
+Line 3 gives the location of another specification file that
+contains all the standard defaults for (in this case) an
+experimental test collection.  Most non-experimental collections
+will include the file .../smart/lib/spec.default instead.
+
+Lines 4-6 give the location of information needed to create the
+collection.  In particular, line 4 tells where to find a file that
+contains in it the location of the document texts to be indexed.  Line
+5 does the same for the canned query set (this line would not be
+included for non-experimental collections).  Line 6 tells where to
+find the relevence judgements (again, only for an experimental
+collection).
+
+Lines 8-24 describe the text document format (gone into in more detail
+below).  This tells how to convert the original document/query into a
+standard format that has the document broken up into sections.
+
+Lines 26-38 describes the standard format (also gone into more detail
+below).  This tells what parsing action should be done on each section
+of the document/query.
+
+Line 38 says that the beginning of section 3 should be used as
+the title to display to the user for an interactive query.
+
+Line 41 tells how many types of information are in each indexed
+document vector.
+
+Line 44 says the initial size of the dictionary is 3563.  This is
+discussed below.
+
+There is a lot of information needed by smart not given here; it is
+hidden in the default spec files included.  A collection spec
+file contains only the information specific to that collection.
+
+Subtask 1: Conversion of documents to standard format (preparsing).
+
+This task in general has to be done by a procedure or program since
+it's otherwise impossible.  However, if the documents can easily be
+broken into sections based on keywords occurring at the beginning of
+lines, then the standard "generic" preparser can be used.  This is the
+case for a number of common collection types like mail messages, news
+messages, standard information retrieval test collection format, and
+pure text.  smart/Sample contains a number of examples of this.
+
+Lines 9-24 in the adi collection above give one of those examples.
+Lines 15 and 16 say that if the string ".A" is encountered at the
+beginning of a line, it indicates the start of section 'a'.  By
+default, all text following the ".A" will be copied as part of section
+'a' until the next section is found.  Similarly, lines 17,18 indicate
+text following ".B" are part of section 'b', and so on for pairs 19,20
+and 21,22.  Lines 23,24 say that if the string ".O" is encountered,
+all text following shold be discarded. (Note that since the text is
+discarded, it's not considered part of any section).  Finally, going
+back to lines 11-14, if a line beginning with a ".I" is encountered,
+text following it on the same line should be discarded.  However, the
+oneline_flag set in line 13 indicates that this section only lasts for
+the current line (a default action of discarding text will take place
+if the next section does not begin on the next line).  Also, if a ".I"
+is found, then a new document is started.
+
+If your documents happen to fit into a category handled by the generic
+preparser, you're all set.  Otherwise, you'll have to either write
+your own preparsing procedure within SMART to recognize your document
+format, or write a program to convert your documents to a standard
+format before they're even presented to SMART.  The generic preparser
+accepts, as a parameter value, a filter program to be run before any
+preparsing action is done (examples of filter programs might be
+"uncompress" or "deroff").  If you need to write your own preparsing
+program within SMART, see "Doc/howto/modify" for how to incorporate
+your new procedure.
+
+The preparsers in general are assumed to get a list of documents
+to be indexed from the file given by specification parameter
+doc_loc.  If doc_loc is equal to "-", then the list of files is
+read from standard input.  Thus the invocation for smart at
+indexing time is often of the form
+  cd coll_dir; find $cwd -type f -print |\
+     smart index.doc database/spec
+See the samples in smart/Sample for more approaches.
+
+Subtask 2: Finding and handling indexable information.
+
+Once the document has been put into a standard format, it can be
+handled by the standard procedures in the rest of SMART.  You
+need to describe which of the standard procedures should be
+invoked for which type of information found in the document.
+For example, if a name has been isolated, you may wish to
+normalize it to a standard format, and you do not want to run
+stemming on it.
+
+All of this is done within the parse description portion of the
+collection specification file.  
+
+For each parsable section of the document given by the preparser,
+you can specify
+        1. the parser to be used for this section
+        2. For each parsetype of information (eg word, proper noun, number)
+                a. what ctype (type of information) should be assigned
+                b. what stemming procedure should be called
+                c. what stopword procedure should be called
+For each ctype you can specify (at least)
+        1. What procedure maps a token to a concept number
+        2. What procedure maps a concept number back to a token
+        3. What procedure is used to weight this type of information
+        4. What procedure is used to store this type of information
+        5. What procedure is used to perform inverted retrieval
+        6. What procedure is used to perform sequential retrieval
+
+Luckily, all of these things have reasonable default values,
+otherwise the document description task would be very tedious.
+
+The document description from the adi collection says there is
+only one type of final indexed information (line 41), 4 types of
+potentially indexable sections recognized by the preparser (line
+27, names on lines 28,29,30,34), that no parsing is done on
+sections 0,1 that both sections 2 and 3 should use parsing
+method "index.parse_sect.full", and that only words and proper
+nouns from those sections should finally be indexed as ctype 0
+(eg, numbers are ignored).  By default, all tokens are rejected
+if they are on a stopword list, and if not, are then stemmed.
+Also, by default the documents are stored in both vector and
+inverted forms for experimental collections, but just in
+inverted file form for non-experimental collections.
+
+You can run
+        smprint proc index
+to get a full list of all the indexing procedures available.
+To get the parameters each procedure actually uses, run
+        docsmart <proc_name>
+
+Subtask 3. Query format
+
+All of the same possibilities as above apply to queries as well
+as documents.  The procedures to be called and their related
+parameters can be specified separately for queries.  The parts of
+the document description giving the types of information must
+remain the same.  In practice, the only departures from document
+indexing are in storage format (vector only) and possibly in
+choice of preparser.
+
+An additional job when handling queries is the task of getting an
+interactive query from a user.  Depending on options available
+for an interface, that can be done by specifying a query_skel, a
+text file that contains a query skeleton that the user can
+modify.  The query skeleton is often just a stripped down
+document that the user can edit.
+
+Subtask 4. Retrieval methods
+
+For normal interactive use on a simple collection, specifying
+retrieval doesn't have to be done at all.  An inverted-file
+inner-product match is automatically computed between query and each
+document, finding the best documents to show the user.  This is a
+major part of experimental information retrieval, so there's already a
+number of retrieval options available, and the number should keep on
+increasing.  But unless you are doing something unusual with your
+non-experimental collection, there's nothing to do.
+
+Subtask 5. Display
+
+The display of documents to the user has many similarities to the
+preparsing of the original documents.  You have the freedom to
+write your own document printing routine and offer that as an
+option within SMART (eg, if you're working with TeX, your
+preparser probably called "detex", and your output routine may
+call "latex").  You can also just display the documents in
+whatever raw form they're stored in the filesystem.  The most
+popular option generally is to display a formatted version of the
+preparsed document (the output of the collection dependent
+preparser).  The formatting provisions are reasonably primitive,
+but are often sufficient.  For example, the original text of
+pobj_text.c which includes the procedure description
+
+ *0 print document texts
+ *1 print.obj.doctext
+ *2 print_obj_text (in_file, out_file, inst)
+ *3   char *in_file;
+ *3   char *out_file;
+ *3   int inst;
+ *4 init_print_obj_doctext (spec, unused)
+ *5   "print.doc.indivtext"
+ *5   "print.doc.textloc_file"
+ *5   "print.doc.textloc_file.rmode"
+ *5   "print.trace"
+ *4 close_print_obj_text (inst)
+ *6 global_start,global_end used to indicate what range of docs will be printed
+ *7 The textloc relation "in_file" (if not VALID_FILE, then use textloc_file),
+ *7 will be used to print all doc texts in that file (modulo global_start,
+ *7 global_end).  Text output to go into file "out_file" (if not VALID_FILE,
+ *7 then stdout).
+ *8 Procedure indivtext gives format of doc text output.
+
+when using docsmart will appear as
+
+  DESCRIPTION:
+  print document texts
+  
+  PROCEDURE:
+  print_obj_text (in_file, out_file, inst)
+    char *in_file;
+    char *out_file;
+    int inst;
+  init_print_obj_doctext (spec, unused)
+  close_print_obj_text (inst)
+  
+  HIERARCHY:
+  print.obj.doctext
+  
+  USES:
+    "print.doc.indivtext"
+    "print.doc.textloc_file"
+    "print.doc.textloc_file.rmode"
+    "print.trace"
+  global_start,global_end used to indicate what range of docs will be printed
+  
+  FULL DESCRIPTION:
+  The textloc relation "in_file" (if not VALID_FILE, then use textloc_file),
+  will be used to print all doc texts in that file (modulo global_start,
+  global_end).  Text output to go into file "out_file" (if not VALID_FILE,
+  then stdout).
+  
+  ALGORITHM:
+  Procedure indivtext gives format of doc text output.
+  
+  BUGS AND WARNINGS:
+
+which, if not any more understandable is at least prettier!  The
+actual specification pair giving that is 
+  print.format "DESCRIPTION:\n%d\nPROCEDURE:\n%m%p%r\n
+HIERARCHY:\n%h\nUSES:\n%s%g\nFULL DESCRIPTION:\n%f\n
+ALGORITHM:\n%a\nBUGS AND WARNINGS:\n%b"
+where the %x construct says to include the preparsed document
+section with name 'x' in the output at this point.  (Only the
+first letter of section names is significant).
+
+
+SMART filemodes
+
+Another task that is normally done in the collection
+specification file is to determine the access modes for reading,
+writing and creating all of the database files.  For example, you
+can bring a relation entirely into memory to work on it, or work
+on it from disk and bringing one entry into memory at a time, or
+(if MMAP is defined in src/h/param.h) map the file into memory,
+and let the operating system's paging algorithm bring the
+appropriate parts of the file into memory as needed.  All of this
+is only an efficiency issue, but it can make the difference
+between the system being usable and being intolerable.
+
+Every database file accessed can have its own modes given in
+the spec file, but normally collection-wide defaults are given
+that are based on size characteristics of the collection.  If the
+collection is several times larger than memory on the machine
+running smart, then normally disk based accesses are used.  If
+the collection is small, then memory based is faster.  If you
+have a large collection and have MMAP available, it should be used.
+Disk based access is given by specification values
+  rmode                   SRDONLY
+  rwmode                  SRDWR
+  rwcmode                 SRDWR|SCREATE
+Memory based access is given by
+  rmode                   SRDONLY|SINCORE
+  rwmode                  SRDWR|SINCORE
+  rwcmode                 SRDWR|SCREATE|SINCORE
+Mmap access is given by
+  rmode                   SRDONLY|SMMAP
+  rwmode                  SRDWR
+  rwcmode                 SRDWR|SCREATE
+(Mmap access is currently only implemented for smart read
+operations.)
+If there is a specific file that you want to access in a
+different fashion than these defaults, that could be done
+   query.textloc_file.rwmode  SRDWR|SINCORE
+for example.
+
+Another parameter set that may be given in the spec file is
+advice about memory and swap space available for the program.
+Particular procedures (notably vec_inv) that want to use a lot of
+virtual memory can refer to these values as a guide.  The
+defaults for vec_inv are set
+  vec_inv.mem_usage       4194000
+  vec_inv.virt_mem_usage  50000000
+basically saying it should try to limit its own resident set size to
+about 4 Mbytes, and should allocate no more than 50 Mbytes of
+memory altogether.  (For a large collection, this means vec_inv
+would have to write out intermediate lists to disk).
+
+A final collection dependent parameter that could be set in the
+spec file is the size of the basic dictionary hash file.  Again,
+this setting is only a question of efficiency, but an important
+question.  Too small, and dictionary accesses become slow as
+overflow procedures have to be used.  Too large, and space is
+wasted both in the dictionary and in the inverted file.
+Ideal is to end up with a dictionary with a bit more than half of
+its entries filled.  (You can tell the state of the dictionary by
+  smprint rel_header dict_file_name)
+The default setting is reasonable for standard information
+retrieval test collections (~30000), but is too small for larger
+collections.  Depending on exactly what is being indexed (eg,
+mail sources and destinations in an electronic news collection),
+values up to 500,000 (or larger) may be reasonable.
+
+Eventually, the basic implementation of dictionaries will change
+to something more reasonable.  In the meantime, this particular
+hash-based approach works and is fast but is inflexible.
+
+
+Actually creating a collection
+
+To create a collection database, the normal procedure is
+        1. Create the database directory
+        2. Put your collection specification file there.
+        3. Put other secondary files there (eg query_skel).
+        4. Get a list of document files to indexed (normally
+           put in file doc_loc
+        5. Run  "smart index.doc <database>/spec"
+Creating a test collection is basically the same process, except
+the query set and relevance assessments have to be put in the
+collection. So replace steps 4 and 5 with
+        4'. List of document files put in file doc_loc
+            List of query files put in file query_loc
+            File with relevance judgments put in file qrels.text
+            (These filenames are actually all given by
+             specification parameters and can be named whatever
+             you like as long as the specification values reflect
+             those names)
+        5'. Run "smart exp_coll <database>/spec"
+
+
+Other administrative tasks
+
+SMART object copying.
+
+Presently the SMART system does no reclaiming of "dead" space in
+inverted file or vector objects.  This is a deliberate design
+decision, although it will change someday.  It allows collection
+update to occur at the same time as users are working with the
+system, without any effort being spent on
+exclusion/synchronization problems.  The drawback is that the size
+dynamic collection's files will grow without bound as documents
+are added or deleted.
+
+The short-term solution is simply to copy these files from time
+to time, using the smart access procedures.  The command
+  smart convert <database>/spec proc convert.obj.inv_inv in f1 out f2
+will copy inverted file object f1 to f2.  Similarly,
+  smart convert <database>/spec proc convert.obj.vec_vec in f1 out f2
+  smart convert <database>/spec proc convert.obj.textloc_textloc in f1 out f2
+will copy a document vector file and a textloc file.  The copied
+files then have to be moved back manually.  All of this can be
+done automatically within SMART; I just haven't gotten around to
+writing the half page routine that will do it.
+
+In the mid to long term, more attention has to be paid to
+collection maintainance commands.
+
+Adding documents to an existing collection
+
+Normally, everything is all set for doing this.  If
+new_doc_list is a file containing the filenames of all documents
+to be added, then
+  smart index.doc <database>/spec  doc_loc new_doc_list
+will add those documents.
+
+Deleting documents from an existing collection 
+
+Basically this still needs a lot of work.  A simple variation of
+the conversion procedure vec_inv.c needs to be written to
+efficiently delete vectors from the appropriate inverted list.
+In the meantime, what is sufficient for our needs is to delete a
+whole list of documents at a time, and that can be done by
+copying the affected files while supplying the list of docs not to
+be copied.  Eg, if the file $temp contains document ids to be deleted,
+the following 3 commands will delete them from an inverted file, a
+document vector file, and a textloc file (ie the file that maps doc ids 
+to text location).
+  # Copy inverted file, removing deleted docs
+  smart convert spec proc convert.obj.inv_inv  \
+                   in $database/inv.nnc out $database/inv.new \
+                   deleted_doc_file $temp
+  # Copy doc file, removing deleted docs (not needed for news)
+  smart convert spec proc convert.obj.vec_vec  \
+                  in $database/doc.nnn out $database/doc.new \
+                  deleted_doc_file $temp
+  # Copy textloc file, removing deleted docs
+  smart convert spec proc convert.obj.textloc_textloc  \
+                   in $database/textloc out $database/textloc.new \
+                   deleted_doc_file $temp
+  # Warning, the following operation may interfere with users already
+  # running a retrieval (everything above should not).
+  /bin/mv $database/textloc.new $database/textloc
+  /bin/mv $database/textloc.new.var $database/textloc.var
+  /bin/mv $database/doc.new $database/doc.nnc
+  /bin/mv $database/doc.new.var $database/doc.nnc.var
+  /bin/mv $database/inv.new $database/inv.nnc
+  /bin/mv $database/inv.new.var $database/inv.nnc.var
+
+Note that copying the files like this has the side benefit of
+compacting the files.  Also note the warning above.  There is
+currently no code within SMART to prevent somebody from running a
+retrieval at the same time the copied files are being moved around.
+That could be a problem.
+
+Actually constructing the file $temp is done in a collection dependent
+fashion.  If you want to remove documents from SMART whose text form
+has been removed, the following command will work
+  # find which documents no longer have text files
+  smart print $database/spec proc print.obj.did_nonvalid out $temp
+Otherwise, you're pretty much on your own.
+
+See smart/Sample/update_news for a full updating script.

@@ -1,0 +1,128 @@
+#! /bin/csh
+# fdbkrun database docwt.qwt num_expand
+#
+# shell script which given an indexed smart collection (nnn weights)
+#       1. Creates inverted file for docs with the given docwt
+#       2. Creates query vectors weighted with qwt
+#       3. Makes an initial run with the weighted docs and queries,
+#          retrieving 15 docs
+#       4. makes a residual collection run on the original docs and queries
+#          (ie, removes top 15 docs from consideration for retrieval and
+#          evaluation)
+#       5. Makes a feedback residual collection run (using relevance
+#          judgements from the top 15 docs, but then ignoring them for
+#          retrieval and evaluation).
+# WARNING: assumes single ctype
+
+# set echo verbose
+
+set nonomatch
+if ($#argv < 3) then
+    echo 'Usage: fdbkrun database docwt.qwt num_expand'
+    exit 1
+endif
+date
+
+set db = $1
+
+set database = /home/smart.11.0/indexed_colls/$db
+set workdir = /tmp
+set bin = /home/smart.11.0/src/bin
+if (! -d $workdir) mkdir $workdir
+cd $workdir
+
+# weight is "docwt.querywt" with weights specified as coded in
+#       src/libconvert and documented in weight_tri
+# num_expand is the number of terms from relevant docs to be added to
+#       the new feedback query.
+set weight = $2
+set num_expand = $3
+
+# num_wanted is the number of top docs of original run to be used for feedback
+set num_wanted = 15
+
+set run_name = $weight.$num_expand
+
+echo "Starting database $database"
+
+#############################################################################
+# Make weighted doc and query collection
+echo "Running $weight on $database"
+set doc = $weight:r
+set query = $weight:e
+if (! -e $workdir/inv.${doc}) then
+        echo "    Making document collection $doc"
+        $bin/smart convert $database/spec proc convert.obj.weight_doc \
+                  in doc.nnn out $workdir/doc.$doc doc_weight $doc
+        $bin/smart convert $database/spec proc convert.obj.vec_aux \
+                  in $workdir/doc.$doc out $workdir/inv.$doc doc_weight $doc
+        set made_doc
+endif
+
+if (! -e $workdir/q.${query}) then
+        echo "    Making query collection $query"
+        $bin/smart convert $database/spec proc convert.obj.weight_query \
+                   in query.nnn out $workdir/q.$query query_weight $query
+endif
+
+
+# Make original retrieval run
+/bin/rm -f  $workdir/tr.$run_name $workdir/tr.$run_name.var 
+/bin/rm -f  $workdir/rr.orig.$run_name $workdir/rr.orig.$run_name.var
+cat > spec.orig.$run_name << EOF
+include_file    $database/spec
+inv_file        $workdir/inv.${doc}
+doc_file        $workdir/doc.${doc}
+query_file      $workdir/q.${query}
+tr_file         $workdir/tr.$run_name
+rr_file         $workdir/rr.orig.$run_name
+num_wanted      $num_wanted
+run_name        "$db. Orig `date`.  Weight(D.Q) $weight Num_wanted $num_wanted"
+EOF
+$bin/smart retrieve spec.orig.$run_name
+
+# Make residual collection run
+/bin/rm -f  $workdir/rr.resid.$run_name $workdir/rr.resid.$run_name.var
+cp $workdir/tr.$run_name $workdir/tr.resid.$run_name
+if (-e $workdir/tr.$run_name.var) then
+        cp $workdir/tr.$run_name.var $workdir/tr.resid.$run_name.var
+endif
+cat > spec.resid.$run_name << EOF
+include_file    $database/spec
+get_seen_docs   retrieve.get_seen_docs.get_seen_docs
+inv_file        $workdir/inv.${doc}
+doc_file        $workdir/doc.${doc}
+query_file      $workdir/q.${query}
+tr_file         $workdir/tr.resid.$run_name
+rr_file         $workdir/rr.resid.$run_name
+num_wanted      $num_wanted
+run_name        "$db. Resid `date`. Weight(D.Q) $weight Num_wanted $num_wanted"
+EOF
+$bin/smart retrieve spec.resid.$run_name
+
+# Make feedback run
+/bin/rm -f  $workdir/tr.fdbk.$run_name $workdir/tr.fdbk.$run_name.var
+/bin/rm -f  $workdir/rr.fdbk.$run_name $workdir/rr.fdbk.$run_name.var
+cat > spec.fdbk.$run_name << EOF
+include_file    $database/spec
+get_seen_docs   retrieve.get_seen_docs.get_seen_docs
+inv_file        $workdir/inv.${doc}
+doc_file        $workdir/doc.${doc}
+query_file      $workdir/q.${query}
+tr_file         $workdir/tr.$run_name
+rr_file         $workdir/rr.fdbk.$run_name
+num_wanted      $num_wanted
+feedback.num_expand  $num_expand
+run_name        "$db. Fdbk  `date`. Weight(D.Q) $weight Num_expand $num_expand"
+EOF
+$bin/smart retrieve.top.ret_fdbk spec.fdbk.$run_name
+
+# Evaluate and print out results
+$bin/smart print spec.orig.$run_name proc print.obj.rr_eval \
+      in "spec.resid.$run_name spec.fdbk.$run_name" out results.$run_name
+
+more results.$run_name
+
+if ($?made_doc) /bin/rm $workdir/{inv.${doc},inv.${doc}.var,doc.${doc},doc.${doc}.var}
+/bin/rm $workdir/{q.$query,q.$query.var}
+time

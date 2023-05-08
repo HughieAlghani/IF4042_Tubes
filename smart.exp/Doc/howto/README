@@ -1,0 +1,16 @@
+Directory /smart/Doc/howto
+        Hints on how to do things in SMART.
+
+
+admin           Being a database administer.  In particular, how to 
+                set up a collection specification file.
+debug
+                How to use the trace facility to debug both
+                spec files and procedures
+defaults        Not really a how-to.  Contains the complete (as
+                of beta release) default specification file with
+                explanations of parameters and values.
+examine         How to look at SMART database and retrieval files.
+install.xx      How to install SMART Version XX
+modify          How to add procedures to SMART.
+retrieve        Examples of how to perform a retrieval run.

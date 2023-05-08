@@ -1,0 +1,100 @@
+#! /bin/csh
+# Make a very simple news collection
+# This is a single ctype indexing (doesn't separate out the info
+# in the header fields from the rest).
+# For any substantial collection of news, you'll have to bump up
+# the dict_file_size value.
+# Note that this indexing will not index most of the headers of the
+# message itself, but will index headers of any messages that this
+# message quotes.
+# set echo verbose
+
+# 
+set bin =     /home/smart/src/bin
+set tlibdir = /home/smart/lib
+set database = /home/smart/indexed_colls/news
+set coll     = /home/smart/colls/news/news.small
+
+# create the empty collection (destroying any existing collection)
+/bin/rm -rf $database
+mkdir $database
+
+find $coll -type f -print > $database/doc_loc
+
+echo "" > $database/query_skel
+
+cat > $database/spec << EOF1
+## INFORMATION LOCATIONS
+database                $database
+include_file            $tlibdir/spec.default
+doc_loc                 -
+query_skel              query_skel
+
+## MAIL DOCDESC
+#### GENERIC PREPARSER
+num_pp_sections                 7
+pp_section.0.string             "Path: "
+pp_section.0.action             discard
+pp_section.0.oneline_flag       true
+pp_section.0.newdoc_flag        true
+pp_section.1.string             "From: "
+pp_section.1.section_name       f
+pp_section.1.oneline_flag       true
+pp_section.2.string             "Date: "
+pp_section.2.section_name       d
+pp_section.2.oneline_flag       true
+pp_section.3.string             "Subject: "
+pp_section.3.section_name       t
+pp_section.3.oneline_flag       true
+pp_section.4.string             "Newsgroups: "
+pp_section.4.section_name       g
+pp_section.4.oneline_flag       true
+pp_section.5.string             "\n"
+pp_section.5.section_name       w
+# Discard everything in article after signature line?
+pp_section.6.string             "--\n"
+pp_section.6.action             discard
+
+
+#### DESCRIPTION OF PARSE INPUT
+index.num_sections              5
+index.section.0.name            f
+  index.section.0.method        index.parse_sect.full
+  index.section.0.word.ctype    0
+  index.section.0.proper.ctype  0
+index.section.1.name            d
+index.section.2.name            w
+  index.section.2.method        index.parse_sect.full
+  index.section.2.word.ctype    0
+  index.section.2.proper.ctype  0
+index.section.3.name            t
+  index.section.3.method        index.parse_sect.full
+  index.section.3.word.ctype    0
+  index.section.3.proper.ctype  0
+index.section.4.name            g
+  index.section.4.method        index.parse_sect.full
+  index.section.4.proper.ctype  0
+title_section 3
+
+#### DESCRIPTION OF FINAL VECTORS
+num_ctypes                      1
+ctype.0.name                    words
+
+## ALTERATIONS OF STANDARD PARAMETERS
+dict_file_size                  30001
+rmode                           SRDONLY|SMMAP
+rwmode                          SRDWR|SINCORE
+rwcmode                         SRDWR|SCREATE|SINCORE
+
+doc_weight                      nnc
+query_weight                    ntc
+
+## ALTERATIONS OF STANDARD PROCEDURES
+EOF1
+
+#index the collection
+echo Indexing docs at `date`
+$bin/smart index.doc $database/spec < $database/doc_loc
+
+time
+echo All done at `date`

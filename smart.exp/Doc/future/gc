@@ -1,0 +1,52 @@
+Garbage collection for 11.1
+Reusing space in var files.
+
+Want to reuse space while maintining ability to read during updates.
+Do this by keeping around two free lists of space, one for space freed
+during previous updates, and one for space freed during current update.
+Only allowed to reuse space from the first list.  Space freed gets added
+to the second list.
+
+Does not interfere with reader as long as reader is not active throughout
+more than one update.  High-level software must ensure this.
+
+Lots of space wasted by this approach (probably increases size by 50%).
+
+Implementation 
+
+When file created, if filemode has SGC mode bit on, then a flag
+in rh->_internal is set.  The first SMART_PAGE (4096?) bytes
+of the var file are reserved for heads of lists.  These bytes
+give an array of longs giving the "reuse" free lists.  The program
+also keeps an array of longs giving the "update" free list.
+"Reuse" gives the free list available for writing now (space freed during
+previous updates).  "Update" gives space currently being freed.
+Update gets merged in with Reuse at the end of every update.
+
+reuse[i] for i = 0..8 will give the location (byte offset) of the free list
+for blocks of size 2**(i+3).
+reuse[i] for i = 9..510 will give the location of the free list
+for blocks of size (i-8) * SMART_PAGE.
+reuse[1023]  will give the location of the free list
+for blocks of size greater than 503 * SMART_PAGE.
+
+update[i] for i = 0..8 will give the location (byte offset) of the free list
+for blocks of size 2**(i+3).
+update[i] for i = 9..1022 will give the location of the free list
+for blocks of size (i-8) * SMART_PAGE.
+update[1023]  will give the location of the free list
+for blocks of size greater than 1022 * SMART_PAGE.
+
+If the location of the free list is 0, there are no blocks in
+that free list.
+
+The free list format is a single block of longs.  free_list[0]
+contains the location of the first valid free block location. All
+locations are valid up til the first all zero location is seen.
+free_list[1] contains the block_size.  The last long in the block
+must be zero.
+
+The free_lists corresponding to "reuse" blocks are kept sorted.
+The ones corresponding to "update" are not, but are sorted by
+offset at the end of the update to be merged into the reuse
+lists.

@@ -1,0 +1,89 @@
+Changes from version 10.1 to version 11.0:
+
+The major goals for these changes are
+        1. Make the system a bit easier to install.
+        2. Make collection formation easier.
+        3. Increase the efficiency when indexing large collections.
+
+Most of my effort the past few months has been spent on (3).  The
+changes are pervasive throughout the indexing code.  In 10.1,
+there was an effective upper limit of about 300 Mbytes of text
+before running into operating system limitations (SunOS).  (You
+could go higher than 300 Mbytes, but it was complicated).  The
+current limitation is somewhere between 2 and 2.5 Gbytes for a
+"normal" collection.  You should now be able to index 120 to 250
+Mbytes an hour on a Sparc ELC, about twice as fast as 10.1.
+
+
+FILE FORMATS:
+The internal structure of inverted files has altered slightly.
+A different hash function is used for the dictionary routines,
+affecting location of tokens in dictionaries.  These changes mean
+that databases indexed under 10.1 will not work under 11.0.
+
+INSTALLATION
+There is now a single place to change all pathnames
+(install/makefile) and most compilation parameters.
+
+SOURCE ORGANIZATION
+There is now a liblocal hierarchy of directories, mimicing the
+directories at the src level.  These are intended to hold local
+alterations to SMART.
+
+PREPARSING
+The original text format of most collections can now be described
+in the specification file rather than having to compile in a
+separate procedure.  Thus there should be much less need for
+non-researchers to work with the source code.
+There is also a "filter" option of preparsing to allow running an
+arbitrary program (eg "uncompress" or "groff" or ...) before
+indexing or display.
+
+TOKENIZING
+Tokenizing is done on a single section at a time, instead of
+the whole document.
+Added a section dependent list of characters that do not break
+tokens when found in the interior of a word (default list is
+"'_.@!").  Added hyphenation options.  
+
+PARSING
+Interface between parsing components altered substantially.
+The main parse code now works on a complete section at a time.
+Many more options for deciding where and if stopwording and
+stemming is to be done.
+Can now use both thesauri and simple phrasing.
+Can now use controlled vocabulary.
+
+STORAGE
+The procedures for adding vectors to an inverted file take
+considerably less virtual and real memory.  A new version writes
+out temporary inverted lists to disk rather than keeping in
+memory.
+
+COLLECTION MAINTAINENCE
+Much better procedures for deletion of documents (but still
+not good).
+
+RETRIEVAL
+No changes (other than the code to handle inverted list structure
+change).
+
+FEEDBACK
+Minor changes to allow ctype-dependent parameters.
+
+TRACING
+Tracing/debug info can now be written to a file (stdout is default).
+The built-in tracing levels have all been multiplied by 2 to allow
+users to output debugging info at any level between built-in levels.
+Ie, in SMART 10.2, built-in tracing was at levels 1,2,3,4 and 5.  In
+SMART 11.0, the same tracing is at levels 2,4,6,8, and 10.
+
+USER INTERFACE
+No changes (it needs to be rewritten to allow a server-client
+model before any other changes, and I haven't had the time).
+
+SAMPLES
+Many more samples of collection formation and updating.
+
+DOCUMENTATION
+Nothing new except reflection of the above changes.

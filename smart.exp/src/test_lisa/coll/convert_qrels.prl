@@ -1,0 +1,56 @@
+#!/usr/local/bin/perl
+open(qrels1,"LISA.REL");
+open(new,">qrels.text");
+
+$line = <qrels1>;
+while ($line ne "")
+{     
+      @aray = split(/ +/,$line);
+      if ($aray[0] eq "Query")
+         {
+            if (substr($aray[1],1,1) =~ /[0-9]/)
+              {
+                $data = substr($aray[1],0,2);
+               }
+            else
+              {
+                 $data = substr($aray[1],0,1);
+               }
+            $line = <qrels1>;
+            $line = <qrels1>;
+            @aray = split(/ +/,$line);
+            $count = @aray;
+            $index = $count - 1;
+            $test = substr($aray[$index],0,2);
+            while ($test ne "-1")
+            {
+                $hitung = 0;
+                while ($hitung <= $index)
+                {
+                    print new ("$data $aray[$hitung]\n");
+                    print  ("$data $aray[$hitung]\n");
+                    $hitung = $hitung + 1;
+                }
+                $line = <qrels1>;
+                @aray = split(/ +/,$line);
+                $count = @aray;
+                $index = $count - 1;
+                $test = substr($aray[$index],0,2);
+
+      
+             }
+             if ($count != 0)
+             {
+                $hitung = 0;
+                while ($hitung < $index)
+                {
+                    print new ("$data $aray[$hitung]\n");
+                    print  ("$data $aray[$hitung]\n");
+                    $hitung = $hitung + 1;
+                }
+              }
+            }
+
+      $line = <qrels1>;
+      
+}

@@ -1,0 +1,82 @@
+#  Shell script to create a (reduced) trec collection
+# set echo verbose
+
+set coll = /amd/beyla/a/trec
+set smartdir = /amd/beyla/d/smart.11.0
+set database = /amd/beyla/c/trec/trec.docno
+set temp_dir = /amd/beyla/d/trec/tmp
+
+set lib = $smartdir/lib
+set bin = $smartdir/src/diropt/bin
+
+set query_loc = $coll/topics/topics.52
+if (! -e doc_list_trec) then
+        cp /dev/null doc_list_trec
+        foreach dir (ap doe fr)
+                /bin/ls $coll/$dir/* >> doc_list_trec
+        end
+        foreach dir (wsj/1987 wsj/1988 wsj/1989)
+                /bin/ls $coll/$dir/* >> doc_list_trec
+        end
+        /bin/ls $coll/ziff/* >> doc_list_trec
+endif
+
+cat > spec << EOF1
+database                $database
+include_file            $lib/spec.default
+doc_loc                 $database/doc_loc
+# qrels_text_file       $coll/qrels.text
+temp_dir                $temp_dir
+
+doc_file                doc.docno
+inv_file                inv.docno
+doc_weight              nnn
+
+## TREC DOCDESC
+index.num_sections 6
+index.section.0.name i
+index.section.1.name t
+index.section.2.name w
+index.section.3.name s
+index.section.4.name n
+        index.section.4.method index.parse_sect.full
+        index.section.4.word.ctype 0
+        index.section.4.proper.ctype 0
+index.section.5.name o
+
+num_ctypes              1
+
+text_stop_file          $database/stop_text
+addtextloc              index.addtextloc.empty
+interior_char           ._-
+stem_wanted             0
+preparse                local.index.preparse.trec
+store_aux               convert.tup.vec_inv
+doc.store               index.store.store_vec_aux
+rmode                   SRDONLY|SMMAP
+rwmode                  SRDWR
+rwcmode                 SRDWR|SCREATE
+
+dict_file_size          750001
+vec_inv.mem_usage       16000000
+vec_inv.virt_mem_usage  550000000
+EOF1
+
+# create the empty collection
+/bin/rm -rf $database
+mkdir $database
+
+# Copy auxiliary files to collection
+cp spec $database
+cp ./doc_list_trec $database/doc_loc
+cat > $database/stop_text << EOF2
+docno
+EOF2
+
+#index the collection
+echo Indexing docs at `date`
+/bin/rm -f gmon.out
+$bin/smart index.doc spec smart.trace 4 global_accounting 5 vec_inv.trace 1
+
+time
+echo All done at `date`

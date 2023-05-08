@@ -1,0 +1,110 @@
+Directory smart/Sample/trec
+        Directory containing examples of indexing the "trec1" collection,
+which is a reasonable size collection (1.2 Gbytes, 52 queries).  
+The trade-offs discussed below should be applicable to most large collections.
+
+**************************************************************************
+All scripts below are feasibility scripts.  They are decidedly not
+well tuned scripts in terms of retrieval effectiveness. The query
+indexing in particular should not be used as-is for the trec
+conference.  The scripts demonstrate the logistics of working with
+large collections.
+
+**************************************************************************
+COLLECTION CREATION
+
+The first three scripts below create document collections with nnc
+(term-freq cosine-normalized) weights using one-pass algorithms.  Two
+passes are needed for some indexing methods, in particular those using
+idf document weights which require information about collection
+frequency in order to weight the docs. The second three scripts are
+two-pass algorithms with ntc (term-freq * idf, cosine normalized)
+weighted documents. 
+
+
+make_trec.nnc.16        Create a trec collection with nnc docs, ntc queries.
+                        Temporary inverted file data kept in-core.
+                        Needs large amount of swap space (600 Mbytes) for
+                        TREC, may not be possible depending on hardware or
+                        operating system.
+make_trec.nnc.tmp.16    Create a trec collection with nnc docs, ntc queries.
+                        Temporary inverted file data kept on disk.
+                        Needs large amount of temporary disk space (550 Mbytes)
+                        for TREC, uses mmap() system call to map data in.
+                        (Calls to mmap() differ between operating systems,
+                        I have only worked with the Sun version.  Code may
+                        need to be changed in other os.)
+                        Needs 120 Mbytes of swap space,  Nice to have
+                        at least 24 Mbytes of real memory
+make_trec.nnc.tmpfull.16 Create a trec collection with nnc docs, ntc queries.
+                        Temporary inverted file data kept on disk, uses mmap.
+                        Needs 550 Mbytes temporary disk space for TREC,
+                        Needs 150 Mbytes of swap space,  Nice to have
+                        36 Mbytes of real memory.
+                        Same algorithm as above, except trades memory
+                        requirements for time.  This is generally the
+                        fastest algorithm.
+
+make_trec.ntc.tmp.16    Create a trec collection with ntc docs, ntc queries.
+                        Temporary inverted file data kept on disk, uses mmap.
+                        Needs 550 Mbytes temporary disk space for TREC,
+                        Needs 120 Mbytes of swap space,  Nice to have
+                        24 Mbytes of real memory.
+                        Two-pass algorithm; first pass creates the dictionary
+                        and gathers collection occurrence statistics,
+                        second pass creates the inverted file.  Both
+                        passes index from scratch.
+make_trec.ntc.tmpfull.16 Create a trec collection with ntc docs, ntc queries.
+                        Temporary inverted file data kept on disk, uses mmap.
+                        Needs 550 Mbytes temporary disk space for TREC,
+                        Needs 150 Mbytes of swap space,  Nice to have
+                        36 Mbytes of real memory.
+                        Two-pass algorithm; first pass creates the dictionary
+                        and gathers collection occurrence statistics,
+                        second pass creates the inverted file.  Both
+                        passes index from scratch.
+                        Same algorithm as above, except trades memory
+                        requirements for time.
+make_trec.ntc.tmp.doc.16  Create a trec collection with ntc docs, ntc queries.
+                        Temporary inverted file data kept on disk, uses mmap.
+                        Needs 550 Mbytes temporary disk space for TREC,
+                        Needs 120 Mbytes of swap space,  Nice to have
+                        24 Mbytes of real memory.
+                        Needs an extra 450 Mbytes of disk space for docs.
+                        Two-pass algorithm; first pass actually creates 
+                        (nnn) term-freq document vectors as an intermediate 
+                        form (as well as creating the dictionary and
+                        gathering collection occurrence statistics).
+                        The second pass creates the ntc weighted inverted file
+                        from the document vectors, rather than having to
+                        go back to the original text (much faster).
+
+sunos-bugs              A current listing of sunos-bugs I've run across using
+                        SMART on larger collections.  Any additional 
+                        information anybody has would be appreciated!
+
+**************************************************************************
+TREC RELEVANCE INFORMATION AND RUNS
+
+These scripts are only useful for working with TREC.
+
+make_docno              Creates a "collection" giving mappings of
+                        TREC DOCNO's to/from internal SMART docids.
+make_qrels              Uses the docno "collection" created by make_docno
+                        to translate TREC relevance info into internal
+                        SMART format with internal SMART docids.
+tr_trec                 Uses the docno "collection" created by make_docno
+                        to translate SMART retrieval results into TREC
+                        result format.
+trec_tr                 Uses the docno "collection" created by make_docno
+                        to translate TREC retrieval results into SMART
+                        result format. (Not needed by most folks!)
+
+run_eval                Sample script to run and evaluate an ntc.ntc TREC
+                        run.  Assumes an ntc collection has already been
+                        made, and that make_qrels has been run (needed for
+                        evaluation).
+run_noeval              Sample script to just run (no evaluation) an
+                        ntc.ntc TREC run.  Assumes an ntc collection
+                        has already been made.
+

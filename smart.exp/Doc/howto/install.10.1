@@ -1,0 +1,141 @@
+Hello, 
+
+Here's the details on getting and installing SMART version 10.1.
+Just a reminder that this is a beta-test version.  I don't expect
+many bugs, but things are not yet packaged well enough for
+someone with no information retrieval background to put up a
+working system (eg, I don't ever define vector space model).
+So please don't release details of how to get it to the general
+public yet.
+
+My goals for the beta-test period are
+        1. weed out bugs
+        2. weed out machine dependencies
+        3. Find what areas of documentation need improving.
+        4. Write several canned scripts that set up various
+           collections (eg, archived news, routing news, etc.)
+           Naive users should be able to just use those scripts.
+        5. Add features that beta-testers convince me must be there!
+        6. Add features that beta-testers implement.  
+
+I'll post bug fix patches to the mailing list.  Features will be
+added in an intermediate release 10.2 Beta in about a month, and
+then the fully available release 10.3 several weeks after that.
+
+Have fun with it!
+                                        ChrisB
+
+Installing SMART Beta version
+
+If you don't have a copy of SMART, you can pick it up using 
+anonymous ftp from ftp.cs.cornell.edu.
+
+It's encrypted there.
+        ~ftp/pub/smart/10.1.tar.Z.en
+
+The following commands should get and then create the smart
+directory hierarchy in your current directory:
+% ftp ftp.cs.cornell.edu
+Name: anonymous
+Password: <your login name>
+ftp> cd pub/smart
+ftp> binary
+ftp> get 10.1.tar.Z.en
+ftp> quit
+% crypt Fall.1961 <10.1.tar.Z.en | uncompress | tar xfv -
+        
+Let me know immediately if this doesn't work!
+
+If you need any of the standard test collections, they're in
+        ~ftp/pub/smart/<collection>
+(non-encrypted).
+
+To get smart running, you'll need to
+1. Edit pathnames in
+        src/makefile          - PREFIX needs changing
+        src/makebin.templ     - PREFIX needs changing
+        src/makelib.templ     - PREFIX needs changing
+        lib/spec.default      - first line
+        lib/spec.expcoll      - first line
+
+2. Edit compiler options in 
+        src/makefile
+        src/makebin.templ
+        src/makelib.templ 
+It is currently set up to compile with non-optimized gcc.  You
+should be able to just comment that section out, and uncomment
+the cc section to switch to cc.  Note that you do not want
+dynamic linking under Sun's cc (very slow).
+
+3. Possibly edit 
+        src/h/param.h
+The only machine dependent define is
+        #define MMAP
+I don't know if mmap will work on non-Sun systems.  It's an
+excellent option to have on Suns.
+
+4. cd src 
+
+5. Run "make makefiles" to construct the makefiles in the
+subdirectories.  
+
+6."make" 
+
+7. Test by looking at 
+        Sample/adi/test_adi
+        Sample/adi/make_adi
+Change pathnames as appropriate in make_adi, and run test_adi.
+Test_adi indexes the adi collection (actually done through
+make_adi), runs a pair of retrieval runs, and then
+runs a set of commands through the user interface of smart.
+Differences between your output and a copy of valid output are
+reported.  There should be no differences reported except due to
+pathnames and differences in lengths of files saved due to
+pathnames.
+
+8. There are some handy one-line shell scripts in "scripts".  You
+may want to install them in an accessible place.  All will need
+pathname changes.  I would recommend running 
+        scripts/make_docsmart
+to create an indexed collection of smart procedure documentation.
+        scripts/docsmart
+can then be used to access the collection, or you should be able
+to use
+        scripts/ismart docsmart
+to run the full verson of smart on it, depending on how you set
+things up.
+        scripts/smprint 
+is a handy shorthand for examining SMART objects.
+  
+
+To get a feeling for what smart is doing, read the documentation
+in Doc/overview.  
+
+
+Mail questions, comments, and problems to 
+        smart-people@cs.cornell.edu
+I'll be setting up an informal mailing list operating from that
+address to all the Beta-sites.  Unless privacy is specifically
+requested, I'll feel free to forward any questions/answers of
+general interest to this mailing list.
+
+For the near future, my work on the release will be confined to
+improving documentation and fixing any bugs you find.  I'll
+continue to add features to SMART as the features become useful
+to us in our own research.  At the moment, I'm not planning any
+research involving WAIS, or a good user interface, so those
+features may depend on your participation, which is certainly
+welcome!
+
+SMART plus user contributions will be made freely available once
+the beta-test is over, although the core of SMART will remain
+copyright protected.
+
+Ask lots of questions!  That's the way I'll get a feel for what
+needs attention, especially for documentation.  (Although the
+quantity of documentation has improved during the 10-day time lag
+between submission of the original announcement to IR-LIST and
+the publication there!)
+
+Good luck!
+                                        ChrisB

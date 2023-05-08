@@ -1,0 +1,125 @@
+How to make an experimental retrieval run within SMART
+
+Experimental retrieval runs are generally done by setting up a
+specification file describing the run, invoking smart on that
+specification file, and evaluating the results.
+
+As an initial example, consider the following script, taken from
+.../src/test_adi/test_adi. 
+
+  cat > spec.nnn << EOF
+  include_file $database/spec
+  tr_file ./tr.nnn
+  rr_file ./rr.nnn
+  run_name "Doc weight == Query weight == nnn  (term-freq)"
+  EOF
+  
+  smart retrieve spec.nnn
+  
+  cat > spec.atc << EOF
+  include_file $database/spec
+  query_file query.atc
+  doc_file doc.atc
+  inv_file inv.atc
+  tr_file ./tr.atc
+  rr_file ./rr.atc
+  run_name "Doc weight == Query weight == atc  (augmented tfidf)"
+  EOF
+  
+  smart retrieve spec.atc
+
+  smart print spec.atc proc print.obj.rr_eval in "spec.nnn spec.atc"
+
+Two experimental runs with already existing vectors are made by
+creating specification files for the runs which give all of the
+non-default parameter values being used for the runs.
+The first run specifies only the output files being created since
+it uses the standard default version of the documents and
+queries. The second run must specify the document and query
+collections it uses since they are non-default.
+
+It is worth actually creating a specification file for each
+experimental run.  The alternative would be giving all the
+non-default parameters with the invocation of smart.  This makes
+it difficult to later decide exactly which parameters were used.
+
+In general, an experimental run is more complicated.  Often new
+versions of the documents and queries need to be created.  For
+example, the "atc" versions of the documents and queries were
+created in make_adi by
+  $bin/smart convert spec   proc convert.obj.weight_doc   in doc.nnn \
+                     out doc.atc   doc_weight atc
+  $bin/smart convert spec   proc convert.obj.weight_query   in query.nnn \
+                     out query.atc   query_weight atc
+  $bin/smart convert spec   proc convert.obj.vec_aux  in doc.atc  out inv.atc
+
+Look at the scripts "base_run" and "fdbk_run" in the src/scripts
+directory for examples of simple experimental retrieval runs.
+
+Finally, real experimental runs will likely involve adding
+procedures to SMART, and the run specification files can become
+much more complicated.  Here's a sample from our work where most
+of the parameters are for special purpose procedures.
+  
+  foreach thresh (75.0 100.0)
+      foreach num_match (1 2)
+          foreach weight (ntn)
+           foreach percent (0.00 0.75 1.0)
+              set run = para.$weight.$num_match.$thresh.$percent
+  
+              set workdir = /home/smart/work_colls/new/fw/para/runs
+  
+              if (! -e $workdir) mkdir $workdir
+              cd $workdir
+  
+              if (-e tr.$run) then
+                  echo "Run $run already done. not repeated"
+                  continue
+              endif
+  
+              cat > spec.$run << EOF
+  include_file /home/smart/indexed_colls/fw/spec
+  
+  # General experimental run parameters.
+  # Run on first 1000 documents (511 of which have relevant docs) 
+  global_end              1000
+  eval.num_queries        511
+  get_seen_docs           retrieve.get_seen_docs.get_seen_docs
+  retrieve.output         retrieve.output.ret_tr
+  get_seen.tr_file        seen_docs
+  get_query               retrieve.get_query.get_q_vec
+  qrels_file              qrels
+  
+  # Run on ntc versions
+  doc_file                doc.ntc
+  query_file              doc.ntc
+  inv_file                inv.ntc
+  
+  # General procedures for required match searches
+  coll_sim                retrieve.coll_sim.req_inverted
+  required.sim            retrieve.vec_vec.part_thresh
+  vecs_vecs.vec_vec       retrieve.vec_vec.vec_vec
+  parts.preparse          index.parts_preparse.fw_para
+  parts.increment         0.0
+  required.fill           0
+  required.num_wanted     75
+  num_wanted              15
+  
+  # Output for this particular run
+  tr_file                 $workdir/tr.$run
+  run_name                "ntc.ntc, $num_match match of para, sim
+   $thresh, weight $weight required percent $percent"
+  
+  # Parameters for this particular run.
+  parts.num_match         $num_match
+  parts.thresh            $thresh
+  sect_weight             $weight
+  parts.length_percent    $percent
+  EOF
+  
+              smart retrieve spec.$run
+              time
+            end
+          end
+      end
+  end

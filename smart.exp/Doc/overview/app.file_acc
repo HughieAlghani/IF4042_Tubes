@@ -1,0 +1,257 @@
+.sh 1 "SMART Relational File Objects"
+.pp
+The next two sections go a bit more deeply into the implementation of the
+file and data
+structures that SMART uses.
+The casual reader may want to skim or skip these sections.
+A detailed understanding of them is not required for the rest of the
+paper.
+.pp
+A SMART relational object is stored as one or more UNIX files on disk.
+These objects contain information that needs to stored between
+invocations of programs.
+One example of a long-lived, but ever-changing object would be the
+dictionary of concepts for a collection.
+A short-lived example would be a query representative, which
+exists only while a user is running a query.
+A structure needs to be put on these objects; otherwise, anybody
+trying to understand what the system does will have an impossible task.
+.pp
+The general object in the current SMART implementation is an
+"ordered" relation, not necessarily in first normal form.
+These objects can only be accessed through routines which have a
+separate instantiation for each type of relation.
+All of the implementation features peculiar to a given type of relation
+are hidden from the user.
+This is obviously a standard approach; the only trick is to do it
+without excess copying of the huge amounts of data
+needed in information retrieval.
+Most implementation hiding techniques involve copying of data.
+.pp
+A previous SMART implementation was based on the relational database
+system INGRES.
+This provided a uniform method for accessing data in almost any
+manner desired.
+Information retrieval access, though, tends to be very simple but involve
+massive amounts of data.
+A standard relational database like INGRES will copy the data to be
+returned several times before the user sees it.
+This is unacceptable for information retrieval purposes.
+Instead, non-standard relational objects are being used.
+The type of access to the data is very limited compared with
+INGRES, but it is much faster.
+.pp
+A major improvement in speed comes with the ability to have non-normalized
+relations.
+This allows the system to return pointers to other relations or collections
+of data as "first class" attributes of the relation.
+This is important in two ways. First, a large space savings
+results from not having a fully normalized
+relation - duplicate attribute values
+do not have to be stored or returned to the user.
+Second, the pointer returned can be a pointer to the \fIimplementation's\fP
+data space itself.
+This allows an implementation to read large amounts of data at a time
+into its private buffers and return pointers to it without ever copying
+the data.
+This produces large savings if the data stored on disk can be stored in
+a form immediately usable by a user's program.
+Note that this is only feasible if the user's programs are trustworthy,
+something a standard database system can never assume.
+.pp
+Each relation can be regarded as a collection of tuples, ordered by
+some attribute(s); a potentially infinite number of tuples can be
+fit between any 2 tuples.
+At any time when dealing with a relation,
+the concept of position within the relation is important
+(thus another difference
+between the SMART concept of a relational object and a true
+relation).
+This position can be at the beginning of a tuple, or at
+the end of the tuple and thus at the beginning of the "space" between
+this tuple and the next tuple.
+.pp
+Operations on relations include :
+create,
+open,
+seek,
+read,
+write,
+close.
+Each relational operation is invoked (currently) by calling the
+procedure <operation>_<relation_type>. For example, to create a relation
+of type \fIdict\fP,
+the procedure \fBcreate_dict\fP is called with the appropriate
+arguments.
+Each of these operations is described below.
+One additional operator can be called on a relation:
+\fBget_rel_header\fP.
+This will return information about the relation,
+such as the number of entries, what type of relation it is, etc.
+.sh 2 "The Relational Operators"
+.pp
+.sh 3 "Get-rel_header (relation_name)"
+.pp
+Given a relation name, information about the relation is returned as a
+pointer to a tuple of type REL_HEADER
+This tuple contains the following attributes:
+.(l F
+num_entries : number of tuples in relation
+.sp
+relation_type: integer code for the type of relation this is.
+.sp
+relation_subtype: integer code for a subtype of relation. (This isn't used
+at present.)
+.sp
+max_primary_value : limit to a value of the attribute
+on which the relation is sorted.
+This is a soft ``limit'', it can be exceeded by future insertions of tuples,
+but at any one time, is greater than or equal to the maximum value of that
+attribute attained by any tuple in the relation.
+.sp
+max_secondary_value: Same as above, but applies to a secondary attribute of 
+the relation.
+.sp
+other implementation dependent attributes which are not relevant to the
+user of the relation also appear in this tuple.
+.)l
+.sh 3 "Create_<type> (relation_name, relational information)"
+.pp
+Create a relation of the given type. The input relational information is
+a tuple of type REL_HEADER, which contains information which may be
+used to decide the type and magnitude of the data structure that will
+be used to contain the relation.
+.sh 3 "Open_<type> (relation_name, mode)"
+.pp
+Open the (possibly) previously created relation ``relation_name''.
+Mode describes the operations possible to perform.
+Mode is an integer which
+is the logical \fBor\fR of some subset of
+.(l 
+SRDONLY
+SWRONLY
+SRDWR
+SCREATE
+SLOCK
+SEXLOCK
+SBACKUP
+SINCORE
+SMMAP
+.)l
+SRDONLY, SWRONLY, SRDWR indicate whether the relation will be read only,
+written only, or both read and modified (respectively).
+SCREATE indicates that the relation does not exist, and \fBcreate_<type>\fP
+should be called to create it.
+SLOCK, SEXLOCK indicate whether it is desirable to lock the relation
+so that other invocations of this or other programs are not able to change
+it while it is in use here.
+SBACKUP indicates whether a backup copy of the relation should be made
+in ``<relation_name>.bak'' before committing any writes.
+SINCORE is an advisory flag telling whether the relation will be accessed
+in such a way as to make it worth keeping it entirely in-core.
+Some relations and access methods require the relation to be
+in-core; in this case, SINCORE will automatically be set for the user.
+SMMAP may not be available. It is conditionally compiled in.  
+If available and set, the mmap system call is used to map the
+entire file(s) for the relation into virtual memory without
+actually reading the file(s).
+Most of the time, this should be set when available; it combines
+the advantages of SINCORE with the quick start-up time of file
+based access.
+.pp
+After the call to open, 
+the relational cursor is positioned at the beginning of the first tuple
+of the relation.
+A small integer index is returned to be used for all future operations with
+this relation.
+If an error is detected, the integer UNDEF is returned.
+.sh 3 "Seek_<type> (relation_index, relation_tuple)"
+.pp
+Change the position of the cursor according the information
+in ``relation_tuple'' which is a tuple of type \fB<type>\fP.
+.pp
+If ``relation_tuple'' is NULL, then the cursor is positioned at the beginning
+of the relation again and 1 is returned.
+.pp
+If ``relation_tuple'' contains enough information to theoretically completely
+identify a tuple in the relation,
+then a 1 is returned if that tuple is present,
+and the cursor is positioned at the beginning of that entry.
+If the tuple
+is not present, then the cursor is positioned at the beginning of a between
+tuple gap in the relation, such that the tuple could be inserted in that
+gap while still preserving the ordering on the relation.
+0 is returned in this case.
+.pp
+If there is enough information to identify a consecutive group of tuples,
+(for example, if the relation is sorted by <field_1, field_2> and <field_1>
+is given), then the cursor is positioned at the beginning of this
+group of tuples and 1 is returned.
+.pp
+If there is not enough information to identify any tuple, then UNDEF is 
+returned. The cursor is not positioned at any legal position in the relation.
+In the example above, if <field_2> is specified but <field_1> is not, then
+UNDEF is returned.
+.sh 3 "Read_<type> (relation_index, &relation_tuple)"
+.pp
+Read a tuple of the appropriate <type> into the space pointed to
+by ``relation_tuple''. The first tuple in the relation following the
+current cursor position is read. If there are no more tuples,
+0 is returned, else
+1 is returned.
+If an error is detected, (for instance, the cursor is not
+positioned legally), then UNDEF is returned.
+Depending on the relation type and the mode of access, values returned
+by one read may or may not be guaranteed to
+remain fixed across the next read.
+In particular, if relations (like \fIvector\fP) involving large amounts
+of data are not opened with SINCORE, then the input buffers will
+eventually be copied, and pointers contained within ``<relation_tuple>''
+may suddenly point to invalid data.
+See the discussions of the implementation of the 
+individual relation types for further information.
+.sh 3 "Write_<type> (relation_index, relation_tuple)"
+.pp
+Add the tuple ``relation_tuple'' to the relation designated
+by ``relation_index''.
+The tuple is added at the first empty position in the relation
+following the current cursor position.
+There is no concept of overwriting a tuple with another tuple;
+however, \fBwrite_<type>\fP may be used to delete the tuple at the
+current cursor position if the primary attribute value
+of ``relation_tuple'' is UNDEF (or NULL if the primary
+attribute value is a pointer to another type of data object).
+.sh 3 "Close_<type> (relation_index)"
+.pp
+Relinquish access to this relation.
+It is only after executing the close that an outside process or user is
+guaranteed access to any changes that may have been made to the relation
+while it was open.
+.sh 2 "Tid as a distinguished attribute"
+.pp
+There is one distinguished attribute that is treated differently from
+the others when performing the above operations: \fItid\fP.
+\fITid\fP, standing for ``tuple_id'',
+if included as an attribute in a relation,
+has an integer value assigned by the implementation
+which uniquely identifies the tuple within
+the relation.
+Furthermore, \fItid\fP is always the primary attribute of the relation.
+It can be thought of as the implementation dependent position of the
+tuple.
+.pp
+Since the implementation assigns the value of \fItid\fP, it necessarily
+cannot be given by the user during a \fBwrite_<type>\fP.
+The user may supply any value for \fItid\fP at the beginning of the write.
+The implementation will replace this value within ``relation_tuple'' by the
+actual \fItid\fP assigned the tuple.
+If the write fails (returns UNDEF),
+then the value for \fItid\fP is set to UNDEF.
+Note that the user can even assign the value UNDEF to \fItid\fP without any
+ambiguity with the operation of deleting a tuple.
+The tuple will only be deleted when the cursor points to it, and the
+user supplies UNDEF as the principal attribute value
+(in this case, \fItid\fP).
+Since the cursor points to a tuple, the user must have just done
+a seek to that tuple, and therefore must have supplied the correct \fItid\fP
+to the seek.

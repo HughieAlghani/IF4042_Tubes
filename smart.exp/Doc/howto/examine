@@ -1,0 +1,271 @@
+Examining SMART database files and experimental results.
+
+A lot of the information in SMART databases can be gotten running
+the interactive top-level action of smart.  That's mostly
+self-documenting so it won't be described here.  But often it is
+useful to look at the un-interpreted SMART objects while at the
+UNIX command level.
+
+For space and time efficiency, most of SMART data files are
+stored in binary form.  Thus they need special procedures /
+programs to be able to examine the contents of the files.  All
+SMART binary data files are kept as relational objects, with the
+type of the relational object being needed in order to look at
+it.  The full invocation of smart to print the tuples of object
+file OBJECT from database DATABASE of relational type TYPE which
+fall in the range STARTID, ENDID is
+        smart print DATABASE/spec proc print.obj.TYPE in OBJECT
+              global_start STARTID  global_end ENDID
+
+Luckily for those with normal memories, in most cases this can be
+abbreviated
+        smprint -b STARTID -e ENDID -s SPEC TYPE OBJECT
+with the startid and endid arguments being optional in both full
+and abbreviated forms (Ie.
+        smprint TYPE OBJECT
+prints the entire object OBJECT.)
+        
+There are two special arguments of smprint that deserve mention
+here. One is
+        smprint rel_header OBJECT
+This gives the relational header for a SMART object of any type.
+For example, smprint rel_header .../smart/src/text_adi/indexed/dict gives
+  num_entries             828
+  max_primary_value       3563
+  max_secondary_value     0
+  type                    96
+  data_type               3
+  _entry_size             12
+  _internal               0
+of which the num_entries field and max_primary_value field are
+often of interest.
+
+The last form of smprint is
+        smprint proc PREFIX
+which doesn't really fit in with the other forms, but is so
+useful that an exception was made.  Instead of taking a SMART
+object as the file to be printed, it takes the smart procedure
+hierarchy, and prints out all the hierarchy names beginning with
+PREFIX.  Eg
+        smprint proc print.obj
+will give all of the hierarchy names that begin with "print.obj", ie,
+all legal values for TYPE.
+
+In this write-up, the indexed adi database in
+.../src/test_adi/indexed is used as an example, with experimental
+runs from .../src/test_adi/test also being looked at.
+
+
+
+Database Files
+
+A typical indexed SMART test collection normally contains
+a couple of versions of the indexed documents, a couple of
+corresponding inverted files, dictionaries to go from tokens to
+concept numbers, location information for the document texts, 
+and a stopword list.  Since it's a test collection, there is also
+a standard set of queries and a set of relevance judgements
+telling which documents are relevant to which queries.
+For the adi collection in .../src/test_adi/indexed, the files below
+exist.  Each file is given its type, a brief description of
+function, and then what output from smprint looks like
+
+common_words    DICT    hash table of stop words not to be indexed
+        Concept Info    Token
+        22      0       goes
+dict            DICT    Mapping from token to concept number
+        Concept Info    Token
+        2       0       zip
+doc.atc         VEC  }  Two file single relational object giving
+doc.atc.var          }  indexed vectors with "atc" (tfidf-norm) weights.
+        Docid   Ctype   Concept Weight
+        1       0       15      0.089209
+doc.nnn         VEC     Same as above, but with only tf weights
+doc.nnn.var
+        Docid   Ctype   Concept Weight
+        1       0       15      1.000000
+doc_loc         ---     Text giving location of documents to be indexed
+inv.atc         INV     Two file single relational object giving
+inv.atc.var             inverted file version of document.atc
+        Docid   Ctype   Concept Weight
+        42      0       2       0.250600
+inv.nnn         INV     Same as above but for document.nnn
+inv.nnn.var
+        Docid   Ctype   Concept Weight
+        42      0       2       1.000000
+q_textloc       TEXTLOC Location information for each indexed query
+q_textloc.var
+        Doc textloc 1
+          Title ''
+          File '/home/smart/src/test_adi/coll/query.text'
+                   0         248
+                   4
+qrels           RR_VEC  Relevance judgments
+        qid     did     rank    sim
+        1       17      0       0.000000
+query.atc       VEC     Query vector set indexed using atc weights
+query.atc.var
+        Queryid Ctype   Concept Weight
+        1       0       19      0.372417
+query.nnn       VEC     Same as above, but using only tf weights.
+query.nnn.var
+        Queryid Ctype   Concept Weight
+        1       0       19      1.000000
+query_loc       ---     Text giving location of queries to be indexed
+spec            ---     Text describing this collection
+textloc         TEXTLOC Location and title information for each
+textloc.var             indexed document.
+Doc textloc 1
+          Title 'the ibm dsd technical information center - a total systems...'
+          File '/home/smart/src/test_adi/coll/adi.all'
+                   0        1303
+                   4
+
+
+A typical real-life (non-experimental) indexed SMART collection may
+only contain the files
+  common_words
+  dict
+  inv.nnc
+  inv.nnc.var
+  spec
+  textloc
+  textloc.var
+
+A couple of forms of desired output contain more information than is
+in a single SMART object.  Smprint cannot print those output forms
+that interpret the meaning of the values found in the smart object
+without knowledge found in the collection specification file.
+Examples are
+
+1. printing the original document or query texts given a textloc
+relational object.
+2. printing the actual token in addition to the concept number
+when printing vectors.
+3. printing evaluation results (discussed below)
+
+These forms must be printed using either the full version of
+"smart print" above or "smprint -s <database>/spec".
+Examples for 1 and 2 above (assuming you
+are in .../src/test_adi/indexed) are
+        smart print spec proc print.obj.doctext in textloc \
+        global_start 10 global_end 10
+or
+        smprint -s spec -b 10 -e 10 doctext textloc
+which prints the text of document 10 in whatever standard document
+format is given in the spec file.
+        smart print spec proc print.obj.querytext in q_textloc \
+        global_start 10 global_end 10
+or
+        smprint -s spec -b 10 -e 10 querytext q_textloc
+which prints query 10.
+        smart print spec proc print.obj.vec_dict in query.nnn \
+        global_start 1 global_end 1
+or
+        smprint -s spec -b 1 -e 1 vec_dict query.nnn
+prints query vector 1 in the format
+        Queryid Ctype   Concept  Weight         Token
+        1       0       19       1.00000        difficult
+
+
+Examining Experimental Results.
+
+Experimental output in SMART takes two different forms.  The
+first gives information about the top-ranked documents that a
+user may have seen.  This is the TR_VEC format, and when printed
+as in 
+        smprint tr_vec tr.atc
+gives, for each of the documents returned to a user,
+        qid     did     rank    rel     action  iter    sim
+        1       4       15      0       0       0       0.065027
+where "rel" gives the relevance of the document, "action" gives
+what the user has done with the document, and "iter" gives the
+feedback iteration of the run that retrieved this document.
+(All examples in this section assume you are in 
+.../src/test_adi/test).
+
+The other format gives information about the ranks of the
+relevant documents.  This is the base for normal experimental
+evaluation methods.  This is the RR_VEC format, giving 
+        qid     did     rank    sim
+        1       17      7       0.074443
+for each of the relevant query,document pairs seen in this retrieval.
+
+These two formats are the raw information produced by an
+experimental run.  Either format can be passed through an
+evaluation process to produce numbers that can be compared across
+retrieval runs.  
+        smart print spec.atc proc print.obj.rr_eval in spec.atc
+or
+        smprint rr_eval spec.atc
+will evaluate the run spec.atc using the ranks of the
+relevant documents.  An explanation of the output is found
+in Doc/overview/app.eval.
+
+The evaluation figures using RR_VEC information are more accurate
+than those using just TR_VEC information.  But there are times when
+only TR_VEC information is available.  For that reason, 
+        smart print spec.atc proc print.obj.tr_eval in spec.atc
+or
+        smprint tr_eval spec.atc
+will also produce evaluation output.
+
+In general, it's much handier to have head-to-head comparisons of
+more than one retrieval run.  The parameter "in" can have a list
+of specification files as its value, separated by whitespace.
+Thus
+    smart print spec.atc proc print.obj.rr_eval in "spec.nnn spec.atc"
+or
+        smprint rr_eval "spec.nnn spec.atc"
+
+will produce
+
+             Relevant ranked evaluation
+  
+  1. Doc weight == Query weight == nnn  (term-freq)
+  2. Doc weight == Query weight == atc  (augmented tfidf)
+  
+  Run number:          1        2
+  Num_queries:         35       35
+  Total number of documents over all queries
+      Retrieved:      525      525
+      Relevant:       170      170
+      Rel_ret:         80       92
+      Trunc_ret:      476      457
+  Recall - Precision Averages:
+      at 0.00       0.4824   0.6726
+      at 0.10       0.4824   0.6726
+      at 0.20       0.4343   0.6261
+      at 0.30       0.4203   0.5785
+      at 0.40       0.3640   0.5146
+      at 0.50       0.3405   0.4998
+      at 0.60       0.2775   0.3799
+      at 0.70       0.2247   0.2928
+      at 0.80       0.2143   0.2652
+      at 0.90       0.1874   0.2380
+      at 1.00       0.1863   0.2361
+  Average precision for all points
+     11-pt Avg:     0.3286   0.4524
+      % Change:               37.7
+  Average precision for 3 intermediate points (0.20, 0.50, 0.80)
+      3-pt Avg:     0.3297   0.4637
+      % Change:               40.6
+  
+  Recall:
+      Exact:        0.5036   0.6138
+      at  5 docs:   0.2718   0.4002
+      at 10 docs:   0.3915   0.5166
+      at 15 docs:   0.5036   0.6138
+      at 30 docs:   0.6675   0.7750
+  Precision:
+      Exact:        0.1524   0.1752
+      At  5 docs:   0.2457   0.3086
+      At 10 docs:   0.1686   0.2229
+      At 15 docs:   0.1524   0.1752
+      At 30 docs:   0.1048   0.1162
+  Truncated Precision:
+      Exact:        0.2064   0.2622
+      At  5 docs:   0.2629   0.3571
+      At 10 docs:   0.2061   0.2910
+      At 15 docs:   0.2064   0.2622
+      At 30 docs:   0.1896   0.2427

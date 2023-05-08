@@ -1,0 +1,22 @@
+#  Shell script to create relevance assessments
+# set echo verbose
+
+set coll = /amd/beyla/a/trec
+set smartdir = /amd/beyla/d/smart.11.0
+set database = /amd/beyla/c/trec/trec.docno
+set temp_dir = /amd/beyla/d/trec/tmp
+
+set lib = $smartdir/lib
+#set bin = $smartdir/src/diropt/bin
+set bin = $smartdir/src/bin
+
+set query_loc = $coll/topics/topics.52
+set qrels_text_file = $coll/rels/qrels.D1.1-52
+
+/bin/rm -f $database/qrels $database/qrels.var
+$bin/smart convert $database/spec proc local.convert.obj.trec_qrels \
+                        in $qrels_text_file  out $database/qrels \
+                        smart.trace 4 global_accounting 5 
+
+time
+echo All done at `date`

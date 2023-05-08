@@ -1,0 +1,75 @@
+#! /bin/csh
+# Make the lisa test collection.  Change first 3 pathnames as appropriate.
+# Lisa collection obtainable in ~ftp/pub/smart/lisa on  ftp.cs.cornell.edu
+
+# set echo verbose
+
+set bin = /home/varrick/smart.exp/src/bin
+set srcdir = /home/varrick/smart.exp/src
+set tlibdir = /home/varrick/smart.exp/lib
+
+set current  = $srcdir/test_lisa
+set database = $current/indexed
+set coll     = $current/coll
+set doc_loc  = $coll/lisa_new.all
+set query_loc = $coll/query_new.text
+
+# create the empty collection
+/bin/rm -rf $database
+mkdir $database
+
+cat > $database/spec << EOF1
+## INFORMATION LOCATIONS
+database                $database
+include_file            $tlibdir/spec.expcoll
+doc_loc                 $database/doc_loc
+query_loc               $database/query_loc
+qrels_text_file         $coll/qrels.text
+
+## LISA DOCDESC
+#### GENERIC PREPARSER
+num_pp_sections                 3
+pp_section.0.string             "~I"
+pp_section.0.action             discard
+pp_section.0.oneline_flag       true
+pp_section.0.newdoc_flag        true
+pp_section.1.string             "~T"
+pp_section.1.section_name       t
+pp_section.2.string             "~W"
+pp_section.2.section_name       w
+
+#### DESCRIPTION OF PARSE INPUT
+index.num_sections              2
+index.section.0.name            w
+  index.section.0.method        index.parse_sect.full
+  index.section.0.word.ctype    0
+  index.section.0.proper.ctype  0
+index.section.1.name            t
+  index.section.1.method        index.parse_sect.full
+  index.section.1.word.ctype    0
+  index.section.1.proper.ctype  0
+title_section 1
+
+#### DESCRIPTION OF FINAL VECTORS
+num_ctypes                      1
+ctype.0.name                    words
+
+## ALTERATIONS OF STANDARD PARAMETERS
+dict_file_size                  20011
+
+## ALTERATIONS OF STANDARD PROCEDURES
+EOF1
+
+# echo Creating new database at `date`
+# Copy auxiliary files to collection
+echo "$doc_loc" > $database/doc_loc
+echo "$query_loc" > $database/query_loc
+
+#index the collection
+# echo Indexing docs,queries,rels at `date`
+$bin/smart exp_coll $database/spec
+
+# Raw TF
+# Create atc (a tf*idf variant) versions of docs and queries
+# Notation refer to this docs: https://cdn-edunex.itb.ac.id/47660-Information-Retrieval-System/157157-Minggu-5/1677021843836_Term-Weighting-TFIDFNormalization-SMART-Notation.pdf
+

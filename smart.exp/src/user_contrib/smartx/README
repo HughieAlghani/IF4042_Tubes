@@ -1,0 +1,12 @@
+A X11-R4 user interface for SMART written by V. Chiu and T. Li
+under the direction of F. Gey at Berkeley.
+
+Unfortunately, this was written using DevGuide (Sun interface
+builder) and I don't have DevGuide here at Cornell.  They had a
+version of SMART version 9; there have been changes since then
+that I haven't been able to track.  The changes should be
+reasonably mechanical, but you'll have to figure out where to
+make them!  I hope somebody will pick this up, I don't have time
+at the moment.
+                                ChrisB
+

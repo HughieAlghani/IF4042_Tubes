@@ -1,0 +1,117 @@
+#  All code below this line (except for automatically created dependencies)
+#  is independent of this particular makefile, and should not be changed!
+#############################################################################
+
+# Flags normally set in top level makefile.  Make sure you want these
+# default if you compile locally in this directory
+PREFIX = /usr/u.local/allan/bfly
+BIN = $(PREFIX)/bin
+LIB = $(PREFIX)/lib
+H   = -I../h
+
+# Version numbers
+MAJOR = 10
+MINOR = 1
+
+# Sun shared libraries with cc
+#CC     = cc
+#CFLAGS = -g -pic -L$(LIB) $H
+#LIBEXT = so
+
+# Static libraries with gcc
+#CC       = gcc
+#CFLAGS   = $H -L$(LIB) -g -traditional -Wall
+#LIBEXT   = a
+
+# Libraries on the butterfly
+CC	= cc
+CFLAGS	= $H -L$(LIB) -g -DBFLY
+LIBEXT	= a
+
+
+# Other macros used in some or all makefiles
+PRINT  = print
+AR     = -ar
+ARFLAGS= urv
+RANLIB = ranlib
+
+# For use in GNU make; in other makes, this does very little...
+# makes a list of "arc.a(libfile.o) arc.a(libfile2.o)..."
+ARC_LIBFILES = $(foreach obj,$(BFLY_LIBFILES),$(LIB)/$(LIBNAME).a($(obj)))
+
+# Entry points install and all are the same.  If you want to "make install"
+# a non-test version in this directory alone, YOU MUST SPECIFY "PREFIX=..." ON
+# THE COMMAND LINE  where ".../lib" gives the location you wish the
+# library placed.  By default it will end up in the test directory.
+
+install all:  $(LIB)/$(LIBNAME).$(LIBEXT)
+
+#########################################################################
+# Compilation of Libraries                                              #
+# ##Note that a copy of the library is NOT kept in the current directory. #
+# ##    This seems necessary to handle shared libraries                       #
+#########################################################################
+$(LIB)/$(LIBNAME).a: $(ARC_LIBFILES)
+	$(RANLIB) $(LIB)/$(LIBNAME).a
+
+$(LIBNAME).so: $(BFLY_LIBFILES)
+	$(LD) $(BFLY_LIBFILES) -o $(LIBNAME).so.$(MAJOR).$(MINOR)
+	$(LD) $(BFLY_LIBFILES) -o $(LIB)/$(LIBNAME).so.$(MAJOR).$(MINOR)
+
+
+#########################################################################
+# Putting the .o into the .a file...
+#########################################################################
+(%.o): %.c
+	$(CC) -c $(CFLAGS) $<
+	$(AR) $(ARFLAGS) $@ $%
+	$(RM) $%
+
+#########################################################################
+# Saving program versions                                               #
+#########################################################################
+rcs:
+	-ci -q "-mAutomatic checkin" *.c
+
+#########################################################################
+# Odds and ends                                                         #
+#########################################################################
+clean:
+	/bin/rm -f *.o *.BAK *~ $(LIBNAME).a $(LIBNAME).so
+
+print: # $(FILES) makefile
+	$(PRINT) $?
+	cat >print </dev/null
+
+lint:
+	$(LINT) -I../h -C$(LIBNAME) *.c
+	mv llib-l$(LIBNAME).ln $(LIB)
+
+
+#########################################################################
+# Determining program dependencies                                      #
+#########################################################################
+depend:
+	grep '^#[ ]*include' *.c \
+		| sed -e 's?:[^"]*"\([^"]*\)".*?: \$H/\1?' \
+			-e '/</d' \
+		        -e 's/\.c/.o/' \
+		        -e 's/\.y/.o/' \
+		        -e 's/\.l/.o/' \
+		> makedep
+	echo '/^# DO NOT DELETE THIS LINE/+2,$$d' >eddep
+	echo '$$r makedep' >>eddep
+	echo 'w' >>eddep
+	cp makefile makefile.bak
+	ed - makefile < eddep
+	/bin/rm eddep makedep
+	echo '# DEPENDENCIES MUST END AT END OF FILE' >> makefile
+	echo '# IF YOU PUT STUFF HERE IT WILL GO AWAY' >> makefile
+	echo '# see make depend above' >> makefile
+
+# DO NOT DELETE THIS LINE -- make depend uses it
+
+# DEPENDENCIES MUST END AT END OF FILE
+# IF YOU PUT STUFF HERE IT WILL GO AWAY
+# see make depend above
+

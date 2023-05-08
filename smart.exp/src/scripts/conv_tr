@@ -1,0 +1,21 @@
+#! /bin/csh
+# Convert the given tr relation to tr_vec relation, storing the old tr
+# relation in old<name>
+
+set spec = /home/smart/lib/spec.default
+
+if ($#argv < 1) then
+        echo 'Usage: conv_tr filename'
+        exit
+endif
+
+set filename = $1
+
+if (-e old$filename) then
+        echo "old$filename already exists. No conversion done"
+        exit
+endif
+
+mv $filename old$filename
+smart convert $spec proc convert.obj.oldtr_trvec  in old$filename \
+                    out $filename

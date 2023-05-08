@@ -1,0 +1,102 @@
+#! /bin/csh
+# Make a simple UNIX man collection
+# This is a single ctype indexing (doesn't separate out the info fields)
+
+# set echo verbose
+
+# 
+set bin =     /home/smart/src/bin
+set tlibdir = /home/smart/lib
+set database = /home/smart/indexed_colls/man
+set coll     = (/usr/man/man*)
+#set coll     = (/usr/man/man2)
+
+# create the empty collection (destroying any existing collection)
+/bin/rm -rf $database
+mkdir $database
+
+find $coll -type f -print > $database/doc_loc
+# /bin/ls $coll/kill* > $database/doc_loc
+
+echo "NAME" > $database/query_skel
+
+cat > $database/spec << EOF1
+## INFORMATION LOCATIONS
+database                $database
+include_file            $tlibdir/spec.default
+doc_loc                 -
+query_skel              query_skel
+
+## MAN DOCDESC
+#### GENERIC PREPARSER
+doc.pp_filter                   "cd /usr/man; nroff -man \$in | col "
+num_pp_sections                 9
+pp_section.0.string             "BUGS"
+pp_section.0.section_name       w
+pp_section.1.string             "NAME"
+pp_section.1.section_name       n
+pp_section.2.string             "SYNOPSIS"
+pp_section.2.section_name       s
+pp_section.3.string             "DESCRIPTION"
+pp_section.3.section_name       w
+pp_section.4.string             "OPTIONS"
+pp_section.4.section_name       w
+pp_section.5.string             "ENVIRONMENT"
+pp_section.5.section_name       f
+pp_section.6.string             "FILES"
+pp_section.6.section_name       f
+pp_section.7.string             "SEE ALSO"
+pp_section.7.section_name       c
+pp_section.8.string             "NOTES"
+pp_section.8.section_name       w
+
+#### DESCRIPTION OF PARSE INPUT
+index.num_sections              5
+index.section.0.name            n
+  index.section.0.method        index.parse_sect.full
+  index.section.0.word.ctype    0
+  index.section.0.proper.ctype  0
+index.section.1.name            s
+  index.section.1.method        index.parse_sect.full
+  index.section.1.word.ctype    0
+  index.section.1.proper.ctype  0
+index.section.2.name            w
+  index.section.2.method        index.parse_sect.full
+  index.section.2.word.ctype    0
+  index.section.2.proper.ctype  0
+index.section.3.name            f
+  index.section.3.method        index.parse_sect.full
+  index.section.3.word.ctype    0
+  index.section.3.proper.ctype  0
+index.section.4.name            c
+  index.section.4.method        index.parse_sect.full
+  index.section.4.word.ctype    0
+  index.section.4.proper.ctype  0
+title_section 0
+
+#### DESCRIPTION OF FINAL VECTORS
+num_ctypes                      1
+ctype.0.name                    words
+
+## ALTERATIONS OF STANDARD PARAMETERS
+dict_file_size                  90001
+rmode                           SRDONLY|SMMAP
+rwmode                          SRDWR|SINCORE
+rwcmode                         SRDWR|SCREATE|SINCORE
+
+doc_file                        ""
+inv_file                        inv.nnc
+doc_weight                      nnc
+query_weight                    ntc
+
+## ALTERATIONS OF STANDARD PROCEDURES
+doc.store                       index.store.store_aux
+print.indiv.filter              "nroff -man \$in | col"
+EOF1
+
+#index the collection
+echo Indexing docs at `date`
+$bin/smart index.doc $database/spec < $database/doc_loc
+
+time
+echo All done at `date`

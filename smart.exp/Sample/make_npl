@@ -1,0 +1,80 @@
+#! /bin/csh
+# Make the npl test collection from already indexed relational version.
+# Note that until recently only the indexed relational versoin was available.
+# Thanks to Bruce Croft and Karen Spark-Jones, the original text is
+# now available.  BUT THIS PROGRAM DOES NOT USE THE TEXT.
+# Change first 4 pathnames as appropriate.
+# Npl collection obtainable in ~ftp/pub/smart/npl on  ftp.cs.cornell.edu
+
+# This is a good sample of how to get an already indexed collection from
+# some other ir system into SMART.
+# Note this does not make a full collection, only enough for normal
+# retrieval, feedback and evaluation.  Anything that needs text won't work.
+
+# set echo verbose
+
+# 
+set bin =     /home/smart/src/bin
+set tlibdir = /home/smart/lib
+set database = /home/smart/indexed_colls/npl
+set coll     = /home/smart/colls/npl
+
+set doc_loc = $coll/npl.all
+set query_loc = $coll/query.text
+
+# create the empty collection
+/bin/rm -rf $database
+mkdir $database
+
+
+cat > $database/spec << EOF1
+## INFORMATION LOCATIONS
+database                $database
+include_file            $tlibdir/spec.expcoll
+qrels_text_file         $coll/qrels.rel
+
+## NPL DOCDESC
+#### GENERIC PREPARSER
+num_pp_sections                 0
+#### DESCRIPTION OF PARSE INPUT
+index.num_sections              0
+title_section                   0
+
+#### DESCRIPTION OF FINAL VECTORS
+num_ctypes                      1
+ctype.0.name                    words
+
+## ALTERATIONS OF STANDARD PARAMETERS
+rmode                           SRDONLY|SMMAP
+rwmode                          SRDWR|SINCORE
+rwcmode                         SRDWR|SCREATE|SINCORE
+textloc_file                    -
+
+## ALTERATIONS OF STANDARD PROCEDURES
+EOF1
+
+echo Creating new database at `date`
+
+#index the collection
+echo Converting docs, queries, relevance judgements at `date`
+$bin/smart convert $database/spec  proc convert.obj.text_vec \
+                   in $coll/npl.all.rel   out doc.nnn
+$bin/smart convert $database/spec   proc convert.obj.vec_aux  \
+                   in doc.nnn  out inv.nnn
+$bin/smart convert $database/spec  proc convert.obj.text_vec \
+                   in $coll/query.rel     out query.nnn
+$bin/smart convert $database/spec  proc convert.obj.text_rr \
+                   in $coll/qrels.rel     out qrels
+
+time
+
+# Create atc (a tf*idf variant) versions of docs and queries
+$bin/smart convert $database/spec   proc convert.obj.weight_query \
+                   in query.nnn  out query.atc   query_weight atc
+$bin/smart convert $database/spec   proc convert.obj.weight_doc \
+                   in doc.nnn  out doc.atc   doc_weight atc
+$bin/smart convert $database/spec   proc convert.obj.vec_aux  \
+                   in doc.atc  out inv.atc
+
+time
+echo All done at `date`

@@ -1,0 +1,56 @@
+#!/usr/local/bin/perl
+
+open (old,"lisa.all");
+open (new,">coll.rila");
+
+$line = <old>;
+while ($line ne "")
+{
+  if (substr($line,0,2) eq ".I")
+  {
+      print new ("$line");
+      $line = <old>;      
+  }
+
+  
+  if ( substr($line,0,2) eq ".T")
+  {
+      print new ("$line");
+      $line = <old>; 
+      while  (substr($line,0,1) ne ".")    
+      {
+	print new ("$line");
+        $line = <old>;
+      }
+
+      if ( substr($line,0,2) eq ".K")
+      {
+          print new (".W\n");
+          $line = <old>; 
+          while  ( ($line ne "") && (substr($line,0,1) ne ".") )    
+          {
+    	    print new ("$line");
+            $line = <old>;
+          }
+      }
+
+      if ( substr($line,0,2) eq ".W")
+      {
+#          print new ("$line");
+          $line = <old>; 
+          while  ( ($line ne "") && (substr($line,0,1) ne ".") )    
+          {
+    	    print new ("$line");
+            $line = <old>;
+          }
+      }
+
+  }
+  while ( ($line ne "") && (substr($line,0,2) ne ".I") )   
+  {
+        $line = <old>;
+  }
+}
+
+
+

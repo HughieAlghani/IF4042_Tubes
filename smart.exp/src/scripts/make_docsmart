@@ -1,0 +1,178 @@
+#! /bin/csh -f
+# set echo verbose
+
+set indexed_colls = INDEXED
+set lib = TLIBDIR
+set bin = BIN
+set srcdir = (SRCDIR/lib* SRCDIR/utility SRCDIR/smart)
+
+set database = $indexed_colls/docsmart
+
+if (! -e $indexed_colls) mkdir $indexed_colls
+
+# create the empty collection
+#echo Creating new database at `date`
+/bin/rm -rf $database
+mkdir $database
+
+find $srcdir -type f -print > $database/doc_loc
+
+
+cat > $database/spec << EOF1
+database                $database
+include_file            $lib/spec.default
+doc_loc                 $database/doc_loc
+query_skel              query_skel
+
+## DOCSMART GENERIC PREPARSE DESCRIPTION
+pp_section.oneline_flag         true
+num_pp_sections                 11
+pp_section.0.string             ".-"
+pp_section.0.action             discard
+pp_section.1.string             " *0 "
+pp_section.1.section_name       d
+pp_section.1.newdoc_flag        true
+pp_section.2.string             " *1 "
+pp_section.2.section_name       h
+pp_section.3.string             " *2 "
+pp_section.3.section_name       m
+pp_section.4.string             " *3 "
+pp_section.4.section_name       p
+pp_section.5.string             " *4 "
+pp_section.5.section_name       r
+pp_section.6.string             " *5 "
+pp_section.6.section_name       s
+pp_section.7.string             " *6 "
+pp_section.7.section_name       g
+pp_section.8.string             " *7 "
+pp_section.8.section_name       f
+pp_section.9.string             " *8 "
+pp_section.9.section_name       a
+pp_section.10.string            " *9 "
+pp_section.10.section_name      b
+
+
+## DOCSMART DOCDESC
+doc_weight              nnc
+query_weight            ntc
+inv_file                inv.nnc
+
+num_ctypes              5
+ctype.0.name            words
+ctype.1.name            hierarchy
+ctype.1.dict_file       dict.hier
+ctype.1.dict_file_size  503
+ctype.1.text_stop_file  ""
+ctype.1.inv_file        inv.hier
+ctype.1.doc_weight      nnn
+ctype.1.query_weight    nnn
+ctype.1.sim_ctype_weight 3.0
+ctype.2.name            proc_name
+ctype.2.inv_file        inv.proc
+ctype.3.name            "file or spec param"
+ctype.3.inv_file        inv.param
+ctype.4.name            title
+ctype.4.inv_file        inv.title
+
+index.num_sections      10
+index.section.0.name    d(escription)
+        index.section.0.method                  index.parse_sect.full
+        index.section.0.word.ctype              4
+        index.section.0.proper.ctype            4
+index.section.1.name    h(ierarchy)
+        index.section.1.interior_char           _
+        index.section.1.method                  index.parse_sect.full
+        index.section.1.word.ctype              1
+        index.section.1.word.stem_wanted        0
+        index.section.1.word.stopword_wanted    0
+        index.section.1.proper.ctype            1
+        index.section.1.proper.stem_wanted      0
+        index.section.1.proper.stopword_wanted  0
+index.section.2.name    m(ain_proc)
+        index.section.2.method                  index.parse_sect.full
+        index.section.2.word.ctype              2
+        index.section.2.word.stem_wanted        0
+        index.section.2.proper.ctype            2
+        index.section.2.proper.stem_wanted      0
+index.section.3.name    "p(arameters to main proc)"
+index.section.4.name    r(elated_procs)
+        index.section.4.method                  index.parse_sect.full
+        index.section.4.word.ctype              2
+        index.section.4.word.stem_wanted        0
+        index.section.4.proper.ctype            2
+        index.section.4.proper.stem_wanted      0
+index.section.5.name    "s(pec params or files)"
+        index.section.5.method                  index.parse_sect.full
+        index.section.5.word.ctype              3
+        index.section.5.word.stem_wanted        0
+        index.section.5.proper.ctype            3
+        index.section.5.proper.stem_wanted      0
+index.section.6.name    "g(lobal variables used)"
+        index.section.6.method                  index.parse_sect.full
+        index.section.6.word.ctype              0
+        index.section.6.proper.ctype            0
+index.section.7.name    "f(ull description)"
+        index.section.7.method                  index.parse_sect.full
+        index.section.7.word.ctype              0
+        index.section.7.proper.ctype            0
+index.section.8.name    a(logorithm)
+        index.section.8.method                  index.parse_sect.full
+        index.section.8.word.ctype              0
+        index.section.8.proper.ctype            0
+index.section.9.name    "b(ugs and warnings)"
+        index.section.9.method                  index.parse_sect.full
+        index.section.9.word.ctype              0
+        index.section.9.proper.ctype            0
+
+title_section           0
+
+dict_file_size          5701
+
+get_query.editor_only   1
+indivtext               print.indivtext.text_form
+print.format            "DESCRIPTION:\n%d\nPROCEDURE:\n%m%p%r\nHIERARCHY:\n%h\nUSES:\n%s%g\nFULL DESCRIPTION:\n%f\nALGORITHM:\n%a\nBUGS AND WARNINGS:\n%b"
+rwmode                  SRDWR|SINCORE
+rmode                   SRDONLY|SMMAP
+rwcmode                 SRDWR|SCREATE|SINCORE
+
+EOF1
+
+cat > $database/query_skel << EOF2
+.- Editting a query for the SMART documentation collection
+.- Fill in any appropriate line after the " *<digit> ".
+.-
+.-
+.- *0 is the one line description of a procedure/table
+ *0 
+.- *1 gives the hierarchical path of a procedure.
+ *1 
+.- *2 gives the procedure(/object) name, including arguments
+ *2 
+.- *3 gives the type declaration of the arguments (not indexed)
+ *3 
+.- *4 gives other subsidiary procedures, and their arguments
+ *4 
+.- *5 gives parameters and filenames accessed by this procedure set
+ *5 
+.- *6 gives global variables accessed
+ *6 
+.- *7 gives a full description of the the procedure functionality
+ *7 
+.- *8 gives a description of the procedure implementation
+ *8 
+.- *9 gives bugs and warnings
+ *9 
+
+EOF2
+ 
+
+
+
+#index the collection
+echo Indexing docs at `date`
+$bin/smart index.doc $database/spec  # trace 4
+
+time
+echo All done at `date`
+
+

@@ -1,0 +1,41 @@
+Last edited 10/20/91
+ 
+SHORT-TERM
+Add parse_mult, same as parse_std, except allows section.parsetype
+to specify multiple ctypes for a con (con already in numeric form)
+This allows extra weighting for titles, proper nouns.  (other ctype
+will be stored in separate inv_file).
+
+Add logging facility to inter.  Just capture all user keystrokes.
+
+Need to put in "retrieve all docs above x sim".  Replace rank_tr?
+
+User interface.
+
+WAIS
+
+MID-TERM
+All documentation (including man) to be put into latex
+
+getspec_perm() to get file creation permissions.
+
+Convert dictionary to use trie instead of hash table.?
+
+Better document deletion (and collection maintainence procedures in general)
+
+Time to rewrite low-level routines in lib_database to use garbage collection,
+possibly caching, possibly sparse indices, mmap.
+
+Trie as smart objects.  Shouldn't have to include stemming trie in code,
+should be database file like stopwords
+
+Add parsing of dates (along with retrieval eventually)
+
+write routines to construct dynamic "thesaurus" (list of statistically
+related terms).
+
+retrieve.req calls individual non-required ctypes, no rank_tr.
+Then go through required ctypes, using rank_tr
+Initially, just have one required ctype.
+
+

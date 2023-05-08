@@ -1,0 +1,28 @@
+Directory /smart/scripts
+        Useful general purpose shell scripts.  These can be adapted
+        to meet a site's particular needs.  All will need to have
+        pathnames changed within them before they are usable.
+
+
+docsmart*       Performs a retrieval on the set of smart
+                procedure documentation with its arguments as
+                the query.  Very useful for active researchers,
+                as well as system administrators. See make_docsmart.
+ismart*         Invokes smart in a bit more friendly way for
+                naive users.
+make_docsmart*  Creates a SMART database by indexing the comment
+                headers from all the smart source.  Needed for
+                both docsmart and make_docprint.
+make_docprint*  Automatically creates (in a very simple and ugly
+                form) a printable "man" type version of each
+                procedure's documentation.  At one page per 
+                procedure (lots of wasted space) this will run
+                200 to 300 pages.  Needs the database created
+                by make_docsmart.
+smprint*        Short-cut to print out SMART relational objects.
+                Usage is "smprint <obj_type> object_file". 
+                A useful, but hackish, perversion of this is
+                "smprint proc <prefix>"  which prints out all
+                procedure names in the smart hierarchy.
+
+

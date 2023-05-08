@@ -1,0 +1,28 @@
+45c45
+< .- --- 3 /home/smart/smart.11.0/src/test_adi/coll/adi.all 1816 2292
+---
+> .- --- 3 /amd/beyla/d/smart.11.0/src/test_adi/coll/adi.all 1816 2292
+66c66
+< Smart (ntq?): 606 bytes written to file ./save.1
+---
+> Smart (ntq?): 607 bytes written to file ./save.1
+5c5
+< .- --- 3 /home/smart/smart.11.0/src/test_adi/coll/adi.all 1816 2292
+---
+> .- --- 3 /amd/beyla/d/smart.11.0/src/test_adi/coll/adi.all 1816 2292
+92c92
+< .- --- 55 /home/smart/smart.11.0/src/test_adi/coll/adi.all 24717 24884
+---
+> .- --- 55 /amd/beyla/d/smart.11.0/src/test_adi/coll/adi.all 24717 24884
+248c248
+< .- --- 73 /home/smart/smart.11.0/src/test_adi/coll/adi.all 32680 33189
+---
+> .- --- 73 /amd/beyla/d/smart.11.0/src/test_adi/coll/adi.all 32680 33189
+268c268
+< Smart (ntq?): 640 bytes written to file ./save.2
+---
+> Smart (ntq?): 641 bytes written to file ./save.2
+55c55
+< .- --- 73 /home/smart/smart.11.0/src/test_adi/coll/adi.all 32680 33189
+---
+> .- --- 73 /amd/beyla/d/smart.11.0/src/test_adi/coll/adi.all 32680 33189

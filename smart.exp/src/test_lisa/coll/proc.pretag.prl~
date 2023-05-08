@@ -1,0 +1,79 @@
+#!/usr/local/bin/perl
+
+open (new,"> query.tag");
+open (old,"query.rila");
+
+$line = <old>;
+$i = 0;
+$count = 5;
+$ekor = " ";
+while ($line ne  "")
+{
+   @aray = split(/ +/,$line);
+   if ($aray[0] =~ /[* ]/)
+   {
+       $line = <old>;
+       @aray = split(/ +/,$line);
+   }
+ 
+               $count = @aray;
+                $i = 0;
+                while ($i <= ($count-1))
+                {
+		      $ekor = "";
+                      $kepala = "";
+                      $data = $aray[$i];
+		     $panjang = length($data);
+		      $panjang--;
+
+                      $test = substr($data,0,1);
+                     if  ($test eq "(")  
+		     {
+			 $data = substr($data,1,$panjang);
+                         $kepala = $test
+		     }
+
+		      if ($i == $count-1)
+                      {
+			  $panjang = length($data);
+                          $panjang--;
+                          $test = substr($data,$panjang,1);
+                         while (($test !~ /[0-9A-Za-z,.!?:;)]/) && ($panjang > 0))
+		          {
+                             chop($data);
+                	     $panjang = length($data);
+                             $panjang--;
+                             $test = substr($data,$panjang,1);
+			   }
+		       }
+ 
+
+                          
+		     $panjang = length($data);
+		      $panjang--;
+                      $test = substr($data,$panjang,1);
+                         if ($test =~ /[,.!?:;)]/) 
+
+                          
+		     {
+			 chop($data); 
+                         $ekor = $test
+		     }
+
+                      if ($i == $count-1)
+                      {
+                        print new ("$kepala $data $ekor\n");
+                      }
+                      else
+                      {
+                         print new ("$kepala $data $ekor");
+                      }
+		      $i++;
+
+		  }
+                  $line = <old>;
+
+
+}
+close(new);
+

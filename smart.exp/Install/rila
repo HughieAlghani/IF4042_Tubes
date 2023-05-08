@@ -1,0 +1,1312 @@
+mv /home/smart.exp/src/makefile /home/smart.exp/src/makefile.old
+sed -e '/#srcdir/s?.*?SRCDIR = /home/smart.exp/src?' \
+            -e '/#prefix/s?.*?PREFIX = /home/smart.exp/src?' \
+            -e '/#gcc /s?#gcc ??' \
+            -e '/#change /s?#change ??' \
+            -e '/#libnotsun /s?#libnotsun ??' \
+            makefile.top > /home/smart.exp/src/makefile
+mv /home/smart.exp/src/makebin.templ /home/smart.exp/src/makebin.old
+sed -e '/#srcdir/s?.*?SRCDIR = /home/smart.exp/src?' \
+            -e '/#prefix/s?.*?PREFIX = /home/smart.exp/src?' \
+            -e '/#installbin/s?.*?INSTALLBIN = /home/smart.exp/src/bin?' \
+            -e '/#indexed/s?.*?INDEXED = /home/smart.exp/indexed_colls?' \
+            -e '/#tlibdir/s?.*?TLIBDIR = /home/smart.exp/lib?' \
+            -e '/#tmpdir/s?.*?TMPDIR = /tmp?' \
+            -e '/#gcc /s?#gcc ??' \
+            makebin.templ > /home/smart.exp/src/makebin.templ
+mv /home/smart.exp/src/makelib.templ /home/smart.exp/src/makelib.old
+sed -e '/#srcdir/s?.*?SRCDIR = /home/smart.exp/src?' \
+            -e '/#prefix/s?.*?PREFIX = /home/smart.exp/src?' \
+            -e '/#gcc /s?#gcc ??' \
+            -e '/#libnotsun /s?#libnotsun ??' \
+            makelib.templ > /home/smart.exp/src/makelib.templ
+mkdir /home/smart.exp/lib
+mv /home/smart.exp/lib/spec.default /home/smart.exp/lib/spec.default.d
+sed -e '/TLIBDIR/s?TLIBDIR?/home/smart.exp/lib?' \
+            spec.default > /home/smart.exp/lib/spec.default
+mv /home/smart.exp/lib/spec.expcoll /home/smart.exp/lib/spec.expcoll.d
+sed -e '/TLIBDIR/s?TLIBDIR?/home/smart.exp/lib?' \
+            spec.expcoll > /home/smart.exp/lib/spec.expcoll
+mv /home/smart.exp/lib/common_words /home/smart.exp/lib/common_words.d
+cp common_words /home/smart.exp/lib/common_words
+if [ ! -d /home/smart.exp/src/liblocal -a change = "change" ]; then\
+                 cp -ri ./liblocalhier /home/smart.exp/src/liblocal; fi;
+if [ ! -d /home/smart.exp/src/liblocal -a change = "nochange" ]; then\
+                 cp -ri ./liblocaldir /home/smart.exp/src/liblocal; fi;
+mv /home/smart.exp/src/test_adi/make_adi /home/smart.exp/src/test_adi/make_adi.d
+sed -e '/SRCDIR/s?SRCDIR?/home/smart.exp/src?' \
+            -e '/BIN/s?BIN?/home/smart.exp/src/bin?' \
+            -e '/TLIBDIR/s?TLIBDIR?/home/smart.exp/lib?' \
+            make_adi > /home/smart.exp/src/test_adi/make_adi
+chmod 0755 /home/smart.exp/src/test_adi/make_adi
+mv /home/smart.exp/src/test_adi/test_adi /home/smart.exp/src/test_adi/test_adi.d
+sed -e '/BIN/s?BIN?/home/smart.exp/src/bin?' \
+            test_adi > /home/smart.exp/src/test_adi/test_adi
+chmod 0755 /home/smart.exp/src/test_adi/test_adi
+(cd /home/smart.exp/src; make makefiles default test_suite)
+make[1]: Entering directory `/home/smart.exp/src'
+for dir in libconvert libevaluate libexp libfeedback libfile libgeneral libindexing libinter libobsolete libprint libproc libretrieve  ;\
+                do awk '/All code below this line/ {exit} {print}' \
+                    < $dir/makefile > $dir/makefile.new;\
+        	cat makelib.templ >> $dir/makefile.new;\
+        mv $dir/makefile $dir/makefile.old;\
+        	mv $dir/makefile.new $dir/makefile;\
+        done
+for dir in smart utility scripts; \
+        do awk '/##1##/, /##2##/ {print}' \
+	    < makebin.templ > $dir/makefile.new;\
+	awk '/##3##/,/##4##/ {print}' \
+	    < $dir/makefile >> $dir/makefile.new;\
+	awk '/##5##/, /##6##/ {print}' \
+	    < makebin.templ >> $dir/makefile.new;\
+        mv $dir/makefile $dir/makefile.old;\
+        	mv $dir/makefile.new $dir/makefile;\
+done
+for dir in liblocal ; \
+                do (cd liblocal; make makefiles) \
+        done
+make[2]: Entering directory `/home/smart.exp/src/liblocal'
+for dir in libproc libindexing libinter libretrieve libfile libconvert libprint ;\
+                do awk '/All code below this line/ {exit} {print}' \
+                    < $dir/makefile > $dir/makefile.new;\
+        	cat ../makelib.templ >> $dir/makefile.new;\
+        mv $dir/makefile $dir/makefile.old;\
+        	mv $dir/makefile.new $dir/makefile;\
+        done
+make[2]: Leaving directory `/home/smart.exp/src/liblocal'
+make  ACTION=all "CFLAGS=-I/home/smart.exp/src/h  -L/home/smart.exp/src/lib -static -g" lib_action program_action
+make[2]: Entering directory `/home/smart.exp/src'
+for dir in utility libconvert libevaluate libexp libfeedback libfile libgeneral libindexing libinter libobsolete libprint libproc libretrieve  liblocal;\
+                do cd $dir ;\
+                make -k "all" "CFLAGS=-I/home/smart.exp/src/h  -L/home/smart.exp/src/lib -static -g" PREFIX=/home/smart.exp/src \
+                        "BIN=/home/smart.exp/src/bin" ;\
+                cd ..;\
+        done
+make[3]: Entering directory `/home/smart.exp/src/utility'
+make[3]: `all' is up to date.
+make[3]: Leaving directory `/home/smart.exp/src/utility'
+make[3]: Entering directory `/home/smart.exp/src/libconvert'
+gcc -I/home/smart.exp/src/h  -L/home/smart.exp/src/lib -static -g   -c weights_tf.c -o weights_tf.o
+ar urv /home/smart.exp/src/lib/libconvert.a weights_tf.o
+r - weights_tf.o
+ranlib /home/smart.exp/src/lib/libconvert.a
+make[3]: Leaving directory `/home/smart.exp/src/libconvert'
+make[3]: Entering directory `/home/smart.exp/src/libevaluate'
+make[3]: Nothing to be done for `all'.
+make[3]: Leaving directory `/home/smart.exp/src/libevaluate'
+make[3]: Entering directory `/home/smart.exp/src/libexp'
+make[3]: Nothing to be done for `all'.
+make[3]: Leaving directory `/home/smart.exp/src/libexp'
+make[3]: Entering directory `/home/smart.exp/src/libfeedback'
+make[3]: Nothing to be done for `all'.
+make[3]: Leaving directory `/home/smart.exp/src/libfeedback'
+make[3]: Entering directory `/home/smart.exp/src/libfile'
+make[3]: Nothing to be done for `all'.
+make[3]: Leaving directory `/home/smart.exp/src/libfile'
+make[3]: Entering directory `/home/smart.exp/src/libgeneral'
+make[3]: Nothing to be done for `all'.
+make[3]: Leaving directory `/home/smart.exp/src/libgeneral'
+make[3]: Entering directory `/home/smart.exp/src/libindexing'
+make[3]: Nothing to be done for `all'.
+make[3]: Leaving directory `/home/smart.exp/src/libindexing'
+make[3]: Entering directory `/home/smart.exp/src/libinter'
+make[3]: Nothing to be done for `all'.
+make[3]: Leaving directory `/home/smart.exp/src/libinter'
+make[3]: Entering directory `/home/smart.exp/src/libobsolete'
+make[3]: Nothing to be done for `all'.
+make[3]: Leaving directory `/home/smart.exp/src/libobsolete'
+make[3]: Entering directory `/home/smart.exp/src/libprint'
+make[3]: Nothing to be done for `all'.
+make[3]: Leaving directory `/home/smart.exp/src/libprint'
+make[3]: Entering directory `/home/smart.exp/src/libproc'
+make[3]: Nothing to be done for `all'.
+make[3]: Leaving directory `/home/smart.exp/src/libproc'
+make[3]: Entering directory `/home/smart.exp/src/libretrieve'
+make[3]: Nothing to be done for `all'.
+make[3]: Leaving directory `/home/smart.exp/src/libretrieve'
+make[3]: Entering directory `/home/smart.exp/src/liblocal'
+for dir in libproc libindexing libinter libretrieve libfile libconvert libprint ;\
+                do cd $dir ;\
+                make -k "all" "CFLAGS=-I/home/smart.exp/src/h  -L/home/smart.exp/src/lib -static -g" PREFIX=/home/smart.exp/src ; \
+                cd ..;\
+        done
+make[4]: Entering directory `/home/smart.exp/src/liblocal/libproc'
+make[4]: Nothing to be done for `all'.
+make[4]: Leaving directory `/home/smart.exp/src/liblocal/libproc'
+make[4]: Entering directory `/home/smart.exp/src/liblocal/libindexing'
+make[4]: Nothing to be done for `all'.
+make[4]: Leaving directory `/home/smart.exp/src/liblocal/libindexing'
+make[4]: Entering directory `/home/smart.exp/src/liblocal/libinter'
+make[4]: Nothing to be done for `all'.
+make[4]: Leaving directory `/home/smart.exp/src/liblocal/libinter'
+make[4]: Entering directory `/home/smart.exp/src/liblocal/libretrieve'
+make[4]: Nothing to be done for `all'.
+make[4]: Leaving directory `/home/smart.exp/src/liblocal/libretrieve'
+make[4]: Entering directory `/home/smart.exp/src/liblocal/libfile'
+make[4]: Nothing to be done for `all'.
+make[4]: Leaving directory `/home/smart.exp/src/liblocal/libfile'
+make[4]: Entering directory `/home/smart.exp/src/liblocal/libconvert'
+make[4]: Nothing to be done for `all'.
+make[4]: Leaving directory `/home/smart.exp/src/liblocal/libconvert'
+make[4]: Entering directory `/home/smart.exp/src/liblocal/libprint'
+make[4]: Nothing to be done for `all'.
+make[4]: Leaving directory `/home/smart.exp/src/liblocal/libprint'
+make[3]: Leaving directory `/home/smart.exp/src/liblocal'
+for dir in smart scripts;\
+                do cd $dir ;\
+                make -k "all" "CFLAGS=-I/home/smart.exp/src/h  -L/home/smart.exp/src/lib -static -g" PREFIX=/home/smart.exp/src \
+                        "BIN=/home/smart.exp/src/bin" ;\
+                cd ..;\
+        done
+make[3]: Entering directory `/home/smart.exp/src/smart'
+gcc -I/home/smart.exp/src/h  -L/home/smart.exp/src/lib -static -g    \
+        -o smart smart.c version.c -lproc -linter -lindexing -lretrieve -lfeedback -levaluate -lprint -lconvert -lobsolete -lexp -lfile -lgeneral -llproc -llinter -llindexing -llretrieve -llconvert -llprint -llfile -lm 
+if [ -f /home/smart.exp/src/bin/smart ]; then /bin/mv /home/smart.exp/src/bin/smart /home/smart.exp/src/bin/smart.old; fi;
+/bin/mv smart /home/smart.exp/src/bin/smart
+touch install all
+make[3]: Leaving directory `/home/smart.exp/src/smart'
+make[3]: Entering directory `/home/smart.exp/src/scripts'
+make[3]: `all' is up to date.
+make[3]: Leaving directory `/home/smart.exp/src/scripts'
+make[2]: Leaving directory `/home/smart.exp/src'
+(cd test_adi; ./test_adi)
+collection made
+retrieval run 1 done
+retrieval run 2 done
+interactive comparison 1 done
+interactive comparison 2 done
+interactive comparison 3 done
+The following differences detected
+25,39c25,39
+<     12     0.19 the materials information network . 
+<     55     0.16 satire display subsystem . 
+<     47     0.16 retrieval and the general library . 
+<     22     0.14 the rapid selector as currently used for information search and
+<     43     0.14 the education of science information personnel - a challenge to
+<     30     0.13 relational indexing and new methods of concept organization for
+<     21     0.12 science information personnel an assessment and projection . 
+<     39     0.12 research on a linear network model and analog device for associ
+<     62     0.12 a mechanized information storage and retrieval system with the 
+<      9     0.11 analysis of the role of the computer in the reproduction and di
+<     64     0.11 paragraph analysis - a novel technique for retrieval of portion
+<      6     0.11 a new centralized information-retrieval system for the petroleu
+<     79     0.11 implementing a large scale retrieval system for satellite infor
+<     36     0.10 computerization of book catalogues at the columbia, harvard and
+<     26     0.09 thesaurus for literature analysis in a cancer research institut
+---
+>     12     0.31 the materials information network . 
+>     55     0.27 satire display subsystem . 
+>     47     0.25 retrieval and the general library . 
+>     43     0.23 the education of science information personnel - a challenge to
+>     22     0.23 the rapid selector as currently used for information search and
+>     30     0.21 relational indexing and new methods of concept organization for
+>     21     0.21 science information personnel an assessment and projection . 
+>     62     0.20 a mechanized information storage and retrieval system with the 
+>     39     0.20 research on a linear network model and analog device for associ
+>      9     0.19 analysis of the role of the computer in the reproduction and di
+>     79     0.18 implementing a large scale retrieval system for satellite infor
+>      6     0.18 a new centralized information-retrieval system for the petroleu
+>     64     0.17 paragraph analysis - a novel technique for retrieval of portion
+>     36     0.16 computerization of book catalogues at the columbia, harvard and
+>     56     0.16 the use of punched-tape typewriters and computers in the centra
+45c45
+< .- --- 3 /amd/beyla/d/smart.11.0/src/test_adi/coll/adi.all 1816 2292
+---
+> .- --- 3 /home/smart.exp/src/test_adi/coll/adi.all 1816 2292
+65,66c65,66
+< 
+< Smart (ntq?): 607 bytes written to file ./save.1
+---
+> [24;1H[K
+> Smart (ntq?): 599 bytes written to file ./save.1
+5c5
+< .- --- 3 /amd/beyla/d/smart.11.0/src/test_adi/coll/adi.all 1816 2292
+---
+> .- --- 3 /home/smart.exp/src/test_adi/coll/adi.all 1816 2292
+25,39c25,39
+<     12     0.19 the materials information network . 
+<     55     0.16 satire display subsystem . 
+<     47     0.16 retrieval and the general library . 
+<     22     0.14 the rapid selector as currently used for information search and
+<     43     0.14 the education of science information personnel - a challenge to
+<     30     0.13 relational indexing and new methods of concept organization for
+<     21     0.12 science information personnel an assessment and projection . 
+<     39     0.12 research on a linear network model and analog device for associ
+<     62     0.12 a mechanized information storage and retrieval system with the 
+<      9     0.11 analysis of the role of the computer in the reproduction and di
+<     64     0.11 paragraph analysis - a novel technique for retrieval of portion
+<      6     0.11 a new centralized information-retrieval system for the petroleu
+<     79     0.11 implementing a large scale retrieval system for satellite infor
+<     36     0.10 computerization of book catalogues at the columbia, harvard and
+<     26     0.09 thesaurus for literature analysis in a cancer research institut
+---
+>     12     0.31 the materials information network . 
+>     55     0.27 satire display subsystem . 
+>     47     0.25 retrieval and the general library . 
+>     43     0.23 the education of science information personnel - a challenge to
+>     22     0.23 the rapid selector as currently used for information search and
+>     30     0.21 relational indexing and new methods of concept organization for
+>     21     0.21 science information personnel an assessment and projection . 
+>     62     0.20 a mechanized information storage and retrieval system with the 
+>     39     0.20 research on a linear network model and analog device for associ
+>      9     0.19 analysis of the role of the computer in the reproduction and di
+>     79     0.18 implementing a large scale retrieval system for satellite infor
+>      6     0.18 a new centralized information-retrieval system for the petroleu
+>     64     0.17 paragraph analysis - a novel technique for retrieval of portion
+>     36     0.16 computerization of book catalogues at the columbia, harvard and
+>     56     0.16 the use of punched-tape typewriters and computers in the centra
+55,69c55,69
+<     19     0.09 recording text information in machine form at the time of prima
+<     78     0.09 use of flexowriters to prepare large amounts of alphabetic lega
+<     27     0.09 is relevance an adequate criterion in retrieval system evaluati
+<     17     0.08 document recovery 
+<     56     0.08 the use of punched-tape typewriters and computers in the centra
+<     40     0.08 centralized processing of technical information at the scientif
+<     69     0.08 automatic retrieval and selective dissemination of references f
+<      2     0.07 a new efficient structure-matching procedure and its applicatio
+<      1     0.07 the ibm dsd technical information center - a total systems appr
+<     71     0.07 searchers want facts not folios retrieve data not documents the
+<     10     0.07 accrediting information science programs . 
+<     76     0.07 some human elements in the handling of technical information re
+<     45     0.07 graduate training in information science : definitions and deve
+<      3     0.06 an important need and opportunity for a. d. i. leadership in in
+<     33     0.06 /information please/ services . 
+---
+>     26     0.15 thesaurus for literature analysis in a cancer research institut
+>     78     0.15 use of flexowriters to prepare large amounts of alphabetic lega
+>     19     0.15 recording text information in machine form at the time of prima
+>     40     0.14 centralized processing of technical information at the scientif
+>     17     0.14 document recovery 
+>     10     0.13 accrediting information science programs . 
+>     76     0.13 some human elements in the handling of technical information re
+>     27     0.13 is relevance an adequate criterion in retrieval system evaluati
+>     45     0.13 graduate training in information science : definitions and deve
+>      3     0.12 an important need and opportunity for a. d. i. leadership in in
+>     33     0.12 /information please/ services . 
+>      1     0.12 the ibm dsd technical information center - a total systems appr
+>     53     0.12 documents and information exchange . 
+>     49     0.11 microfiche, a new information media . 
+>     52     0.11 scope and duplication of coverage in two national information p
+72,87c72,87
+<     12     0.19 the materials information network . 
+<     55     0.16 satire display subsystem . 
+<     47     0.16 retrieval and the general library . 
+<     22     0.14 the rapid selector as currently used for information search and
+<     43     0.14 the education of science information personnel - a challenge to
+<     30     0.13 relational indexing and new methods of concept organization for
+<     21     0.12 science information personnel an assessment and projection . 
+<     39     0.12 research on a linear network model and analog device for associ
+<     62     0.12 a mechanized information storage and retrieval system with the 
+<      9     0.11 analysis of the role of the computer in the reproduction and di
+<     64     0.11 paragraph analysis - a novel technique for retrieval of portion
+<      6     0.11 a new centralized information-retrieval system for the petroleu
+<     79     0.11 implementing a large scale retrieval system for satellite infor
+<     36     0.10 computerization of book catalogues at the columbia, harvard and
+<     26     0.09 thesaurus for literature analysis in a cancer research institut
+< 
+---
+>     12     0.31 the materials information network . 
+>     55     0.27 satire display subsystem . 
+>     47     0.25 retrieval and the general library . 
+>     43     0.23 the education of science information personnel - a challenge to
+>     22     0.23 the rapid selector as currently used for information search and
+>     30     0.21 relational indexing and new methods of concept organization for
+>     21     0.21 science information personnel an assessment and projection . 
+>     62     0.20 a mechanized information storage and retrieval system with the 
+>     39     0.20 research on a linear network model and analog device for associ
+>      9     0.19 analysis of the role of the computer in the reproduction and di
+>     79     0.18 implementing a large scale retrieval system for satellite infor
+>      6     0.18 a new centralized information-retrieval system for the petroleu
+>     64     0.17 paragraph analysis - a novel technique for retrieval of portion
+>     36     0.16 computerization of book catalogues at the columbia, harvard and
+>     56     0.16 the use of punched-tape typewriters and computers in the centra
+> [24;1H[K
+92c92
+< .- --- 55 /amd/beyla/d/smart.11.0/src/test_adi/coll/adi.all 24717 24884
+---
+> .- --- 55 /home/smart.exp/src/test_adi/coll/adi.all 24717 24884
+122c122,126
+<     73     0.10 microfilm and hard copy transmission from document retrieval ce
+---
+>     73     0.13 microfilm and hard copy transmission from document retrieval ce
+>     20     0.10 photographic and computer systems in biomedical information han
+>     58     0.09 producing indexing aids such as a dictionary or thesaurus from 
+>      5     0.09 feasibility criteria for establishing specialized information c
+>     24     0.09 the role of the office of technical services in the interchange
+124,136c128,136
+<     58     0.08 producing indexing aids such as a dictionary or thesaurus from 
+<     53     0.06 documents and information exchange . 
+<     44     0.06 the use of a cathode ray tube display console for editing textu
+<     20     0.06 photographic and computer systems in biomedical information han
+<     24     0.05 the role of the office of technical services in the interchange
+<      5     0.05 feasibility criteria for establishing specialized information c
+<     16     0.05 programing and coding techniques used in medlars 
+<     49     0.04 microfiche, a new information media . 
+<     59     0.04 the new program for training information technicians at the u. 
+<     38     0.03 microprint as a medium for primary publication . 
+<     50     0.03 english-like systems of mathematical logic for content retrieva
+<     67     0.03 a national plan for science abstracting and indexing services .
+<     52     0.03 scope and duplication of coverage in two national information p
+---
+>      2     0.08 a new efficient structure-matching procedure and its applicatio
+>     44     0.07 the use of a cathode ray tube display console for editing textu
+>     59     0.07 the new program for training information technicians at the u. 
+>     71     0.07 searchers want facts not folios retrieve data not documents the
+>     69     0.07 automatic retrieval and selective dissemination of references f
+>     72     0.06 information specialist training programs - student support grad
+>     16     0.06 programing and coding techniques used in medlars 
+>     60     0.06 toward a definition of information science . 
+>     37     0.06 progress report on ibm's selective dissemination of information
+139,153c139,153
+<     19     0.09 recording text information in machine form at the time of prima
+<     78     0.09 use of flexowriters to prepare large amounts of alphabetic lega
+<     27     0.09 is relevance an adequate criterion in retrieval system evaluati
+<     17     0.08 document recovery 
+<     56     0.08 the use of punched-tape typewriters and computers in the centra
+<     40     0.08 centralized processing of technical information at the scientif
+<     69     0.08 automatic retrieval and selective dissemination of references f
+<      2     0.07 a new efficient structure-matching procedure and its applicatio
+<      1     0.07 the ibm dsd technical information center - a total systems appr
+<     71     0.07 searchers want facts not folios retrieve data not documents the
+<     10     0.07 accrediting information science programs . 
+<     76     0.07 some human elements in the handling of technical information re
+<     45     0.07 graduate training in information science : definitions and deve
+<      3     0.06 an important need and opportunity for a. d. i. leadership in in
+<     33     0.06 /information please/ services . 
+---
+>     26     0.15 thesaurus for literature analysis in a cancer research institut
+>     78     0.15 use of flexowriters to prepare large amounts of alphabetic lega
+>     19     0.15 recording text information in machine form at the time of prima
+>     40     0.14 centralized processing of technical information at the scientif
+>     17     0.14 document recovery 
+>     10     0.13 accrediting information science programs . 
+>     76     0.13 some human elements in the handling of technical information re
+>     27     0.13 is relevance an adequate criterion in retrieval system evaluati
+>     45     0.13 graduate training in information science : definitions and deve
+>      3     0.12 an important need and opportunity for a. d. i. leadership in in
+>     33     0.12 /information please/ services . 
+>      1     0.12 the ibm dsd technical information center - a total systems appr
+>     53     0.12 documents and information exchange . 
+>     49     0.11 microfiche, a new information media . 
+>     52     0.11 scope and duplication of coverage in two national information p
+156,171c156,171
+<     12     0.19 the materials information network . 
+<     55  *Y 0.16 satire display subsystem . 
+<     47     0.16 retrieval and the general library . 
+<     22     0.14 the rapid selector as currently used for information search and
+<     43     0.14 the education of science information personnel - a challenge to
+<     30     0.13 relational indexing and new methods of concept organization for
+<     21     0.12 science information personnel an assessment and projection . 
+<     39     0.12 research on a linear network model and analog device for associ
+<     62     0.12 a mechanized information storage and retrieval system with the 
+<      9     0.11 analysis of the role of the computer in the reproduction and di
+<     64     0.11 paragraph analysis - a novel technique for retrieval of portion
+<      6     0.11 a new centralized information-retrieval system for the petroleu
+<     79     0.11 implementing a large scale retrieval system for satellite infor
+<     36     0.10 computerization of book catalogues at the columbia, harvard and
+<     26     0.09 thesaurus for literature analysis in a cancer research institut
+< 
+---
+>     12     0.31 the materials information network . 
+>     55  *Y 0.27 satire display subsystem . 
+>     47     0.25 retrieval and the general library . 
+>     43     0.23 the education of science information personnel - a challenge to
+>     22     0.23 the rapid selector as currently used for information search and
+>     30     0.21 relational indexing and new methods of concept organization for
+>     21     0.21 science information personnel an assessment and projection . 
+>     62     0.20 a mechanized information storage and retrieval system with the 
+>     39     0.20 research on a linear network model and analog device for associ
+>      9     0.19 analysis of the role of the computer in the reproduction and di
+>     79     0.18 implementing a large scale retrieval system for satellite infor
+>      6     0.18 a new centralized information-retrieval system for the petroleu
+>     64     0.17 paragraph analysis - a novel technique for retrieval of portion
+>     36     0.16 computerization of book catalogues at the columbia, harvard and
+>     56     0.16 the use of punched-tape typewriters and computers in the centra
+> [24;1H[K
+178,189c178,189
+< 1	0	131	 0.13425	copy
+< 1	0	356	 0.23989	satir
+< 1	0	625	 0.58441	inform
+< 1	0	1185	 0.20226	enabl
+< 1	0	1245	 0.07726	docu
+< 1	0	1304	 0.23989	subsystem
+< 1	0	1838	 0.16463	equip
+< 1	0	2403	 0.18025	hard
+< 1	0	2456	 0.11052	propos
+< 1	0	3267	 0.60081	retrief
+< 1	0	3444	 0.18025	display
+< 1	0	3525	 0.11489	servic
+---
+> 1	0	131	 0.13949	copy
+> 1	0	356	 0.21765	satir
+> 1	0	625	 0.59174	inform
+> 1	0	1185	 0.18981	enabl
+> 1	0	1245	 0.09733	docu
+> 1	0	1304	 0.21765	subsystem
+> 1	0	1838	 0.16197	equip
+> 1	0	2403	 0.17353	hard
+> 1	0	2456	 0.15301	propos
+> 1	0	3267	 0.60382	retrief
+> 1	0	3444	 0.17353	display
+> 1	0	3525	 0.12517	servic
+196,241c196,241
+< 1	1	73	   0.1044	 	 	2
+< 1	2	32	   0.0761	 	 	2
+< 1	3	58	   0.0760	 	 	2
+< 1	4	53	   0.0599	 	 	2
+< 1	5	44	   0.0572	 	 	2
+< 1	6	20	   0.0567	 	 	2
+< 1	7	24	   0.0533	 	 	2
+< 1	8	5	   0.0499	 	 	2
+< 1	9	16	   0.0477	 	 	2
+< 1	10	49	   0.0387	 	 	2
+< 1	11	59	   0.0370	 	 	2
+< 1	12	38	   0.0346	 	 	2
+< 1	13	50	   0.0339	 	 	2
+< 1	14	67	   0.0334	 	 	2
+< 1	15	52	   0.0320	 	 	2
+< 1	1	19	   0.0901	 	 	1
+< 1	2	78	   0.0890	 	 	1
+< 1	3	27	   0.0856	 	 	1
+< 1	4	17	   0.0844	 	 	1
+< 1	5	56	   0.0827	 	 	1
+< 1	6	40	   0.0785	 	 	1
+< 1	7	69	   0.0758	 	 	1
+< 1	8	2	   0.0716	 	 	1
+< 1	9	1	   0.0704	 	 	1
+< 1	10	71	   0.0677	 	 	1
+< 1	11	10	   0.0673	 	 	1
+< 1	12	76	   0.0663	 	 	1
+< 1	13	45	   0.0656	 	 	1
+< 1	14	3	   0.0630	 	 	1
+< 1	15	33	   0.0609	 	 	1
+< 1	1	12	   0.1866	 	 	0
+< 1	2	55	   0.1636	Y	*	0
+< 1	3	47	   0.1557	 	 	0
+< 1	4	22	   0.1412	 	 	0
+< 1	5	43	   0.1375	 	 	0
+< 1	6	30	   0.1313	 	 	0
+< 1	7	21	   0.1238	 	 	0
+< 1	8	39	   0.1226	 	 	0
+< 1	9	62	   0.1225	 	 	0
+< 1	10	9	   0.1139	 	 	0
+< 1	11	64	   0.1137	 	 	0
+< 1	12	6	   0.1073	 	 	0
+< 1	13	79	   0.1059	 	 	0
+< 1	14	36	   0.0969	 	 	0
+< 1	15	26	   0.0905	 	 	0
+< 
+---
+> 1	1	73	   0.1274	 	 	2
+> 1	2	20	   0.0978	 	 	2
+> 1	3	58	   0.0919	 	 	2
+> 1	4	5	   0.0870	 	 	2
+> 1	5	24	   0.0857	 	 	2
+> 1	6	32	   0.0833	 	 	2
+> 1	7	2	   0.0773	 	 	2
+> 1	8	44	   0.0744	 	 	2
+> 1	9	59	   0.0711	 	 	2
+> 1	10	71	   0.0707	 	 	2
+> 1	11	69	   0.0666	 	 	2
+> 1	12	72	   0.0646	 	 	2
+> 1	13	16	   0.0610	 	 	2
+> 1	14	60	   0.0596	 	 	2
+> 1	15	37	   0.0596	 	 	2
+> 1	1	26	   0.1515	 	 	1
+> 1	2	78	   0.1510	 	 	1
+> 1	3	19	   0.1502	 	 	1
+> 1	4	40	   0.1449	 	 	1
+> 1	5	17	   0.1426	 	 	1
+> 1	6	10	   0.1335	 	 	1
+> 1	7	76	   0.1300	 	 	1
+> 1	8	27	   0.1287	 	 	1
+> 1	9	45	   0.1273	 	 	1
+> 1	10	3	   0.1248	 	 	1
+> 1	11	33	   0.1200	 	 	1
+> 1	12	1	   0.1185	 	 	1
+> 1	13	53	   0.1176	 	 	1
+> 1	14	49	   0.1110	 	 	1
+> 1	15	52	   0.1106	 	 	1
+> 1	1	12	   0.3138	 	 	0
+> 1	2	55	   0.2720	Y	*	0
+> 1	3	47	   0.2525	 	 	0
+> 1	4	43	   0.2345	 	 	0
+> 1	5	22	   0.2263	 	 	0
+> 1	6	30	   0.2129	 	 	0
+> 1	7	21	   0.2114	 	 	0
+> 1	8	62	   0.2046	 	 	0
+> 1	9	39	   0.2044	 	 	0
+> 1	10	9	   0.1886	 	 	0
+> 1	11	79	   0.1837	 	 	0
+> 1	12	6	   0.1788	 	 	0
+> 1	13	64	   0.1702	 	 	0
+> 1	14	36	   0.1645	 	 	0
+> 1	15	56	   0.1568	 	 	0
+> [24;1H[K
+248c248
+< .- --- 73 /amd/beyla/d/smart.11.0/src/test_adi/coll/adi.all 32680 33189
+---
+> .- --- 73 /home/smart.exp/src/test_adi/coll/adi.all 32680 33189
+268c268
+< Smart (ntq?): 641 bytes written to file ./save.2
+---
+> Smart (ntq?): 633 bytes written to file ./save.2
+276,305c276,305
+< 73	0	131	 0.16697	copy
+< 73	0	219	 0.23869	alphanumer
+< 73	0	383	 0.20125	printout
+< 73	0	411	 0.06066	comput
+< 73	0	656	 0.06228	system
+< 73	0	676	 0.20125	channel
+< 73	0	717	 0.20037	commun
+< 73	0	927	 0.10014	method
+< 73	0	1165	 0.10917	includ
+< 73	0	1245	 0.09609	docu
+< 73	0	1296	 0.17935	direct
+< 73	0	1303	 0.10447	produc
+< 73	0	1343	 0.29836	facsimil
+< 73	0	1600	 0.16381	record
+< 73	0	1628	 0.15176	speed
+< 73	0	1715	 0.25156	transmit
+< 73	0	1938	 0.24571	microfilm
+< 73	0	1960	 0.20125	convert
+< 73	0	1973	 0.23869	scan
+< 73	0	2344	 0.14191	format
+< 73	0	2403	 0.22419	hard
+< 73	0	2540	 0.17935	graph
+< 73	0	2767	 0.23869	abil
+< 73	0	3131	 0.20125	purpos
+< 73	0	3237	 0.10917	cent
+< 73	0	3263	 0.23869	voic
+< 73	0	3267	 0.05680	retrief
+< 73	0	3363	 0.23869	readout
+< 73	0	3406	 0.15176	high
+< 
+---
+> 73	0	131	 0.17978	copy
+> 73	0	219	 0.22441	alphanumer
+> 73	0	383	 0.19570	printout
+> 73	0	411	 0.08792	comput
+> 73	0	656	 0.09951	system
+> 73	0	676	 0.19570	channel
+> 73	0	717	 0.21573	commun
+> 73	0	927	 0.11819	method
+> 73	0	1165	 0.12510	includ
+> 73	0	1245	 0.12543	docu
+> 73	0	1296	 0.17891	direct
+> 73	0	1303	 0.12150	produc
+> 73	0	1343	 0.28051	facsimil
+> 73	0	1600	 0.16700	record
+> 73	0	1628	 0.15776	speed
+> 73	0	1715	 0.24463	transmit
+> 73	0	1938	 0.25050	microfilm
+> 73	0	1960	 0.19570	convert
+> 73	0	1973	 0.22441	scan
+> 73	0	2344	 0.15021	format
+> 73	0	2403	 0.22364	hard
+> 73	0	2540	 0.17891	graph
+> 73	0	2767	 0.22441	abil
+> 73	0	3131	 0.19570	purpos
+> 73	0	3237	 0.12510	cent
+> 73	0	3263	 0.22441	voic
+> 73	0	3267	 0.08496	retrief
+> 73	0	3363	 0.22441	readout
+> 73	0	3406	 0.15776	high
+> [24;1H[K
+310c310
+< 1	73	0.1044
+---
+> 1	73	0.1274
+317,320c317,320
+< 0	131	0.1342	0.1670		0.0224	copy
+< 0	1245	0.0773	0.0961		0.0074	docu
+< 0	2403	0.1802	0.2242		0.0404	hard
+< 0	3267	0.6008	0.0568		0.0341	retrief
+---
+> 0	131	0.1395	0.1798		0.0251	copy
+> 0	1245	0.0973	0.1254		0.0122	docu
+> 0	2403	0.1735	0.2236		0.0388	hard
+> 0	3267	0.6038	0.0850		0.0513	retrief
+328,341c328,341
+<     32     0.20 document reproduction from microfilm is improved in speed and c
+<     55     0.13 satire display subsystem . 
+<      1     0.11 the ibm dsd technical information center - a total systems appr
+<     42     0.11 new photon composing machine will set type from the output of a
+<      7     0.09 a computer oriented photo-composition system for star 
+<     12     0.08 the materials information network . 
+<     19     0.08 recording text information in machine form at the time of prima
+<     75     0.08 a system for transcribing printed text into a machine readable 
+<      2     0.07 a new efficient structure-matching procedure and its applicatio
+<     58     0.06 producing indexing aids such as a dictionary or thesaurus from 
+<     25     0.06 the reduction in bulk resulting from the typesetting of documen
+<     54     0.06 a selected group of techniques for automated microimage handlin
+<     18     0.06 state-of-the-art : remote interrogation of stored documentary m
+<      6     0.05 a new centralized information-retrieval system for the petroleu
+---
+>     32     0.22 document reproduction from microfilm is improved in speed and c
+>     55     0.15 satire display subsystem . 
+>      1     0.14 the ibm dsd technical information center - a total systems appr
+>     42     0.12 new photon composing machine will set type from the output of a
+>      7     0.11 a computer oriented photo-composition system for star 
+>     75     0.10 a system for transcribing printed text into a machine readable 
+>     12     0.10 the materials information network . 
+>      2     0.10 a new efficient structure-matching procedure and its applicatio
+>     19     0.09 recording text information in machine form at the time of prima
+>     58     0.09 producing indexing aids such as a dictionary or thesaurus from 
+>      6     0.08 a new centralized information-retrieval system for the petroleu
+>     25     0.08 the reduction in bulk resulting from the typesetting of documen
+>     15     0.07 characteristics of programs for kwic and other computer-produce
+>     63     0.06 electronic retina character reader for data input . 
+347c347
+< 73	55	0.1314
+---
+> 73	55	0.1526
+353c353
+< 73	55	0.1314
+---
+> 73	55	0.1526
+360,363c360,363
+< 0	131	0.1670	0.2400		0.0401	copy
+< 0	1245	0.0961	0.1381		0.0133	docu
+< 0	2403	0.2242	0.3222		0.0722	hard
+< 0	3267	0.0568	0.1020		0.0058	retrief
+---
+> 0	131	0.1798	0.2562		0.0461	copy
+> 0	1245	0.1254	0.1788		0.0224	docu
+> 0	2403	0.2236	0.3188		0.0713	hard
+> 0	3267	0.0850	0.1514		0.0129	retrief
+6,50c6,50
+< 1	1	73	   0.1044	 	 	2
+< 1	2	32	   0.0761	 	 	2
+< 1	3	58	   0.0760	 	 	2
+< 1	4	53	   0.0599	 	 	2
+< 1	5	44	   0.0572	 	 	2
+< 1	6	20	   0.0567	 	 	2
+< 1	7	24	   0.0533	 	 	2
+< 1	8	5	   0.0499	 	 	2
+< 1	9	16	   0.0477	 	 	2
+< 1	10	49	   0.0387	 	 	2
+< 1	11	59	   0.0370	 	 	2
+< 1	12	38	   0.0346	 	 	2
+< 1	13	50	   0.0339	 	 	2
+< 1	14	67	   0.0334	 	 	2
+< 1	15	52	   0.0320	 	 	2
+< 1	1	19	   0.0901	 	 	1
+< 1	2	78	   0.0890	 	 	1
+< 1	3	27	   0.0856	 	 	1
+< 1	4	17	   0.0844	 	 	1
+< 1	5	56	   0.0827	 	 	1
+< 1	6	40	   0.0785	 	 	1
+< 1	7	69	   0.0758	 	 	1
+< 1	8	2	   0.0716	 	 	1
+< 1	9	1	   0.0704	 	 	1
+< 1	10	71	   0.0677	 	 	1
+< 1	11	10	   0.0673	 	 	1
+< 1	12	76	   0.0663	 	 	1
+< 1	13	45	   0.0656	 	 	1
+< 1	14	3	   0.0630	 	 	1
+< 1	15	33	   0.0609	 	 	1
+< 1	1	12	   0.1866	 	 	0
+< 1	2	55	   0.1636	Y	*	0
+< 1	3	47	   0.1557	 	 	0
+< 1	4	22	   0.1412	 	 	0
+< 1	5	43	   0.1375	 	 	0
+< 1	6	30	   0.1313	 	 	0
+< 1	7	21	   0.1238	 	 	0
+< 1	8	39	   0.1226	 	 	0
+< 1	9	62	   0.1225	 	 	0
+< 1	10	9	   0.1139	 	 	0
+< 1	11	64	   0.1137	 	 	0
+< 1	12	6	   0.1073	 	 	0
+< 1	13	79	   0.1059	 	 	0
+< 1	14	36	   0.0969	 	 	0
+< 1	15	26	   0.0905	 	 	0
+---
+> 1	1	73	   0.1274	 	 	2
+> 1	2	20	   0.0978	 	 	2
+> 1	3	58	   0.0919	 	 	2
+> 1	4	5	   0.0870	 	 	2
+> 1	5	24	   0.0857	 	 	2
+> 1	6	32	   0.0833	 	 	2
+> 1	7	2	   0.0773	 	 	2
+> 1	8	44	   0.0744	 	 	2
+> 1	9	59	   0.0711	 	 	2
+> 1	10	71	   0.0707	 	 	2
+> 1	11	69	   0.0666	 	 	2
+> 1	12	72	   0.0646	 	 	2
+> 1	13	16	   0.0610	 	 	2
+> 1	14	60	   0.0596	 	 	2
+> 1	15	37	   0.0596	 	 	2
+> 1	1	26	   0.1515	 	 	1
+> 1	2	78	   0.1510	 	 	1
+> 1	3	19	   0.1502	 	 	1
+> 1	4	40	   0.1449	 	 	1
+> 1	5	17	   0.1426	 	 	1
+> 1	6	10	   0.1335	 	 	1
+> 1	7	76	   0.1300	 	 	1
+> 1	8	27	   0.1287	 	 	1
+> 1	9	45	   0.1273	 	 	1
+> 1	10	3	   0.1248	 	 	1
+> 1	11	33	   0.1200	 	 	1
+> 1	12	1	   0.1185	 	 	1
+> 1	13	53	   0.1176	 	 	1
+> 1	14	49	   0.1110	 	 	1
+> 1	15	52	   0.1106	 	 	1
+> 1	1	12	   0.3138	 	 	0
+> 1	2	55	   0.2720	Y	*	0
+> 1	3	47	   0.2525	 	 	0
+> 1	4	43	   0.2345	 	 	0
+> 1	5	22	   0.2263	 	 	0
+> 1	6	30	   0.2129	 	 	0
+> 1	7	21	   0.2114	 	 	0
+> 1	8	62	   0.2046	 	 	0
+> 1	9	39	   0.2044	 	 	0
+> 1	10	9	   0.1886	 	 	0
+> 1	11	79	   0.1837	 	 	0
+> 1	12	6	   0.1788	 	 	0
+> 1	13	64	   0.1702	 	 	0
+> 1	14	36	   0.1645	 	 	0
+> 1	15	56	   0.1568	 	 	0
+55c55
+< .- --- 73 /amd/beyla/d/smart.11.0/src/test_adi/coll/adi.all 32680 33189
+---
+> .- --- 73 /home/smart.exp/src/test_adi/coll/adi.all 32680 33189
+38,39c38,39
+<     Rel_ret:         80       92
+<     Trunc_ret:      476      457
+---
+>     Rel_ret:         80       91
+>     Trunc_ret:      476      450
+41,51c41,51
+<     at 0.00       0.4824   0.6726 
+<     at 0.10       0.4824   0.6726 
+<     at 0.20       0.4343   0.6261 
+<     at 0.30       0.4203   0.5785 
+<     at 0.40       0.3640   0.5146 
+<     at 0.50       0.3405   0.4998 
+<     at 0.60       0.2775   0.3799 
+<     at 0.70       0.2247   0.2928 
+<     at 0.80       0.2143   0.2652 
+<     at 0.90       0.1874   0.2380 
+<     at 1.00       0.1863   0.2361 
+---
+>     at 0.00       0.4824   0.6825 
+>     at 0.10       0.4824   0.6825 
+>     at 0.20       0.4343   0.6305 
+>     at 0.30       0.4203   0.5787 
+>     at 0.40       0.3640   0.5282 
+>     at 0.50       0.3405   0.5091 
+>     at 0.60       0.2775   0.3784 
+>     at 0.70       0.2247   0.2957 
+>     at 0.80       0.2143   0.2835 
+>     at 0.90       0.1874   0.2602 
+>     at 1.00       0.1863   0.2579 
+53,54c53,54
+<    11-pt Avg:     0.3286   0.4524 
+<     % Change:               37.7 
+---
+>    11-pt Avg:     0.3286   0.4625 
+>     % Change:               40.8 
+56,57c56,57
+<     3-pt Avg:     0.3297   0.4637 
+<     % Change:               40.6 
+---
+>     3-pt Avg:     0.3297   0.4743 
+>     % Change:               43.9 
+60,64c60,64
+<     Exact:        0.5036   0.6138
+<     at  5 docs:   0.2718   0.4002
+<     at 10 docs:   0.3915   0.5166
+<     at 15 docs:   0.5036   0.6138
+<     at 30 docs:   0.6675   0.7750
+---
+>     Exact:        0.5036   0.6169
+>     at  5 docs:   0.2718   0.3930
+>     at 10 docs:   0.3915   0.5005
+>     at 15 docs:   0.5036   0.6169
+>     at 30 docs:   0.6675   0.7803
+66,70c66,70
+<     Exact:        0.1524   0.1752
+<     At  5 docs:   0.2457   0.3086
+<     At 10 docs:   0.1686   0.2229
+<     At 15 docs:   0.1524   0.1752
+<     At 30 docs:   0.1048   0.1162
+---
+>     Exact:        0.1524   0.1733
+>     At  5 docs:   0.2457   0.3029
+>     At 10 docs:   0.1686   0.2143
+>     At 15 docs:   0.1524   0.1733
+>     At 30 docs:   0.1048   0.1171
+72,77c72,77
+<     Exact:        0.2064   0.2622
+<     At  5 docs:   0.2629   0.3571
+<     At 10 docs:   0.2061   0.2910
+<     At 15 docs:   0.2064   0.2622
+<     At 30 docs:   0.1896   0.2427
+< 
+---
+>     Exact:        0.2064   0.2789
+>     At  5 docs:   0.2629   0.3657
+>     At 10 docs:   0.2061   0.2978
+>     At 15 docs:   0.2064   0.2789
+>     At 30 docs:   0.1896   0.2658
+> [24;1H[K
+92,93c92,93
+<     Rel_ret:         80       92
+<     Trunc_ret:      476      457
+---
+>     Rel_ret:         80       91
+>     Trunc_ret:      476      450
+95,105c95,105
+<     at 0.00       0.4701   0.6669 
+<     at 0.10       0.4669   0.6669 
+<     at 0.20       0.4145   0.6146 
+<     at 0.30       0.3795   0.5652 
+<     at 0.40       0.3152   0.4738 
+<     at 0.50       0.2872   0.4563 
+<     at 0.60       0.2076   0.3154 
+<     at 0.70       0.1428   0.2110 
+<     at 0.80       0.1351   0.1812 
+<     at 0.90       0.1092   0.1384 
+<     at 1.00       0.1092   0.1384 
+---
+>     at 0.00       0.4701   0.6779 
+>     at 0.10       0.4669   0.6779 
+>     at 0.20       0.4145   0.6190 
+>     at 0.30       0.3795   0.5474 
+>     at 0.40       0.3152   0.4876 
+>     at 0.50       0.2872   0.4646 
+>     at 0.60       0.2076   0.3142 
+>     at 0.70       0.1428   0.2202 
+>     at 0.80       0.1351   0.2062 
+>     at 0.90       0.1092   0.1570 
+>     at 1.00       0.1092   0.1570 
+107,108c107,108
+<    11-pt Avg:     0.2761   0.4025 
+<     % Change:               45.8 
+---
+>    11-pt Avg:     0.2761   0.4117 
+>     % Change:               49.1 
+110,111c110,111
+<     3-pt Avg:     0.2789   0.4174 
+<     % Change:               49.7 
+---
+>     3-pt Avg:     0.2789   0.4299 
+>     % Change:               54.2 
+114,118c114,118
+<     Exact:        0.5036   0.6138
+<     at  5 docs:   0.2718   0.4002
+<     at 10 docs:   0.3915   0.5166
+<     at 15 docs:   0.5036   0.6138
+<     at 30 docs:   0.5036   0.6138
+---
+>     Exact:        0.5036   0.6169
+>     at  5 docs:   0.2718   0.3930
+>     at 10 docs:   0.3915   0.5005
+>     at 15 docs:   0.5036   0.6169
+>     at 30 docs:   0.5036   0.6169
+120,124c120,124
+<     Exact:        0.1524   0.1752
+<     At  5 docs:   0.2457   0.3086
+<     At 10 docs:   0.1686   0.2229
+<     At 15 docs:   0.1524   0.1752
+<     At 30 docs:   0.0762   0.0876
+---
+>     Exact:        0.1524   0.1733
+>     At  5 docs:   0.2457   0.3029
+>     At 10 docs:   0.1686   0.2143
+>     At 15 docs:   0.1524   0.1733
+>     At 30 docs:   0.0762   0.0867
+126,131c126,131
+<     Exact:        0.2064   0.2622
+<     At  5 docs:   0.2629   0.3571
+<     At 10 docs:   0.2061   0.2910
+<     At 15 docs:   0.2064   0.2622
+<     At 30 docs:   0.1578   0.2003
+< 
+---
+>     Exact:        0.2064   0.2789
+>     At  5 docs:   0.2629   0.3657
+>     At 10 docs:   0.2061   0.2978
+>     At 15 docs:   0.2064   0.2789
+>     At 30 docs:   0.1578   0.2180
+> [24;1H[K
+139,142c139,142
+< 1	0.2165	0.2851
+< 2	1.0000	0.1818
+< 3	0.8485	0.5203
+< 4	0.5694	0.6061
+---
+> 1	0.2165	0.1962
+> 2	1.0000	0.2828
+> 3	0.8485	0.5727
+> 4	0.5694	0.5933
+144,145c144,145
+< 6	0.0714	0.6591
+< 7	0.1600	0.2011
+---
+> 6	0.0714	0.6281
+> 7	0.1600	0.2121
+148,151c148,151
+< 10	0.0769	0.1142
+< 11	0.1937	0.0860
+< 12	0.4904	0.6190
+< 13	0.6175	0.5636
+---
+> 10	0.0769	0.0816
+> 11	0.1937	0.0885
+> 12	0.4904	0.5695
+> 13	0.6175	0.5548
+153,158c153,158
+< 15	0.2603	0.4812
+< 16	0.4061	0.4500
+< 17	0.0476	0.0875
+< 18	0.6753	0.7576
+< 19	0.4776	0.4124
+< 20	0.2000	0.6727
+---
+> 15	0.2603	0.4706
+> 16	0.4061	0.4545
+> 17	0.0476	0.0833
+> 18	0.6753	0.7355
+> 19	0.4776	0.4075
+> 20	0.2000	0.6740
+160,162c160,162
+< 22	0.3470	0.5229
+< 23	0.1250	0.5000
+< 24	0.9193	0.8719
+---
+> 22	0.3470	0.5209
+> 23	0.1250	1.0000
+> 24	0.9193	0.8936
+164,169c164,169
+< 26	0.0294	0.0185
+< 27	0.6005	0.6715
+< 28	0.0788	0.2111
+< 29	0.0256	0.0238
+< 30	0.1952	0.2779
+< 31	0.1736	0.2328
+---
+> 26	0.0294	0.0200
+> 27	0.6005	0.6401
+> 28	0.0788	0.2081
+> 29	0.0256	0.0222
+> 30	0.1952	0.2931
+> 31	0.1736	0.2388
+171,174c171,174
+< 33	0.0994	0.7182
+< 34	0.3522	0.1665
+< 35	0.3168	0.3662
+< 
+---
+> 33	0.0994	0.6465
+> 34	0.3522	0.1824
+> 35	0.3168	0.3614
+> [24;1H[K
+183,184c183,184
+< 1	 17 :	8	7
+< 1	 46 :	4	2
+---
+> 1	 17 :	8	11
+> 1	 46 :	4	3
+186,188c186,188
+< 2	 12 :	1	20
+< 2	 71 :	2	4
+< 3	  3 :	6	13
+---
+> 2	 12 :	1	9
+> 2	 71 :	2	3
+> 3	  3 :	6	8
+193,194c193,194
+< 4	 63 :	38	15
+< 5	  3 :	5	6
+---
+> 4	 63 :	38	19
+> 5	  3 :	5	5
+196,197c196,197
+< 5	 72 :	6	5
+< 6	 18 :	35	8
+---
+> 5	 72 :	6	6
+> 6	 18 :	35	11
+199,202c199,202
+< 7	  7 :	10	26
+< 7	  9 :	13	11
+< 7	 19 :	25	3
+< 7	 40 :	22	30
+---
+> 7	  7 :	10	18
+> 7	  9 :	13	9
+> 7	 19 :	25	5
+> 7	 40 :	22	20
+206,207c206,207
+< 10	  2 :	41	26
+< 10	 11 :	58	32
+---
+> 10	  2 :	41	27
+> 10	 11 :	58	47
+209,210c209,210
+< 10	 39 :	10	15
+< 10	 50 :	49	31
+---
+> 10	 39 :	10	14
+> 10	 50 :	49	41
+212,214c212,214
+< 11	 43 :	3	27
+< 11	 79 :	7	30
+< 11	 81 :	47	17
+---
+> 11	 43 :	3	26
+> 11	 79 :	7	29
+> 11	 81 :	47	22
+216c216
+< 12	  7 :	22	8
+---
+> 12	  7 :	22	10
+219c219
+< 12	 42 :	16	7
+---
+> 12	 42 :	16	11
+221c221
+< 13	 14 :	41	18
+---
+> 13	 14 :	41	19
+224,225c224,225
+< 13	 65 :	13	15
+< 13	 80 :	15	3
+---
+> 13	 65 :	13	14
+> 13	 80 :	15	4
+229,234c229,234
+< 15	 11 :	11	14
+< 15	 32 :	29	7
+< 15	 36 :	9	19
+< 15	 37 :	5	18
+< 15	 67 :	65	6
+< 16	  1 :	1	23
+---
+> 15	 11 :	11	9
+> 15	 32 :	29	12
+> 15	 36 :	9	15
+> 15	 37 :	5	14
+> 15	 67 :	65	17
+> 16	  1 :	1	21
+236c236
+< 16	 55 :	45	14
+---
+> 16	 55 :	45	15
+238c238
+< 17	 32 :	42	11
+---
+> 17	 32 :	42	12
+240c240
+< 18	  9 :	28	9
+---
+> 18	  9 :	28	11
+242c242
+< 19	  1 :	3	27
+---
+> 19	  1 :	3	24
+244c244
+< 19	 16 :	14	11
+---
+> 19	 16 :	14	12
+247,249c247,249
+< 20	 27 :	15	30
+< 20	 65 :	5	2
+< 20	 80 :	12	1
+---
+> 20	 27 :	15	29
+> 20	 65 :	5	1
+> 20	 80 :	12	2
+255c255
+< 22	 16 :	52	18
+---
+> 22	 16 :	52	20
+259,261c259,261
+< 22	 36 :	4	4
+< 22	 57 :	25	3
+< 23	 35 :	8	2
+---
+> 22	 36 :	4	3
+> 22	 57 :	25	4
+> 23	 35 :	8	1
+264,267c264,267
+< 24	 14 :	13	10
+< 24	 21 :	4	5
+< 24	 43 :	5	4
+< 24	 45 :	7	9
+---
+> 24	 14 :	13	11
+> 24	 21 :	4	4
+> 24	 43 :	5	5
+> 24	 45 :	7	7
+269c269
+< 24	 72 :	3	11
+---
+> 24	 72 :	3	10
+274,276c274,276
+< 26	  5 :	34	54
+< 27	  1 :	2	26
+< 27	  2 :	50	45
+---
+> 26	  5 :	34	50
+> 27	  1 :	2	19
+> 27	  2 :	50	50
+278,283c278,283
+< 27	  8 :	62	14
+< 27	  9 :	14	10
+< 27	 11 :	36	52
+< 27	 14 :	35	37
+< 27	 15 :	1	5
+< 27	 16 :	25	27
+---
+> 27	  8 :	62	31
+> 27	  9 :	14	8
+> 27	 11 :	36	54
+> 27	 14 :	35	46
+> 27	 15 :	1	9
+> 27	 16 :	25	33
+286,289c286,289
+< 27	 22 :	48	9
+< 27	 23 :	33	50
+< 27	 26 :	47	39
+< 27	 30 :	23	3
+---
+> 27	 22 :	48	11
+> 27	 23 :	33	42
+> 27	 26 :	47	30
+> 27	 30 :	23	7
+291c291
+< 27	 33 :	60	66
+---
+> 27	 33 :	60	64
+293,303c293,303
+< 27	 36 :	17	28
+< 27	 37 :	9	46
+< 27	 39 :	43	53
+< 27	 40 :	11	7
+< 27	 41 :	70	34
+< 27	 48 :	32	11
+< 27	 55 :	67	42
+< 27	 57 :	30	17
+< 27	 61 :	55	19
+< 27	 62 :	7	4
+< 27	 66 :	20	33
+---
+> 27	 36 :	17	22
+> 27	 37 :	9	35
+> 27	 39 :	43	52
+> 27	 40 :	11	4
+> 27	 41 :	70	43
+> 27	 48 :	32	16
+> 27	 55 :	67	36
+> 27	 57 :	30	23
+> 27	 61 :	55	41
+> 27	 62 :	7	3
+> 27	 66 :	20	29
+305,307c305,307
+< 27	 69 :	39	35
+< 27	 70 :	28	51
+< 27	 79 :	4	8
+---
+> 27	 69 :	39	38
+> 27	 70 :	28	47
+> 27	 79 :	4	5
+310,312c310,312
+< 28	 69 :	60	43
+< 28	 70 :	28	36
+< 29	 36 :	39	42
+---
+> 28	 69 :	60	49
+> 28	 70 :	28	32
+> 29	 36 :	39	45
+317c317
+< 30	 19 :	27	9
+---
+> 30	 19 :	27	8
+320c320
+< 30	 46 :	18	8
+---
+> 30	 46 :	18	7
+322,323c322,323
+< 31	  4 :	65	61
+< 31	  7 :	29	25
+---
+> 31	  4 :	65	62
+> 31	  7 :	29	27
+326,327c326,327
+< 31	 11 :	42	37
+< 31	 12 :	20	34
+---
+> 31	 11 :	42	45
+> 31	 12 :	20	26
+335c335
+< 33	 18 :	70	4
+---
+> 33	 18 :	70	9
+337c337
+< 33	 55 :	49	30
+---
+> 33	 55 :	49	27
+339,340c339,340
+< 34	  1 :	4	42
+< 34	 15 :	1	4
+---
+> 34	  1 :	4	41
+> 34	 15 :	1	3
+342,344c342,344
+< 34	 41 :	41	9
+< 34	 48 :	26	19
+< 34	 57 :	24	25
+---
+> 34	 41 :	41	10
+> 34	 48 :	26	17
+> 34	 57 :	24	23
+347c347
+< 35	 52 :	16	31
+---
+> 35	 52 :	16	30
+351,352c351,352
+< 35	 67 :	33	7
+< 35	 79 :	11	35
+---
+> 35	 67 :	33	8
+> 35	 79 :	11	35[24;1H[K
+362c362
+< 2	2	2/15	1/15
+---
+> 2	2	2/15	2/15
+364c364
+< 4	2	1/15	2/15
+---
+> 4	2	1/15	1/15
+375c375
+< 15	6	4/15	4/15
+---
+> 15	6	4/15	5/15
+387c387
+< 27	33	9/15	11/15
+---
+> 27	33	9/15	9/15
+395c395
+< 35	8	4/15	3/15
+---
+> 35	8	4/15	3/15[24;1H[K
+476,478c476,478
+< 0	625	0.0842	0.0832		0.0070	inform
+< 0	1309	0.2461	0.1519		0.0374	data
+< 0	3267	0.1396	0.1034		0.0144	retrief
+---
+> 0	625	0.1578	0.1617		0.0255	inform
+> 0	1309	0.2755	0.1764		0.0486	data
+> 0	3267	0.1981	0.1522		0.0301	retrief
+14,16c14,16
+< 0	625	0.0842	0.0832		0.0070	inform
+< 0	1309	0.2461	0.1519		0.0374	data
+< 0	3267	0.1396	0.1034		0.0144	retrief
+---
+> 0	625	0.1578	0.1617		0.0255	inform
+> 0	1309	0.2755	0.1764		0.0486	data
+> 0	3267	0.1981	0.1522		0.0301	retrief
+make[1]: Leaving directory `/home/smart.exp/src'

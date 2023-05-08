@@ -1,0 +1,18 @@
+Directory /smart/Doc
+        Top level documentation directory
+
+overview/     An overview of SMART; this should be at least skimmed
+docsmart/     An indexed collection of smart procedure documentation
+              See smart/scripts/{make_docsmart,docsmart} 
+              for creation and use.
+man/          Location for printable versions (currently not pretty) 
+              of docsmart. See smart/scripts/make_printman for creation
+              (I don't ship them because I feel very few people will
+              actually want to see them (they're that ugly!))
+howto/        Random collection of "how to do this in smart" writeups
+future/       Thoughts on future of SMART; some, all, or none of
+              which may come to pass.
+
+Changes.10-11 Major changes between versions 10 and 11 of SMART
+announce.10   Initial announcement of SMART version 10
+announce.11   Initial announcement of SMART version 11

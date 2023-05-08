@@ -1,0 +1,202 @@
+Evaluation
+
+SMART evaluation is done only on test collections which include a
+set of "canned queries" and judgements of which documents are
+relevant to each of the canned queries.  For later convenience,
+I'll assume that the relevance judgements are kept in the file
+"qrels_file".
+
+Evaluation can be done on either of two types of retrieval
+output files that SMART might produce.  The first is evaluation
+based on all ranks of all relevant documents.  This is the
+standard evaluation method used on the standard test collections,
+where it is feasible to get a full ranking of all documents.
+I'll assume the file with these ranks is named "rr_file". ('Rr'
+stands for Relevant Ranks).
+
+The other basis for evaluation is the actual retrieved documents
+for each query.  Relevant documents that are not retrieved by a
+query are assumed to be retrieved at rank infinity for purposes
+of evaluation.  This evaluation basis should be used only if a
+full ranking of documents is not available, either because of the
+size of the collection or the retrieval method.  Be very sure
+when reporting evaluation results from this method that it is
+clear that only retrieved documents were used.  I'll assume the
+file with these retrieval results is name "tr_file" ('Tr' stands
+for Top-Ranked documents).
+
+
+Evaluation output
+
+I'll describe the evaluation output gotten by using the relevant
+ranks.  The other output form (from top-ranked documents) is
+exactly the same, but the numbers are different and may represent
+slightly different concepts.  The important differences are
+discussed later.
+
+Here's some sample evalution output from two runs on adi. It was
+obtained by using the command
+        Eeval_rr
+within smart, after entering smart with the command
+        smart inter spec.nnn spec_list "spec.nnn spec.atc"
+within the src/test_adi/test directory.
+(Or equivalently, if you have the smprint script installed, the command
+        smprint rr_eval "spec.nnn spec.atc"
+within the src/test_adi/test directory).
+
+01              Relevant ranked evaluation
+02   
+03   1. Doc weight == Query weight == nnn  (term-freq)
+04   2. Doc weight == Query weight == atc  (augmented tfidf)
+05   
+06   Run number:          1        2
+07   Num_queries:         35       35
+08   Total number of documents over all queries
+09       Retrieved:      525      525
+10       Relevant:       170      170
+11       Rel_ret:         80       92
+12       Trunc_ret:      476      457
+13   Recall - Precision Averages:
+14       at 0.00       0.4824   0.6726
+15       at 0.10       0.4824   0.6726
+16       at 0.20       0.4343   0.6261
+17       at 0.30       0.4203   0.5785
+18       at 0.40       0.3640   0.5146
+19       at 0.50       0.3405   0.4998
+20       at 0.60       0.2775   0.3799
+21       at 0.70       0.2247   0.2928
+22       at 0.80       0.2143   0.2652
+23       at 0.90       0.1874   0.2380
+24       at 1.00       0.1863   0.2361
+25   Average precision for all points
+26      11-pt Avg:     0.3286   0.4524
+27       % Change:               37.7
+28   Average precision for 3 intermediate points (0.20, 0.50, 0.80)
+29       3-pt Avg:     0.3297   0.4637
+30       % Change:               40.6
+31   
+32   Recall:
+33       Exact:        0.5036   0.6138
+34       at  5 docs:   0.2718   0.4002
+35       at 10 docs:   0.3915   0.5166
+36       at 15 docs:   0.5036   0.6138
+37       at 30 docs:   0.6675   0.7750
+38   Precision:
+39       Exact:        0.1524   0.1752
+40       At  5 docs:   0.2457   0.3086
+41       At 10 docs:   0.1686   0.2229
+42       At 15 docs:   0.1524   0.1752
+43       At 30 docs:   0.1048   0.1162
+44   Truncated Precision:
+45       Exact:        0.2064   0.2622
+46       At  5 docs:   0.2629   0.3571
+47       At 10 docs:   0.2061   0.2910
+48       At 15 docs:   0.2064   0.2622
+49       At 30 docs:   0.1896   0.2427
+
+Line 01:        Evaluation is based on relevant ranks.
+Line 03,04:     Name of each run (from spec parameter "run_name"
+                if given). As many as 10 runs can be compared at once.
+Line 06:        The run number corresponding to the run names.
+Line 07:        Number of queries with relevant documents.
+Line 09:        Total number of documents retrieved over all
+                queries. Here, "retrieved" means having a rank less
+                than the spec parameter "num_wanted", normally 15.
+Line 10:        Total number of relevant documents for all
+                queries in the collection (whether retrieved or not).
+Line 11:        Total number of relevant retrieved documents.
+Line 12:        Total number of documents retrieved where the
+                retrieval is truncated at MIN (num_wanted, rank
+                of worst relevant document).  See truncated
+                precision, Line 50, below.
+Line 13-24:     The average over all queries of the precision
+                at each of the 11 recall points given.  Note that
+                this is interpolated precision: eg, for a
+                particular query, the precision at 0.40 is the max
+                of the precision at any recall point greater than or
+                equal to 0.40.
+Line 25-26:     The average of all eleven recall-precision figures.
+Line 27:        Percentage change comparing run N to run 1.
+Line 28-29:     The average of three representative recall-precision figures.
+                Note that we prefer to use this value as opposed to all
+                eleven since it ignores the strange things that can happen
+                at recall level 0.0 and 1.0.
+Line 30:        Percentage change comparing run N to run 1.
+Line 33:        The recall for exactly the retrieved document
+                set, averaged over all queries. (For this evaluation, 
+                this is ({Num_rel_docs with rank <= num_wanted} /
+                Num_rel_docs)
+Line 34-37:     The recall after the given number of documents
+                have been retrieved.
+Line 39:        The precision for exactly the retrieved document
+                set (ie, after num_wanted documents were retrieved)
+Line 40-43:     The precision after the given number of documents
+                have been retrieved.
+Line 44:        Truncated precision is an experimental retrieval 
+                value that may not stay around in future releases.  
+                The definition is {Num_rel_ret / 
+                MIN (num_wanted, rank_of_last_rel_doc_in_collection)}
+                The aim is to define a precision value that does not
+                decrease after all relevant documents for a query 
+                have been retrieved.  For example, if a query has
+                two relevant documents, retrieved at ranks 2 and 6,
+                the truncated precision after 5 documents is
+                0.2000 and after 10, 15, or 30 documents is 0.3333.
+Line 45:        The truncated precision for the retrieved set.
+Lines 46-49     The truncated precision after the given number of
+                documents have been retrieved.
+
+
+Differences between relevant-rank evaluation and top-ranked
+evaluation. 
+
+Differences come from two sources:
+1. Ranks of relevant documents not retrieved are not known
+2. Different queries may have different numbers of retrieved
+documents.  For example, the retrieved set contains only
+documents with similarity greater than 0. In a full ranked run
+where the user wants the top 15 documents, if only 6 documents
+have non-zero similarity the retrieved set for top-ranked
+evaluation is only 6, but the retrieved set for relevant-ranked
+evaluation remains at 15.  
+
+The difference in the definition of retrieved set makes the
+obvious difference in the values for Lines 09, 11, 12, 33, 39,
+45.
+
+If a query does not retrieve a relevant document, then the
+precision at those affected recall levels is set to 0, affecting
+recall-precision figures in Lines 13-30.  For example, if a query
+retrieves one of its two relevant documents at rank 4 and does
+not retrieve the other relevant doc, then the precision at recall
+points 0.00 through 0.50 is 0.5000, and the precision at recall
+points 0.60 through 1.00 is 0.0000.
+
+If a query does not retrieve as many documents as a particular
+cutoff level designates, then the missing documents are assumed
+to be non-relevant.  For example, if a query retrieves 8
+documents of which 3 are relevant and retrieved at ranks 1, 3 and
+6, the exact precision is 0.3750, the precision at 5 documents is
+0.4000, the precision at 10 documents is 0.3333 and the precision
+at 15 documents is 0.2000.  If that query had more than 3
+relevant documents overall, then the truncated precision values
+would be the same.  If those 3 relevant documents were the only
+relevant documents for that query, then the exact truncated
+precision would be 0.5000, at 5 documents is 0.4000, and at 10
+and 15 documents is 0.5000.
+
+
+Different numbers of queries
+
+For either type of evaluation, if the number of queries differs
+over the set of runs being evaluated (or even from the number of
+queries with relevant documents given by the qrels file), then
+two complete sets of figures 06 through 49 are given.  The first
+gives the figures for the number of queries with results.  The
+second normalizes the number of queries to be the same across the
+set of runs.  This normalization is done by assuming evalution
+figures of 0.0000 for all missing queries.  It is important to
+use the second set of figures if top-ranked evaluation is being
+done, especially if one method does not retrieve any documents at
+all for a query.
+

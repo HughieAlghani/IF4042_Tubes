@@ -1,0 +1,91 @@
+Debugging SMART
+
+The major tool that SMART provides for debugging is the tracing
+facility.  Most of the hierarchical procedures can be
+individually or collectively traced, where the different tracing
+levels can print
+        0: No tracing
+        2: Print upon procedure entry/exit
+        4: Print value of the procedure output object
+        6: Print value of the procedure input object
+        8 or more: Print values while in the interior of the 
+           procedure.
+Each tracing level includes all lower numbered levels.
+
+
+Global tracing can be turned on by changing the value of the
+trace parameter from its default 0 to the desired level.
+Eg, in .../Sample/adi/make_adi you can replace the line
+        $bin/smart exp_coll spec
+with
+        $bin/smart exp_coll spec trace 4
+and you'll get all the gory detail about what is happening inside
+the indexing process.
+
+Trace output can be directed to a file by giving a value to the
+spec parameter "global_trace_file".  Eg
+        $bin/smart exp_coll spec trace 4 global_trace_file ./out.trace
+
+If you're interested in, say, the indexing of one particular
+document, you can limit the tracing output to that document.
+        $bin/smart exp_coll spec trace 4 global_trace_start 4 \
+                                         global_trace_end 
+will give tracing output only for document (and/or query) 4.
+
+If you're interested in tracing output for only one particular
+procedure, then the trace parameter for that particular procedure
+can be set.  You can get the name of the trace parameter from the
+documentation.  Eg.
+        docsmart stem
+tells you that the parameter "index.stem.trace" is used. Thus
+        $bin/smart exp_coll spec stem.trace 2
+will trace only the stemming procedure.
+        $bin/smart exp_coll spec trace 2 stem.trace 0 stop.trace 0
+will trace everything EXCEPT the stemming and stopword
+procedures.
+
+If smart dies during the indexing process, you can find out what
+document it dies on by tracing the procedure next_vecid
+        $bin/smart exp_coll spec next_vecid.trace 4
+Then full debugging (say trace level 6) can be turned on using 
+global_trace_start with the last document id reported by next_vecid.
+
+The need to debug smart comes from two major sources of error:
+incorrect specification files, and incorrect procedure
+implementations.  Especially when creating a new specification
+file for a collection, global tracing is quite useful.  When
+debugging new procedures, then obviously you want to use
+procedure specific tracing at a high level.
+
+When writing new procedures, you generally want to put in tracing
+up to at least level 6, and possibly more.  For example,
+including the line
+     PRINT_TRACE (6, print_vector, in_vector);
+in your procedure would indicate: if the level of tracing is 6 or
+greater, then the value pointed to by in_vector should be printed
+by the procedure print_vector.  See .../Sample/skel.c for normal
+placements of PRINT_TRACE statements.
+
+Error reporting.
+
+SMART has a reasonable error setting and reporting facility that
+has not always been used within SMART as extensively as it
+should.  There may be times when you get the dreaded
+        smart: 5: Undetermined Error - Quit
+message and have no idea what happened.  (This should be reported
+as a bug; hopefully after you've determined the error!)  About
+the only thing you can do other than run a C debugger is to turn
+tracing on and at least find out what smart hierarchy procedure
+had last been entered.  Most reported errors should at least make
+sense, it just may be difficult (without tracing) to figure out
+what high-level procedure was responsible for a low-level
+procedure error.
+
+
+Accounting.
+
+If you're interested in the running time or performance of particular
+modules, accounting output can be turned on.  The output will be
+printed upon every trace output executed.  The spec parameter
+global_accounting can be set to values 0 to 3 to get varying
+amounts of accounting info.

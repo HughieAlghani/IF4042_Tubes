@@ -1,0 +1,606 @@
+Introduction.
+
+SMART is an implementation of the vector-space model of
+information retrieval proposed by Salton back in the 60's.  The
+primary purpose of SMART is to provide a framework in which to
+conduct information retrieval research.  Standard versions of
+indexing, retrieval, and evaluation are provided.
+
+A secondary goal is to have an actual low scale information
+retrieval system available to users.  I'm not sure how to define
+low scale; the largest collection I've worked with was about 300
+Mbytes of netnews.  Retrieval speed was reasonable, about a
+second or two on a Sparc 1.  It uses natural language queries.
+
+SMART suffers from the advantages and disadvantages of most
+academic research software.  It's designed to be extremely
+flexible (as long as you know what you're doing!).  But it is
+correspondingly not strongly optimized for any one particular
+use.  The code is relatively straightforward and should run (with
+possible minor modifications) on most UNIX systems of sufficient
+size.  Our standard setup is a SPARC 1 with 12 Mbytes of memory.
+A standard disadvantage of much academic software is documentation,
+and SMART is no exception.
+
+SMART version 10/11 are a complete rewrite of the mid and top levels
+of SMART version 8 (the last version we released).  About 5% of
+the version 8 code is recognizable in version 11.  It's much more
+flexible and easily modified, and the various modules have much
+more potential for interaction than the old version.  (Getting
+access to more information at retrieval time was a major reason
+for the rewrite).
+
+What is described here is only the latest in a long series of SMART
+implementations; the earliest one being in the early 1960's
+[1,2,3,4,5,6,8].  This new version naturally draws very heavily on
+the older versions for its algorithms, although no code remains from
+those versions except a bit from SMART version 8.  A special debt is
+owed to Ed Fox's implementation in the early 1980's.  His was the
+first UNIX implementation, and many of the lessons learned during his
+work were very useful here.
+
+The current implementation of the SMART system is covered
+in the remainder of this paper.
+First, the features and goals of the system are described.
+The information retrieval process in general is then related to the
+particular modules and programs within the system.
+The overall approach to accessing information and parameters is discussed,
+followed by a brief look at some of the internal data structures used.
+
+"Goals, Features, and Requirements"
+
+This implementation of SMART contains few new or radical concepts.
+Instead, it attempts to provide a solid framework for future work in
+information retrieval.
+The two major goals of the current version are to
+
+1. Provide a flexible experimental system for research in information
+retrieval. See [6] for a discussion of desirable system capabilities and
+design principles for experimental work.
+
+2. Provide a fast, portable, interactive environment for actual users.
+
+These two goals naturally conflict with each other; the current SMART
+design is an attempt to satisfy each as much as possible.
+
+The system is concerned with three major types of users:
+the experimenters, the database administrators, and the naive users.
+The experimenters need the ability to easily change system parameters
+and to easily add or replace program modules. The database administrators
+must be able to create and maintain a collection of documents without
+worrying about the peculiarities of the particular collection.
+It should be possible to initially specify the features of
+the collection and not worry about them again.
+The users need to be able to enter a query and view the results without
+knowing anything about the internal parameters of the system, being
+aware only of the collection features which are relevant to them (such as
+the type of information contained in a document).
+An interactive help facility is necessary for the casual user.
+
+The current system is a first step in satisfying these goals.
+
+In no particular order, the major features of the SMART system are:
+
+Size
+The system consists of roughly 350 source files with a total of 45,000
+lines of code.
+A fair amount of this code will not be used in any one application.
+
+Simplicity
+Access to the main UNIX data files is all straightforward, as is the
+access to the internal data structures.
+In particular, no attempts were made to get the maximum performance out of
+disk operations.
+This is a great boon to the experimenter who needs to modify the system,
+but of course it means non-optimal performance for the casual user.
+
+Uniform access to UNIX data files
+The core of the SMART system is a group of utility procedures designed to
+efficiently access the collection and retrieval files needed to work with
+the system.
+Each type of UNIX data file is considered a distinct object with its own
+instantiation of access procedures.
+These are described in detail later.
+
+Interactive
+The system is designed to be used for small to medium scale collections,
+and offers reasonable speed and support for these actual applications.
+
+Flexibility
+The design of the SMART system concentrates on two types of flexibility.
+The first is complete flexibility at a number of levels for the
+user/experimenter to specify the
+parameters for all operations.
+All parameters have reasonable default values. In addition they (possibly)
+can be given values within a collection dependent specification file.
+This means a database administrator can tailor the parameters to one
+particular database application.
+These values, in turn,
+can be over-ridden at command execution time by specifying
+a parameter and its value on the command line.
+
+At the program design level, flexibility is achieved by allowing very
+easy expansion of the most commonly used modules.
+For example, if an experimenter wishes to add a new procedure
+for computing the similarity between two vectors,
+two lines in one ``data'' file
+needs to be changed and the program needs to be re-linked
+
+Speed
+SMART is not blindingly fast, but it is quick enough to be used as an
+actual retrieval system.
+The performance figures depend greatly on the exact situation,
+but to give a rough estimation of speed:
+  1. For most collections (50 Mbyte range) simple indexing can be done 
+somwhere between 1 to 4 megabytes a minute.
+  2. Sequential retrieval is done at about 5000 document-query
+similarity computations per CPU second.
+This improves by a factor of 4 for experimental runs where a large
+batch of queries are run at once.
+  3. Inverted file retrieval is much harder to quantify since it is
+heavily dependent on the length of the query.  
+A typical user's query on a medium size collection takes about
+one elapsed second to return the top documents.
+Note that indexing the user's query typically takes more time
+than the retrieval itself (a disk access penalty of indexing
+flexibility).
+  These figures were obtained on a SUN Sparc 1 with 12 Mbytes of
+memory and local disks.
+
+Disk Space Requirements
+The disk space needed for the indexed collections obviously depends
+directly on the size of the collection.
+A rough estimate would be that the indexed collection will take up 0.4
+times the space of the text version of the collection.
+This includes a dictionary, text location information, and an inverted file
+representation of the indexed documents.
+If there is an experimental need for the actual document vectors
+themselves, then add another 0.3 factor for each version of the
+document vectors.
+
+Tracing 
+To aid in debugging, an experimenter has the option at run-time
+to turn on tracing information selectively for any set of
+procedures.  This information can be as little as procedure
+entry/exit or can include procedure input/output parameters or
+any additional intermediate information set up to be traced.
+[See Doc/app.trace for more details]
+
+Information Retrieval 
+
+Before going any farther, the general model of information retrieval used
+in the SMART system needs to be discussed.
+For further details about information retrieval models, Salton and McGill
+[7] provide a solid introductory text.
+
+An on-line collection of documents is pre-supposed.
+These documents can be anything from electronic messages to
+programming manual entries to full technical journal articles.
+Every document (potentially) contains several distinct kinds
+of information.
+Possibilities include date of publication,
+author of the document,
+receiver of the document,
+a supplied list of keywords,
+a supplied placement of the document within hierarchical categories,
+the title,
+the abstract,
+a list of other documents that are cited,
+etc.
+Several types of additional information are contained
+in the text of the document; for example:
+dates,
+proper nouns,
+times,
+numbers,
+and normal text words.
+
+Each of the information classes above may be useful to a user
+submitting a query, but there must be some way of distinguishing
+each classification type within the document representation.
+This leads to the association of a classification type (or \fIctype\fP for
+short) for
+each document concept.
+
+The documents in the collection are automatically \fIindexed\fP
+with a document representative being assigned to the corresponding
+document.
+This representative contains the system's idea of the important concepts
+found in the document.
+The representative consists of a list of concepts, the ctype of each concept,
+and weights for each
+concept; the weight giving a value to the importance of the concept.
+
+Users come to the SMART system with an information need and try to
+convey this need to the system.
+Their initial statement of their need can be a piece of natural language
+text, a list of keywords, an existing useful document, etc.
+The system assigns a \fIquery\fP representative for the need,
+either a simple
+list of concepts and weights like the document representatives, or
+something a bit more involved which gives more structure to the
+representative.
+
+A retrieval function within the system then calculates the \fIsimilarity\fP of
+the query representative to each of the document
+representatives. (In practice, not every document needs to be examined -
+depending on the similarity function.)
+The documents are presented to the user in order of their similarity
+to the query.
+It is hoped that the similarity order will have some correspondence to
+likelihood that the user will judge the document useful.
+
+At this point, the user has the option to examine some of the top
+retrieved documents, and give a judgement of whether the documents were
+\fIrelevant\fP to their information need.
+If the user desires more documents, a new query
+representative can be automatically constructed from the old
+representative and some of the concepts occurring in the relevant
+documents.
+This process is known as \fIrelevance feedback\fP.
+The new \fIfeedback\fP query can then be compared against the document
+collection and more documents can be retrieved for the user.
+This process continues until the user has as many documents as they
+desire.
+
+The study of information retrieval concerns itself with the numerous
+methods which can be used to accomplish the above procedure.
+There have been many models of the information retrieval process proposed
+over the years and many different methods of implementing these models.
+The SMART system was designed to experimentally evaluate these methods
+and models.
+
+The Levels of Smart
+
+In considering the implementation of SMART, it helps to look at the system
+as being composed of four levels of programs and procedures.
+Going from the "highest" level to the "lowest", they are:
+
+1. The \fIuser request\fP level.
+2. The \fItask implementation\fP level.
+3. The \fIobject access\fP level.
+4. The \fIdatabase access\fP level
+
+A user submits some kind of request to the topmost level of the system.
+This request could be adding documents to the collection,
+retrieving documents from the collection, looking at an
+experimental result, or one of several other actions.
+The topmost level gathers needed information from the user, for
+example, a query.
+The system then decides what tasks need to be done in order to accomplish the
+user's request.
+In the case of a retrieval operation the separate tasks might
+include indexing the user's query, retrieving some documents, displaying
+the documents to the user, and constructing a feedback query.
+The topmost level invokes the appropriate procedures for each task.
+
+The procedures in the task implementation level are each responsible for
+performing one task.
+Each task is phrased in the form of converting one type of
+information into another type.
+Within the task procedures, there is possible access to
+collection data through \fIrelational
+file objects\fP.
+Each object class consists of the data structure for a tuple
+of this object class, along with a set of procedures for finding, reading, and
+writing tuples of this class.
+
+The object access level is comprised of the procedures for accessing
+relational file objects and the procedures for reading specification files.
+These procedures implement the only access programs have to long-lived data
+on disk (outside of the original text documents).
+Logically, the relational object procedures invoke database access
+procedures to read and write data on UNIX files.
+Each set of database procedures puts information on disk using a
+different storage method.
+For example, \fdictionary\fP tuples are physically stored on disk in
+one or more hash tables, while \fIinverted\fP tuples are stored in two
+files; the first a direct access file giving pointers to locations in the
+second file.
+
+The database access level is the lowest logical level in the SMART
+hierarchy.
+Note that this level is completely unknown to the top two levels of the
+hierarchy.
+A task program has no knowledge of the storage method used for any object.
+In practice, if there is only one relational object using a database access
+level procedure, the implementation of the database access procedure is
+combined with the object access procedure.
+An example of this would be the dictionary relational object.
+The disk storage method is so tuned to the requirements of the relational
+object that a separation of the two levels would not be worth it.
+
+
+Specification Files
+
+The heart of the flexibility of SMART comes from specification
+files.  All parameters, including what procedures to run, are
+given by the spec file.  SMART is invoked at the UNIX level by
+    smart  top_level_action  spec_file  [modifications to spec_file]
+Typically, the spec_file used by a particular smart invocation
+for an experiment "includes" a standard spec file describing the
+current collection, which in turn includes a standard spec file
+describing the default parameters for SMART.  Thus
+        1. The system administrator will set up default
+        parameters.
+        2. The database administrator will change those
+        parameters to fit the particular collection.
+        3. The experimenter will set up parameters for a
+        particular experiment.
+        4. The final experimenter will vary those parameters on
+        the command line for a final run.
+
+The top two levels of SMART (User request and Task
+implementation) have complete access to final run specification,
+and can base their actions upon those parameters as well as any
+incoming object.
+
+Parameter specification (in a spec file or on the command line)
+takes the form of
+        parameter_name  parameter_value
+where parameter_name is a dotted tuple vaguely akin to X-window
+specifications, and parameter_value is a string which is
+convertible into one of about 10 types.  Details are given in
+[for now, the file Doc/app.spec].
+
+The possible types of parameter_value are reasonably standard,
+but one of special import is the procedure type.  The user at run
+time can specify which variant of a procedure will be run.  For
+instance, by changing the value of parameter name
+"index.stemmer" from "index.stem.remove_s" to
+"index.stem.none", words in the indexing process that used to be
+changed from plural to singular will no longer be changed.
+
+The majority of SMART procedures from the top 2 levels are given
+in a compile-time procedure hierarchy, and can be named in
+specification files.  It is the responsibility of the user to
+make sure that a correct procedure is associated with a given
+parameter name.  For instance, smart would probably crash if
+"index.stemmer" were given the value "retrieve.get_query".  (In
+future releases perhaps it will die gracefully rather than crash!)
+
+Procedures
+
+All procedures in SMART fall into one of the following
+categories:
+        1. Hierarchical "procedures". 
+        2. Print procedures.
+        3. Relational object procedures
+        4. a small number of utility procedures.
+
+Hierarchical "procedures" are actually a triplet of procedures,
+normally associated with a string name in the procedure hierarchy
+which can be used to refer to them in specification files. The
+initialization procedure is called once to get all needed
+parameter values from the run specification.  The main procedure
+itself is normally called many times to convert one object type
+into another.  Then the close procedure is called once to clean
+up.
+        init_<proc> (ptr_to_spec_parameter, added_info) returns proc_inst
+        <proc>      (in_object, out_object, proc_inst)
+        close_<proc> (proc_inst)
+where proc_inst identifies which instantiation of the procedure
+is being called.  (The same procedure may be initialized and
+invoked from several parts of the smart program, and needs to
+keep track of which task is which.)  See [for now, Doc/app.proc]
+for more details about hierarchy procedures.  [There currently is
+a subset of hierarchical procedures that are called by the
+top-level interactive procedure that do not have an instantiation
+argument. That will change in later releases]
+
+The print procedures all take a single object and a memory
+buffer, and print a text representation of the object into the
+memory buffer (if the memory buffer is NULL, then the text
+representation is printed to the standard output device).
+        print_<obj> (object, mem_buf)
+
+Each relational object has a standard set of procedures defined
+for it in order to read or write that object from/to disk.  These
+procedures include
+        create_<obj>(filename, NULL)
+        open_<obj>  (filename, mode)  (returns obj_index)
+        seek_<obj>  (obj_index, object)
+        read_<obj>  (obj_index, object)
+        write_<obj> (obj_index, object)
+        close_<obj> (obj_index)
+        destroy_<obj> (filename)
+        rename_<obj> (filename1, filename2)
+which do the obvious things.  The types of objects defined and
+more details are described in [for now, Doc/app.rel_objs].  More
+details about the procedures themselves are given in [for now,
+Doc/app.file_acc]
+
+The utility procedures don't fit into any mold.  They are low
+level routines, not allowed to call any procedure from the other
+three categories.
+
+These restrictive categories are occasionally painful, but aid
+immensely in making the system uniform enough to be modifiable
+by people other than the writer of the system.
+
+
+Concurrency, Consistency, and Protection
+
+Any system that expects more than one user to access the system at once
+must address the issues of concurrency and consistency.
+Care must be taken that no user's action is affected by another user
+changing something in the system.
+Fortunately, the constraints imposed by an information retrieval system
+are less strict than those needed in a normal relational database.
+Information retrieval is primarily a read-only activity: documents are
+added or deleted rarely and (conceptually at least) never modified.
+Serializability of the read and write requests (as required by databases)
+is much less important since writing a record does not significantly
+interfere with reading a database.
+The information retrieval system's failure to return to the user a
+document which is in the process of being written is not fatal.
+
+Write-write conflicts, on the other hand, must be guarded against.
+The system cannot allow the possibility of two different programs
+modifying the same relational object at the same time, and each then
+writing out its own version of the complete relation.
+Only the actions of the second program to finish will necessarily be found
+in the resultant relational object.
+An entire relation needs to be locked at once, since some access
+methods operate entirely in core.
+
+Consistency
+
+There are three levels of consistency that SMART needs to worry about.
+The first arises from the need of multiple users
+to have a consistent view of the
+database.
+As was stated above, SMART does not require perfect consistency at this
+level.
+It is quite possible that two users will have a different idea about which
+documents are in the database, even though they are accessing the database
+at the same time.
+However, the views
+will only differ in documents being added or deleted at that
+moment.
+These documents will be a very small percentage of documents in the
+collection and future modifications to the database will not be based on
+these documents either appearing or not appearing.
+It is this last difference from a normal database that allows flexibility
+in an information retrieval system's treatment of concurrency.
+
+The second level of consistency to be looked at is that of the
+collection level of the information retrieval system.
+There are some constraints that one would like to hold across the
+relational objects of a collection.
+For example, if the retrieval module says that a particular 
+document is the best match for the user's query, 
+then it would be nice if that document were in
+the textloc relational object so it could be shown to the user.
+SMART makes no guarantees about this kind of
+consistency at any one particular point in time.
+SMART programs perform reasonable actions if inconsistencies between
+relations are discovered.
+
+The last level of consistency covers the within relation consistency.
+If a write and read transaction are allowed to be going on simultaneously,
+it must be the case that the write transaction will not interfere with the
+read transaction's access of individual tuples.
+The implementation of the access procedures for the various relational
+objects must assure this.
+For instance, a procedure which writes a tuple can never be allowed to
+over-write any valid data.
+
+As far as is known, there are only a couple of small windows of vulnerability
+left in SMART (in the dictionary routines, and in the collection update
+routines).
+However, since there is no scheme of locking or protection at this level,
+there is no good way of proving that the system ensures consistency.
+Judging from experience there are probably other vulnerable points.
+Little attention was paid to concurrency issues in the overall design of
+the current implementation of SMART.
+Enough was done to make SMART usable, but the approach was much more
+haphazard than it should be ideally.
+A model of the concurrency constraints required by an information retrieval
+system needs to be developed.
+
+Automatic recovery from crashes is currently not supported by
+SMART.  It should not be all that difficult, but with the size of
+collection we typically work with, it's easy to re-index the
+entire collection from scratch.  AUtomatic recovery should be
+implemented someday.
+
+Protection
+
+At the present, SMART assumes that the only sort of protection needed to
+assure proper access to a database can be accomplished by proper modes
+on the UNIX files involved.
+This is not a good assumption, and work needs to be done in this area.
+Currently, a malicious user could virtually destroy any database to which
+they can add a document.
+The destruction would be detected and could be recovered from fully, but
+the chore of doing so would take a long time.
+
+
+Conclusion
+
+There is very little that is new about the current design of SMART.
+Instead, the standard information retrieval algorithms are implemented in
+an efficient and flexible manner.
+The core of the system is the set of low-level data access mechanisms that
+allow the rest of the system to look at stored information as sequences of
+tuples and to efficiently access individual tuples.
+The experimenter and database administrator are aided by a uniform
+approach to specifying parameter values.
+A rudimentary user interface exists that allows interactive help for many
+purposes.
+Concurrency issues in SMART are dealt with superficially, but in a manner
+that should be sufficient for most non-commercial experimental 
+uses of the system.
+
+The resulting system turns out to be quite usable for both casual and
+experimental purposes.
+A casual user can submit a query and receive back the relevant documents
+within a couple of seconds.
+The experimenter can change parameters and even
+algorithms with minimal effort.
+
+There are still a number of problems with SMART.
+The foremost of these is the user interface.
+There are clear improvements that can be made in the present interface;
+the need for other improvements will become obvious as the system is used
+by more people.
+Another area for improvement already discussed is that of concurrency.
+Both the user interface and concurrency problems stem from the gradual
+change of
+SMART from an entirely experimental system to one that can be actually
+used.
+
+A number of the algorithms used in the implementation can be
+improved.
+In general, straight-forward algorithms were preferred.
+More complicated algorithms which are more efficient, especially space
+efficient, exist and should be implemented.
+The dictionary access procedures are a good example of this.
+
+The major changes in SMART for the next few years, though, will probably
+come from the addition of new methods of retrieval,
+information storage, and models of information retrieval.
+As experimental work is done, new algorithms will be implemented and
+added to the present core of the SMART package.
+There is now hope for great improvements in the understanding of
+natural language in information retrieval contexts and that has
+to be brought into SMART.
+Hopefully, the current system can serve as a stepping stone for further
+research for a number of years to come.
+
+References
+[1]
+J. Rocchio, ``Possible Time-Sharing Orgaization for a SMART Retrieval
+System''.  Information Storage and Retrieval, Vol 7, Cornell University
+(1964).
+[2]
+M. E. Lesk, ``Design Considerations for Time Shared Automatic
+Documentation Centers''.  Information Storage and Retrieval, Vol 11,
+Cornell University (1966)
+[2]
+M. E. Lesk, ``Design Considerations for Time Shared Automatic
+Documentation Centers''.  Information Storage and Retrieval, Vol 11,
+Cornell University (1966)
+[3]
+D. Williamson, R. Williamson, ``A Prototype On-line Document Retrieval
+System''  Information Storage and Retrieval, Vol 18,
+Cornell University (1970)
+[4]
+D. Williamson, R. Williamson, M. E. Lesk, ``The Cornell Implementation of
+the SMART System''.  In \fIThe SMART Retrieval System.\fP edited by
+G. Salton. Prentice-Hall, Englewood Cliffs, N.J. (1971).
+[5]
+SMART Staff, ``User's Manual for the SMART Information Retrieval System''.
+Technical Report 71-95, Revised April 1974. Cornell University (1974).
+[6]
+E. Fox, ``Some Considerations for Implementing the SMART Information
+Retrieval System under UNIX''. Technical Report 83-560, Cornell University
+(1983).
+[7]
+G. Salton, M. McGill, \fIIntroduction to Modern Information Retrieval\fP.
+McGraw-Hill, New York.  (1983).
+[8]
+C. Buckley, Implemetation of the SMART Information Retrieval Retrieval
+System.  Technical Report 85-686, Cornell University (1985).
+

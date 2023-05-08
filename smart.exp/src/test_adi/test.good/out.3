@@ -1,0 +1,482 @@
+titles    : Show list of titles retrieved for this query again
+next      : Show the next ranked document (default action)
+<did>     : Show document <did>
+.         : Show the current document again
+more      : Retrieve more documents for this query, using only original query
+run       : Run new query.  Retrieve documents after getting a new query.
+feedback <usefuldoc1> <usefuldoc2> ...: Retrieve more documents for this query,
+            using original query plus the given list of useful documents
+quit      : Quit SMART. Any designated actions are done
+xit       : Exit SMART. No designated actions are done
+save file : Append copy of output of last command to the named file
+?         : Display this help message
+help      : Display this help message
+advanced  : Display help message describing other advanced options
+experimental: Display help message for examining experimental results
+
+Smart (ntq?): 
+-------------------------
+Elist 
+----
+  0 spec.nnn
+  1 spec.atc
+
+Smart (ntq?): 
+-------------------------
+Eeval_rr 
+----
+           Relevant ranked evaluation
+
+1. Doc weight == Query weight == nnn  (term-freq)
+2. Doc weight == Query weight == atc  (augmented tfidf)
+
+Run number:          1        2    
+Num_queries:         35       35
+Total number of documents over all queries
+    Retrieved:      525      525
+    Relevant:       170      170
+    Rel_ret:         80       92
+    Trunc_ret:      476      457
+Recall - Precision Averages:
+    at 0.00       0.4824   0.6726 
+    at 0.10       0.4824   0.6726 
+    at 0.20       0.4343   0.6261 
+    at 0.30       0.4203   0.5785 
+    at 0.40       0.3640   0.5146 
+    at 0.50       0.3405   0.4998 
+    at 0.60       0.2775   0.3799 
+    at 0.70       0.2247   0.2928 
+    at 0.80       0.2143   0.2652 
+    at 0.90       0.1874   0.2380 
+    at 1.00       0.1863   0.2361 
+Average precision for all points
+   11-pt Avg:     0.3286   0.4524 
+    % Change:               37.7 
+Average precision for 3 intermediate points (0.20, 0.50, 0.80)
+    3-pt Avg:     0.3297   0.4637 
+    % Change:               40.6 
+
+Recall:
+    Exact:        0.5036   0.6138
+    at  5 docs:   0.2718   0.4002
+    at 10 docs:   0.3915   0.5166
+    at 15 docs:   0.5036   0.6138
+    at 30 docs:   0.6675   0.7750
+Precision:
+    Exact:        0.1524   0.1752
+    At  5 docs:   0.2457   0.3086
+    At 10 docs:   0.1686   0.2229
+    At 15 docs:   0.1524   0.1752
+    At 30 docs:   0.1048   0.1162
+Truncated Precision:
+    Exact:        0.2064   0.2622
+    At  5 docs:   0.2629   0.3571
+    At 10 docs:   0.2061   0.2910
+    At 15 docs:   0.2064   0.2622
+    At 30 docs:   0.1896   0.2427
+
+Smart (ntq?): 
+-------------------------
+Eeval_tr 
+----
+            Top ranked evaluation
+
+1. Doc weight == Query weight == nnn  (term-freq)
+2. Doc weight == Query weight == atc  (augmented tfidf)
+
+Run number:          1        2    
+Num_queries:         35       35
+Total number of documents over all queries
+    Retrieved:      525      525
+    Relevant:       170      170
+    Rel_ret:         80       92
+    Trunc_ret:      476      457
+Recall - Precision Averages:
+    at 0.00       0.4701   0.6669 
+    at 0.10       0.4669   0.6669 
+    at 0.20       0.4145   0.6146 
+    at 0.30       0.3795   0.5652 
+    at 0.40       0.3152   0.4738 
+    at 0.50       0.2872   0.4563 
+    at 0.60       0.2076   0.3154 
+    at 0.70       0.1428   0.2110 
+    at 0.80       0.1351   0.1812 
+    at 0.90       0.1092   0.1384 
+    at 1.00       0.1092   0.1384 
+Average precision for all points
+   11-pt Avg:     0.2761   0.4025 
+    % Change:               45.8 
+Average precision for 3 intermediate points (0.20, 0.50, 0.80)
+    3-pt Avg:     0.2789   0.4174 
+    % Change:               49.7 
+
+Recall:
+    Exact:        0.5036   0.6138
+    at  5 docs:   0.2718   0.4002
+    at 10 docs:   0.3915   0.5166
+    at 15 docs:   0.5036   0.6138
+    at 30 docs:   0.5036   0.6138
+Precision:
+    Exact:        0.1524   0.1752
+    At  5 docs:   0.2457   0.3086
+    At 10 docs:   0.1686   0.2229
+    At 15 docs:   0.1524   0.1752
+    At 30 docs:   0.0762   0.0876
+Truncated Precision:
+    Exact:        0.2064   0.2622
+    At  5 docs:   0.2629   0.3571
+    At 10 docs:   0.2061   0.2910
+    At 15 docs:   0.2064   0.2622
+    At 30 docs:   0.1578   0.2003
+
+Smart (ntq?): 
+-------------------------
+Ercl_prn 
+----
+1. Doc weight == Query weight == nnn  (term-freq)
+2. Doc weight == Query weight == atc  (augmented tfidf)
+
+1	0.2165	0.2851
+2	1.0000	0.1818
+3	0.8485	0.5203
+4	0.5694	0.6061
+5	0.5000	0.6818
+6	0.0714	0.6591
+7	0.1600	0.2011
+8	0.0556	1.0000
+9	0.0541	0.5676
+10	0.0769	0.1142
+11	0.1937	0.0860
+12	0.4904	0.6190
+13	0.6175	0.5636
+14	0.0455	0.0588
+15	0.2603	0.4812
+16	0.4061	0.4500
+17	0.0476	0.0875
+18	0.6753	0.7576
+19	0.4776	0.4124
+20	0.2000	0.6727
+21	0.7879	0.5909
+22	0.3470	0.5229
+23	0.1250	0.5000
+24	0.9193	0.8719
+25	0.2000	0.6549
+26	0.0294	0.0185
+27	0.6005	0.6715
+28	0.0788	0.2111
+29	0.0256	0.0238
+30	0.1952	0.2779
+31	0.1736	0.2328
+32	0.2828	1.0000
+33	0.0994	0.7182
+34	0.3522	0.1665
+35	0.3168	0.3662
+
+Smart (ntq?): 
+-------------------------
+Eind_rr 
+----
+1. Doc weight == Query weight == nnn  (term-freq)
+2. Doc weight == Query weight == atc  (augmented tfidf)
+
+Query	Doc_id	Ranks of rel docs
+1	 17 :	8	7
+1	 46 :	4	2
+1	 62 :	19	43
+2	 12 :	1	20
+2	 71 :	2	4
+3	  3 :	6	13
+3	 43 :	2	5
+3	 45 :	5	2
+3	 60 :	1	4
+4	 29 :	1	1
+4	 63 :	38	15
+5	  3 :	5	6
+5	 21 :	2	1
+5	 72 :	6	5
+6	 18 :	35	8
+6	 77 :	12	1
+7	  7 :	10	26
+7	  9 :	13	11
+7	 19 :	25	3
+7	 40 :	22	30
+8	 61 :	18	1
+9	 50 :	37	41
+9	 82 :	31	1
+10	  2 :	41	26
+10	 11 :	58	32
+10	 29 :	76	76
+10	 39 :	10	15
+10	 50 :	49	31
+11	  8 :	82	82
+11	 43 :	3	27
+11	 79 :	7	30
+11	 81 :	47	17
+12	  4 :	1	1
+12	  7 :	22	8
+12	  9 :	3	3
+12	 25 :	31	21
+12	 42 :	16	7
+13	  1 :	1	5
+13	 14 :	41	18
+13	 27 :	2	1
+13	 37 :	4	12
+13	 65 :	13	15
+13	 80 :	15	3
+14	 20 :	68	68
+14	 33 :	17	12
+15	  6 :	12	1
+15	 11 :	11	14
+15	 32 :	29	7
+15	 36 :	9	19
+15	 37 :	5	18
+15	 67 :	65	6
+16	  1 :	1	23
+16	 18 :	36	1
+16	 55 :	45	14
+17	 22 :	28	24
+17	 32 :	42	11
+18	  2 :	1	2
+18	  9 :	28	9
+18	 70 :	2	1
+19	  1 :	3	27
+19	  2 :	2	1
+19	 16 :	14	11
+19	 39 :	67	67
+19	 66 :	5	9
+20	 27 :	15	30
+20	 65 :	5	2
+20	 80 :	12	1
+21	  3 :	4	6
+21	 21 :	2	4
+21	 43 :	1	3
+21	 72 :	12	20
+21	 76 :	6	5
+22	 16 :	52	18
+22	 20 :	49	34
+22	 26 :	44	51
+22	 33 :	1	1
+22	 36 :	4	4
+22	 57 :	25	3
+23	 35 :	8	2
+24	  3 :	2	1
+24	 10 :	6	2
+24	 14 :	13	10
+24	 21 :	4	5
+24	 43 :	5	4
+24	 45 :	7	9
+24	 59 :	1	6
+24	 72 :	3	11
+24	 76 :	11	8
+25	 13 :	7	1
+25	 24 :	60	59
+25	 53 :	4	2
+26	  5 :	34	54
+27	  1 :	2	26
+27	  2 :	50	45
+27	  6 :	3	1
+27	  8 :	62	14
+27	  9 :	14	10
+27	 11 :	36	52
+27	 14 :	35	37
+27	 15 :	1	5
+27	 16 :	25	27
+27	 18 :	82	82
+27	 20 :	12	2
+27	 22 :	48	9
+27	 23 :	33	50
+27	 26 :	47	39
+27	 30 :	23	3
+27	 32 :	44	57
+27	 33 :	60	66
+27	 34 :	81	81
+27	 36 :	17	28
+27	 37 :	9	46
+27	 39 :	43	53
+27	 40 :	11	7
+27	 41 :	70	34
+27	 48 :	32	11
+27	 55 :	67	42
+27	 57 :	30	17
+27	 61 :	55	19
+27	 62 :	7	4
+27	 66 :	20	33
+27	 68 :	78	78
+27	 69 :	39	35
+27	 70 :	28	51
+27	 79 :	4	8
+28	  9 :	13	3
+28	 48 :	36	7
+28	 69 :	60	43
+28	 70 :	28	36
+29	 36 :	39	42
+30	  4 :	2	2
+30	  7 :	81	81
+30	  9 :	50	40
+30	 17 :	20	6
+30	 19 :	27	9
+30	 24 :	43	45
+30	 38 :	70	70
+30	 46 :	18	8
+30	 67 :	58	58
+31	  4 :	65	61
+31	  7 :	29	25
+31	  8 :	82	82
+31	  9 :	64	56
+31	 11 :	42	37
+31	 12 :	20	34
+31	 23 :	27	20
+31	 40 :	9	4
+31	 69 :	67	67
+31	 70 :	21	22
+31	 80 :	31	2
+32	 47 :	3	1
+32	 51 :	9	2
+33	 18 :	70	4
+33	 33 :	15	2
+33	 55 :	49	30
+33	 73 :	12	1
+34	  1 :	4	42
+34	 15 :	1	4
+34	 39 :	71	71
+34	 41 :	41	9
+34	 48 :	26	19
+34	 57 :	24	25
+35	 13 :	21	2
+35	 24 :	20	3
+35	 52 :	16	31
+35	 53 :	15	28
+35	 56 :	4	20
+35	 59 :	14	32
+35	 67 :	33	7
+35	 79 :	11	35
+Smart (ntq?): 
+-------------------------
+Eind_tr 
+----
+1. Doc weight == Query weight == nnn  (term-freq)
+2. Doc weight == Query weight == atc  (augmented tfidf)
+
+Query	Num_rel	  Rel_retrieved/retrieved
+1	3	2/15	2/15
+2	2	2/15	1/15
+3	4	4/15	4/15
+4	2	1/15	2/15
+5	3	3/15	3/15
+6	2	1/15	2/15
+7	4	2/15	2/15
+8	1	0/15	1/15
+9	2	0/15	1/15
+10	5	1/15	1/15
+11	4	2/15	0/15
+12	5	2/15	4/15
+13	6	5/15	5/15
+14	2	0/15	1/15
+15	6	4/15	4/15
+16	3	1/15	2/15
+17	2	0/15	1/15
+18	3	2/15	3/15
+19	5	4/15	3/15
+20	3	3/15	2/15
+21	5	5/15	4/15
+22	6	2/15	3/15
+23	1	1/15	1/15
+24	9	9/15	9/15
+25	3	2/15	2/15
+26	1	0/15	0/15
+27	33	9/15	11/15
+28	4	1/15	2/15
+29	1	0/15	0/15
+30	9	1/15	4/15
+31	11	1/15	2/15
+32	2	2/15	2/15
+33	4	2/15	3/15
+34	6	2/15	2/15
+35	8	4/15	3/15
+Smart (ntq?): 
+-------------------------
+Elist 
+----
+  0 spec.nnn
+  1 spec.atc
+
+Smart (ntq?): 
+-------------------------
+Euse_spec 0 
+----
+
+Smart (ntq?): 
+-------------------------
+Eqid 2 
+----
+
+Smart (ntq?): 
+-------------------------
+Etr 
+----
+Qid	Did	Rank	Rel	Action	Iter	Sim
+2	1	5	0	0	0	   6.0000
+2	2	12	0	0	0	   5.0000
+2	12	1	1	0	0	   7.0000
+2	21	11	0	0	0	   5.0000
+2	33	10	0	0	0	   5.0000
+2	39	9	0	0	0	   5.0000
+2	43	8	0	0	0	   5.0000
+2	47	4	0	0	0	   6.0000
+2	62	7	0	0	0	   5.0000
+2	64	6	0	0	0	   5.0000
+2	68	15	0	0	0	   4.0000
+2	69	3	0	0	0	   6.0000
+2	70	14	0	0	0	   4.0000
+2	71	2	1	0	0	   6.0000
+2	79	13	0	0	0	   4.0000
+
+Smart (ntq?): 
+-------------------------
+Qvec 
+----
+Query vector 2
+Docid	Ctype	Con	Weight		Token
+2	0	625	 1.00000	inform
+2	0	1236	 1.00000	entir
+2	0	1309	 1.00000	data
+2	0	1340	 1.00000	request
+2	0	2052	 1.00000	refer
+2	0	2828	 1.00000	automat
+2	0	3267	 1.00000	retrief
+2	0	3281	 1.00000	articl
+2	0	3377	 1.00000	respons
+
+Smart (ntq?): 
+-------------------------
+Qmatch 12 
+----
+Ctype	Con	Vec1	Vec2		Product	Token
+0	625	1.0000	4.0000		4.0000	inform
+0	1309	1.0000	1.0000		1.0000	data
+0	3267	1.0000	2.0000		2.0000	retrief
+
+Smart (ntq?): 184 bytes written to file save.3
+
+Smart (ntq?): 
+-------------------------
+Euse_spec 1 
+----
+
+Smart (ntq?): 
+-------------------------
+Eqid 2 
+----
+
+Smart (ntq?): 
+-------------------------
+Qmatch 12 
+----
+Ctype	Con	Vec1	Vec2		Product	Token
+0	625	0.0842	0.0832		0.0070	inform
+0	1309	0.2461	0.1519		0.0374	data
+0	3267	0.1396	0.1034		0.0144	retrief
+
+Smart (ntq?): 184 bytes written to file save.3
+
+Smart (ntq?): 

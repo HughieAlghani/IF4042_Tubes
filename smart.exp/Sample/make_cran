@@ -1,0 +1,89 @@
+#! /bin/csh
+# Make the cran test collection.  Change first 4 pathnames as appropriate.
+# Cran collection obtainable in ~ftp/pub/smart/cran on  ftp.cs.cornell.edu
+
+# set echo verbose
+
+# 
+set bin =     /home/smart/src/bin
+set tlibdir = /home/smart/lib
+set database = /home/smart/indexed_colls/cran
+set coll     = /home/smart/colls/cran
+
+set doc_loc = $coll/cran.all
+set query_loc = $coll/query.text
+
+# create the empty collection
+/bin/rm -rf $database
+mkdir $database
+
+
+cat > $database/spec << EOF1
+## INFORMATION LOCATIONS
+database                $database
+include_file            $tlibdir/spec.expcoll
+doc_loc                 $database/doc_loc
+query_loc               $database/query_loc
+qrels_text_file         $coll/qrels.text
+
+## CRAN DOCDESC
+#### GENERIC PREPARSER
+num_pp_sections                 5
+pp_section.0.string             ".I"
+pp_section.0.action             discard
+pp_section.0.oneline_flag       true
+pp_section.0.newdoc_flag        true
+pp_section.1.string             ".A"
+pp_section.1.section_name       a
+pp_section.2.string             ".B"
+pp_section.2.section_name       b
+pp_section.3.string             ".W"
+pp_section.3.section_name       w
+pp_section.4.string             ".T"
+pp_section.4.section_name       t
+
+#### DESCRIPTION OF PARSE INPUT
+index.num_sections              4
+index.section.0.name            a
+index.section.1.name            b
+index.section.2.name            w
+  index.section.2.method        index.parse_sect.full
+  index.section.2.word.ctype    0
+  index.section.2.proper.ctype  0
+index.section.3.name            t
+  index.section.3.method        index.parse_sect.full
+  index.section.3.word.ctype    0
+  index.section.3.proper.ctype  0
+title_section 3
+
+#### DESCRIPTION OF FINAL VECTORS
+num_ctypes                      1
+ctype.0.name                    words
+
+## ALTERATIONS OF STANDARD PARAMETERS
+dict_file_size                  13001
+rmode                           SRDONLY|SMMAP
+rwmode                          SRDWR|SINCORE
+rwcmode                         SRDWR|SCREATE|SINCORE
+parse.single_case               1
+doc_file                        ""
+inv_file                        inv.nnc
+query_file                      query.atc
+doc_weight                      nnc
+query_weight                    atc
+
+## ALTERATIONS OF STANDARD PROCEDURES
+doc.store                       index.store.store_aux
+EOF1
+
+echo Creating new database at `date`
+# Copy auxiliary files to collection
+echo "$doc_loc" > $database/doc_loc
+echo "$query_loc" > $database/query_loc
+
+#index the collection
+echo Indexing docs,queries,rels at `date`
+$bin/smart exp_coll $database/spec
+
+time
+echo All done at `date`

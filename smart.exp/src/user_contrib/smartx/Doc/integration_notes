@@ -1,0 +1,92 @@
+/************************************************************************
+*                                                                       *
+*	Adding an X-Window interface to SMART --- integration notes	*
+*                                                                       *
+*                                                                       *
+*    by Tong Li, graduate student in CS from Oregon State University,   *
+*                e-mail: lit@mist.cs.orst.edu                           *
+*                                                                       *
+*       Victuria Chiu, senior in CS from Univ. of Cal. at Berkeley,	*
+*	               e-mail: victoria@csr.lbl.gov                     *
+*                                                                       *
+*    at Lawrence berkeley Laboratory, Summer 1991                       *
+*                                                                       *
+************************************************************************/
+
+
+1. Calling SMART using the sample adi collection: (under src.new/)
+	smart/smart top.x_inter_match Sample/indexed.adi/spec
+
+2. Adding a new directory libx: (under src.new/)
+   All Our x-interface files are located in this directory.
+   We generated the GIL(Graphical Intermediate Language) files(*.G files) using
+   DevGuide; then used "Gxv" to generate the following five types of files:
+	*_ui.c, which contains include statements and initialization function 
+   and creation function for each element in the window;
+	*_ui.h, which contains C externs for initialization and creation 
+   function in the _ui.c file and a typedef for the window;
+	*_stubs.c, which contains function templates for each of the handlers 
+   set in Devguid for each element of the window;
+	*_info, which contains help text added to each element in Devguide.
+	makefile, Gxv gernerated a Makefile which contains information to
+   control the X source code compile; and "make makefiles" under src.new/
+   generated another makefile for SMART's will.  The makefile in libx/ is
+   a combination of these two makefiles.
+
+   Note that because of the limitation of DevGuide, DO NOT use gxv to 
+   regenerate the *_ui.c, *_ui.h, *stubs.c, *_info files.  We has disabled
+   gxv from  automatically generate in the libx/makefile. The reason for that
+   is when an interface prototype is changed using DevGuide, its makefile will 
+   automatically call gxv to generate fresh template files, hence erasing
+   any changes to the template files(We needed to change some initialization 
+   procedures not supported by DevGuide, such as making some buttons dimmed 
+   when smart is invoked). Instead of altering the interface using DevGuide, 
+   we changes the prototype inside the code by hand.  To see the first 
+   prototype, run "smartx" inside libx. We have changed many features such 
+   as the save button, color, etc.
+
+3. Adding an x_inter_match.c file in libtop/ 
+	This x_inter_match.c is paralell to the inter_match.c, with all the 
+   functions in libx, they complish the same functions.
+
+4. Changing the makefile in libtop/
+   	Since we added the x_inter_match.c file in this directory, we added 
+   "x_inter_match.o" at the beginning under "VARIANTS =".
+
+5. Changing the makefile in smart/
+	Over here, we linked two libraries together, the SMART library, and 
+   X library.
+
+6. Changing the makefile in src.new/
+	We add one more directory "libx" in "LIBLIST".
+
+7. Adding an x_run_new() procedure in libinter/run_vecs.c file
+	Since the old run_new() involved user I/O, we created this x_run_new()
+   to replace it.
+
+8. Adding an x_get_q_user() procedure in libinter/get_q_user.c file
+	x_run_new() calls this procedure.
+
+9. Adding two line in libproc/proc_top.c:
+	extern int init_x_inter_match(), x_inter_match(),close_x_inter_match();
+	"x_inter_match",init_x_inter_match,x_inter_match,close_x_inter_match,
+
+10. Adding the xfunctions.h file in h/
+	This is the only .h file we have for connecting SMART and the interface
+   together.
+
+11. Adding the smart_xmain_ui.h smart_xsec_ui.h in h/
+	These are the .h files for the interface.
+
+12. Adding '#include "sm_display.h" ' in h/inter.h
+	Withour doing this, we got an error in compiling.
+
+Note: 1. we use cc instead of gcc to compile the files;
+      2. for the makefiles under libtop/ and src.new/, you can either copy the 
+	 new makefiles and change the path name, or just make little changes, 
+	 use "diff" to see the changes.
+      3. be sure to have all the necessary x libraries and paths set; 
+       	 (we add the .cshrc file for reference.)
+
+
+

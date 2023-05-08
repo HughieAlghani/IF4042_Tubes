@@ -1,0 +1,52 @@
+#! /bin/csh
+# Update a very simple news collection
+# 
+set bin =     /home/smart/src/bin
+set database = /home/smart/indexed_colls/news
+set coll     = /home/smart/colls/news/news.small
+
+
+#########################################################################
+# Add new docs that have appeared in the hierarchy since the last time
+# docs were indexed
+
+find $coll -newer $database/doc_loc -type f -print > $database/doc_loc.new
+mv $database/doc_loc.new $database/doc_loc
+
+$bin/smart index.doc $database/spec < $database/doc_loc
+
+##########################################################################
+# Delete all indexed articles that no longer exist (eg, having been removed
+# by expire)
+
+set temp = /tmp/sm.d.$$
+
+# find which documents no longer have text files
+smart print $database/spec proc print.obj.did_nonvalid out $temp
+
+# Copy inverted file, removing deleted docs
+smart convert spec proc convert.obj.inv_inv  \
+                   in $database/inv.nnc out $database/inv.new \
+                   deleted_doc_file $temp
+
+# Copy doc file, removing deleted docs (not needed for news)
+# smart convert spec proc convert.obj.vec_vec  \
+#                   in $database/doc.nnn out $database/doc.new \
+#                   deleted_doc_file $temp
+
+# Copy textloc file, removing deleted docs
+smart convert spec proc convert.obj.textloc_textloc  \
+                   in $database/textloc out $database/textloc.new \
+                   deleted_doc_file $temp
+
+# Warning, the following operation may interfere with users already
+# running a retrieval (everything above should not).
+
+/bin/mv $database/textloc.new $database/textloc
+/bin/mv $database/textloc.new.var $database/textloc.var
+# /bin/mv $database/doc.new $database/doc.nnc
+# /bin/mv $database/doc.new.var $database/doc.nnc.var
+/bin/mv $database/inv.new $database/inv.nnc
+/bin/mv $database/inv.new.var $database/inv.nnc.var
+
+/bin/rm -f $temp

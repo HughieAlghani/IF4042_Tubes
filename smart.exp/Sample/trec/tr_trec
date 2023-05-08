@@ -1,0 +1,26 @@
+#  Shell script to translate tr file into trec format
+# tr_trec tr_file trec_file [run_id]
+# set echo verbose
+
+set coll = /amd/beyla/a/trec
+set smartdir = /amd/beyla/d/smart.11.0
+set database = /amd/beyla/c/trec/trec.docno
+
+#set bin = $smartdir/src/diropt/bin
+set bin = $smartdir/src/bin
+
+if ($#argv < 2) then
+        echo "Usage: tr_trec tr_file trec_file [run_id]"
+        exit 1
+endif
+
+set tr_file = $1
+set trec_file = $2
+set run_id = $1
+
+if ($#argv >= 3) set run_id = $3
+
+$bin/smart convert $database/spec proc local.convert.obj.tr_trec \
+                        in $tr_file out $trec_file \
+                        run_id $run_id
+time

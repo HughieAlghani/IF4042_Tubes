@@ -1,0 +1,52 @@
+#! /bin/csh
+# Make a very simple text collection, assuming that each file in the coll
+# directory is a single document to be indexed in its entirity.
+
+# set echo verbose
+
+# 
+set bin =     /home/smart/src/bin
+set tlibdir = /home/smart/lib
+set database = /home/smart/indexed_colls/text
+set coll     = $cwd
+
+# create the empty collection (destroying any existing collection)
+/bin/rm -rf $database
+mkdir $database
+
+find $coll -type f -print > $database/doc_loc
+
+cat > $database/spec << EOF1
+## INFORMATION LOCATIONS
+database                $database
+include_file            $tlibdir/spec.default
+
+## TEXT DOCDESC
+#### GENERIC PREPARSER
+pp.default_section_name         w
+pp.default_section_action       copy
+
+#### DESCRIPTION OF PARSE INPUT
+index.num_sections              1
+index.section.0.name            w
+  index.section.0.method        index.parse_sect.full
+  index.section.0.word.ctype    0
+  index.section.0.proper.ctype  0
+title_section 0
+
+#### DESCRIPTION OF FINAL VECTORS
+num_ctypes                      1
+
+## ALTERATIONS OF STANDARD PARAMETERS
+doc_weight                      nnc
+query_weight                    ntc
+
+## ALTERATIONS OF STANDARD PROCEDURES
+EOF1
+
+#index the collection
+echo Indexing docs at `date`
+$bin/smart index.doc $database/spec < $database/doc_loc
+
+time
+echo All done at `date`

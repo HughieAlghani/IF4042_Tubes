@@ -1,0 +1,365 @@
+titles    : Show list of titles retrieved for this query again
+next      : Show the next ranked document (default action)
+<did>     : Show document <did>
+.         : Show the current document again
+more      : Retrieve more documents for this query, using only original query
+run       : Run new query.  Retrieve documents after getting a new query.
+feedback <usefuldoc1> <usefuldoc2> ...: Retrieve more documents for this query,
+            using original query plus the given list of useful documents
+quit      : Quit SMART. Any designated actions are done
+xit       : Exit SMART. No designated actions are done
+save file : Append copy of output of last command to the named file
+?         : Display this help message
+help      : Display this help message
+advanced  : Display help message describing other advanced options
+experimental: Display help message for examining experimental results
+
+Smart (ntq?): Please type a new query, consisting of descriptive natural language words
+and phrases, ending with a line of a single '.'
+An empty query will exit SMART.
+
+-------------------------
+run 
+----
+Num  Action Sim Title
+    12     0.19 the materials information network . 
+    55     0.16 satire display subsystem . 
+    47     0.16 retrieval and the general library . 
+    22     0.14 the rapid selector as currently used for information search and
+    43     0.14 the education of science information personnel - a challenge to
+    30     0.13 relational indexing and new methods of concept organization for
+    21     0.12 science information personnel an assessment and projection . 
+    39     0.12 research on a linear network model and analog device for associ
+    62     0.12 a mechanized information storage and retrieval system with the 
+     9     0.11 analysis of the role of the computer in the reproduction and di
+    64     0.11 paragraph analysis - a novel technique for retrieval of portion
+     6     0.11 a new centralized information-retrieval system for the petroleu
+    79     0.11 implementing a large scale retrieval system for satellite infor
+    36     0.10 computerization of book catalogues at the columbia, harvard and
+    26     0.09 thesaurus for literature analysis in a cancer research institut
+
+Smart (ntq?): 
+-------------------------
+Qvec 
+----
+Query vector 1
+Docid	Ctype	Con	Weight		Token
+1	0	625	 1.00000	inform
+1	0	3267	 1.00000	retrief
+
+Smart (ntq?): 
+-------------------------
+more 
+----
+Num  Action Sim Title
+    19     0.09 recording text information in machine form at the time of prima
+    78     0.09 use of flexowriters to prepare large amounts of alphabetic lega
+    27     0.09 is relevance an adequate criterion in retrieval system evaluati
+    17     0.08 document recovery 
+    56     0.08 the use of punched-tape typewriters and computers in the centra
+    40     0.08 centralized processing of technical information at the scientif
+    69     0.08 automatic retrieval and selective dissemination of references f
+     2     0.07 a new efficient structure-matching procedure and its applicatio
+     1     0.07 the ibm dsd technical information center - a total systems appr
+    71     0.07 searchers want facts not folios retrieve data not documents the
+    10     0.07 accrediting information science programs . 
+    76     0.07 some human elements in the handling of technical information re
+    45     0.07 graduate training in information science : definitions and deve
+     3     0.06 an important need and opportunity for a. d. i. leadership in in
+    33     0.06 /information please/ services . 
+
+Previously retrieved docs from iteration 0
+    12     0.19 the materials information network . 
+    55     0.16 satire display subsystem . 
+    47     0.16 retrieval and the general library . 
+    22     0.14 the rapid selector as currently used for information search and
+    43     0.14 the education of science information personnel - a challenge to
+    30     0.13 relational indexing and new methods of concept organization for
+    21     0.12 science information personnel an assessment and projection . 
+    39     0.12 research on a linear network model and analog device for associ
+    62     0.12 a mechanized information storage and retrieval system with the 
+     9     0.11 analysis of the role of the computer in the reproduction and di
+    64     0.11 paragraph analysis - a novel technique for retrieval of portion
+     6     0.11 a new centralized information-retrieval system for the petroleu
+    79     0.11 implementing a large scale retrieval system for satellite infor
+    36     0.10 computerization of book catalogues at the columbia, harvard and
+    26     0.09 thesaurus for literature analysis in a cancer research institut
+
+Smart (ntq?): 
+-------------------------
+Dtext 55 
+----
+.- --- 55 /amd/beyla/d/smart.11.0/src/test_adi/coll/adi.all 24717 24884
+
+.t 0 28
+
+satire display subsystem .
+
+.a 28 47
+
+J. P. ROACH, JR .
+
+.w 47 155
+
+this document proposes new equipment
+which will enable /self service/, /hard copy/ information
+retrieval .
+
+Smart (ntq?): 
+-------------------------
+Qvec 
+----
+Query vector 1
+Docid	Ctype	Con	Weight		Token
+1	0	625	 1.00000	inform
+1	0	3267	 1.00000	retrief
+
+Smart (ntq?): 
+-------------------------
+feedback 55 
+----
+Num  Action Sim Title
+    73     0.10 microfilm and hard copy transmission from document retrieval ce
+    32     0.08 document reproduction from microfilm is improved in speed and c
+    58     0.08 producing indexing aids such as a dictionary or thesaurus from 
+    53     0.06 documents and information exchange . 
+    44     0.06 the use of a cathode ray tube display console for editing textu
+    20     0.06 photographic and computer systems in biomedical information han
+    24     0.05 the role of the office of technical services in the interchange
+     5     0.05 feasibility criteria for establishing specialized information c
+    16     0.05 programing and coding techniques used in medlars 
+    49     0.04 microfiche, a new information media . 
+    59     0.04 the new program for training information technicians at the u. 
+    38     0.03 microprint as a medium for primary publication . 
+    50     0.03 english-like systems of mathematical logic for content retrieva
+    67     0.03 a national plan for science abstracting and indexing services .
+    52     0.03 scope and duplication of coverage in two national information p
+
+Previously retrieved docs from iteration 1
+    19     0.09 recording text information in machine form at the time of prima
+    78     0.09 use of flexowriters to prepare large amounts of alphabetic lega
+    27     0.09 is relevance an adequate criterion in retrieval system evaluati
+    17     0.08 document recovery 
+    56     0.08 the use of punched-tape typewriters and computers in the centra
+    40     0.08 centralized processing of technical information at the scientif
+    69     0.08 automatic retrieval and selective dissemination of references f
+     2     0.07 a new efficient structure-matching procedure and its applicatio
+     1     0.07 the ibm dsd technical information center - a total systems appr
+    71     0.07 searchers want facts not folios retrieve data not documents the
+    10     0.07 accrediting information science programs . 
+    76     0.07 some human elements in the handling of technical information re
+    45     0.07 graduate training in information science : definitions and deve
+     3     0.06 an important need and opportunity for a. d. i. leadership in in
+    33     0.06 /information please/ services . 
+
+Previously retrieved docs from iteration 0
+    12     0.19 the materials information network . 
+    55  *Y 0.16 satire display subsystem . 
+    47     0.16 retrieval and the general library . 
+    22     0.14 the rapid selector as currently used for information search and
+    43     0.14 the education of science information personnel - a challenge to
+    30     0.13 relational indexing and new methods of concept organization for
+    21     0.12 science information personnel an assessment and projection . 
+    39     0.12 research on a linear network model and analog device for associ
+    62     0.12 a mechanized information storage and retrieval system with the 
+     9     0.11 analysis of the role of the computer in the reproduction and di
+    64     0.11 paragraph analysis - a novel technique for retrieval of portion
+     6     0.11 a new centralized information-retrieval system for the petroleu
+    79     0.11 implementing a large scale retrieval system for satellite infor
+    36     0.10 computerization of book catalogues at the columbia, harvard and
+    26     0.09 thesaurus for literature analysis in a cancer research institut
+
+Smart (ntq?): 
+-------------------------
+Qvec 
+----
+Query vector 1
+Docid	Ctype	Con	Weight		Token
+1	0	131	 0.13425	copy
+1	0	356	 0.23989	satir
+1	0	625	 0.58441	inform
+1	0	1185	 0.20226	enabl
+1	0	1245	 0.07726	docu
+1	0	1304	 0.23989	subsystem
+1	0	1838	 0.16463	equip
+1	0	2403	 0.18025	hard
+1	0	2456	 0.11052	propos
+1	0	3267	 0.60081	retrief
+1	0	3444	 0.18025	display
+1	0	3525	 0.11489	servic
+
+Smart (ntq?): 
+-------------------------
+Top_ranked 
+----
+Qid	Rank	Did	Similarity	Useful?	Action	Iter
+1	1	73	   0.1044	 	 	2
+1	2	32	   0.0761	 	 	2
+1	3	58	   0.0760	 	 	2
+1	4	53	   0.0599	 	 	2
+1	5	44	   0.0572	 	 	2
+1	6	20	   0.0567	 	 	2
+1	7	24	   0.0533	 	 	2
+1	8	5	   0.0499	 	 	2
+1	9	16	   0.0477	 	 	2
+1	10	49	   0.0387	 	 	2
+1	11	59	   0.0370	 	 	2
+1	12	38	   0.0346	 	 	2
+1	13	50	   0.0339	 	 	2
+1	14	67	   0.0334	 	 	2
+1	15	52	   0.0320	 	 	2
+1	1	19	   0.0901	 	 	1
+1	2	78	   0.0890	 	 	1
+1	3	27	   0.0856	 	 	1
+1	4	17	   0.0844	 	 	1
+1	5	56	   0.0827	 	 	1
+1	6	40	   0.0785	 	 	1
+1	7	69	   0.0758	 	 	1
+1	8	2	   0.0716	 	 	1
+1	9	1	   0.0704	 	 	1
+1	10	71	   0.0677	 	 	1
+1	11	10	   0.0673	 	 	1
+1	12	76	   0.0663	 	 	1
+1	13	45	   0.0656	 	 	1
+1	14	3	   0.0630	 	 	1
+1	15	33	   0.0609	 	 	1
+1	1	12	   0.1866	 	 	0
+1	2	55	   0.1636	Y	*	0
+1	3	47	   0.1557	 	 	0
+1	4	22	   0.1412	 	 	0
+1	5	43	   0.1375	 	 	0
+1	6	30	   0.1313	 	 	0
+1	7	21	   0.1238	 	 	0
+1	8	39	   0.1226	 	 	0
+1	9	62	   0.1225	 	 	0
+1	10	9	   0.1139	 	 	0
+1	11	64	   0.1137	 	 	0
+1	12	6	   0.1073	 	 	0
+1	13	79	   0.1059	 	 	0
+1	14	36	   0.0969	 	 	0
+1	15	26	   0.0905	 	 	0
+
+Smart (ntq?): 1135 bytes written to file ./save.2
+
+Smart (ntq?): 
+-------------------------
+Dtext 73 
+----
+.- --- 73 /amd/beyla/d/smart.11.0/src/test_adi/coll/adi.all 32680 33189
+
+.t 0 72
+
+microfilm and hard copy transmission from document retrieval centers .
+
+.a 72 88
+
+G. F. STAFFORD
+
+.w 88 497
+
+an all purpose communication system is described which has the
+ability to transmit documents both in hard copy format and in
+microfilms .  microfilms can be produced by high speed direct
+readout from a computer with a scan converter  and facsimile
+recorder .  the facsimile printout may be graphic or alphanumeric .
+all communication methods, including voice communication may be
+channeled into the system .
+
+Smart (ntq?): 641 bytes written to file ./save.2
+
+Smart (ntq?): 
+-------------------------
+Dvec 73 
+----
+Document vector 73
+Docid	Ctype	Con	Weight		Token
+73	0	131	 0.16697	copy
+73	0	219	 0.23869	alphanumer
+73	0	383	 0.20125	printout
+73	0	411	 0.06066	comput
+73	0	656	 0.06228	system
+73	0	676	 0.20125	channel
+73	0	717	 0.20037	commun
+73	0	927	 0.10014	method
+73	0	1165	 0.10917	includ
+73	0	1245	 0.09609	docu
+73	0	1296	 0.17935	direct
+73	0	1303	 0.10447	produc
+73	0	1343	 0.29836	facsimil
+73	0	1600	 0.16381	record
+73	0	1628	 0.15176	speed
+73	0	1715	 0.25156	transmit
+73	0	1938	 0.24571	microfilm
+73	0	1960	 0.20125	convert
+73	0	1973	 0.23869	scan
+73	0	2344	 0.14191	format
+73	0	2403	 0.22419	hard
+73	0	2540	 0.17935	graph
+73	0	2767	 0.23869	abil
+73	0	3131	 0.20125	purpos
+73	0	3237	 0.10917	cent
+73	0	3263	 0.23869	voic
+73	0	3267	 0.05680	retrief
+73	0	3363	 0.23869	readout
+73	0	3406	 0.15176	high
+
+Smart (ntq?): 
+-------------------------
+Qsim 73 
+----
+1	73	0.1044
+
+Smart (ntq?): 
+-------------------------
+Qmatch 73 
+----
+Ctype	Con	Vec1	Vec2		Product	Token
+0	131	0.1342	0.1670		0.0224	copy
+0	1245	0.0773	0.0961		0.0074	docu
+0	2403	0.1802	0.2242		0.0404	hard
+0	3267	0.6008	0.0568		0.0341	retrief
+
+Smart (ntq?): 
+-------------------------
+Drun 73 
+----
+Num  Action Sim Title
+    73     1.00 microfilm and hard copy transmission from document retrieval ce
+    32     0.20 document reproduction from microfilm is improved in speed and c
+    55     0.13 satire display subsystem . 
+     1     0.11 the ibm dsd technical information center - a total systems appr
+    42     0.11 new photon composing machine will set type from the output of a
+     7     0.09 a computer oriented photo-composition system for star 
+    12     0.08 the materials information network . 
+    19     0.08 recording text information in machine form at the time of prima
+    75     0.08 a system for transcribing printed text into a machine readable 
+     2     0.07 a new efficient structure-matching procedure and its applicatio
+    58     0.06 producing indexing aids such as a dictionary or thesaurus from 
+    25     0.06 the reduction in bulk resulting from the typesetting of documen
+    54     0.06 a selected group of techniques for automated microimage handlin
+    18     0.06 state-of-the-art : remote interrogation of stored documentary m
+     6     0.05 a new centralized information-retrieval system for the petroleu
+
+Smart (ntq?): 
+-------------------------
+Dsim 73 55 
+----
+73	55	0.1314
+
+Smart (ntq?): 
+-------------------------
+Qsim 55 
+----
+73	55	0.1314
+
+Smart (ntq?): 
+-------------------------
+Dmatch 73 55 
+----
+Ctype	Con	Vec1	Vec2		Product	Token
+0	131	0.1670	0.2400		0.0401	copy
+0	1245	0.0961	0.1381		0.0133	docu
+0	2403	0.2242	0.3222		0.0722	hard
+0	3267	0.0568	0.1020		0.0058	retrief
+
+Smart (ntq?): 

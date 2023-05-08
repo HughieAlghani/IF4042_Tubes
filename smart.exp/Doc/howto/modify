@@ -1,0 +1,85 @@
+Adding your own procedures to SMART
+
+SMART is designed to be reasonably easy to modify.  The notions
+of run-time selection of procedures and of the procedure
+hierarchy enable the addition of experimental procedures without
+adversely affecting any other uses of SMART.  All other SMART
+users will presumably not be specifying the new experimental
+procedure in their specification runs and thus will not be
+affected.  This idea of isolation of experimental procedures
+while still being able to keep them around and available as part
+of SMART is an important one in an active research project.
+
+Most modifications of SMART will be simple alterations of
+existing procedures.  The general paradigm is not to alter the
+existing procedure in place (except for bug fixes), but instead
+  1. Copy oldproc.c to newproc.c
+  2. Edit newproc.c to
+        a. Replace all oldprocedure names with your new name
+        b. Make the necessary alterations.
+  3. Edit "makefile" and add newproc.o to the list of object files.
+  4. Edit src/libproc/proc_<library>.c to add your new
+        procedure names to the procedure hierarchy.  Here,
+        <library> is whatever library directory newproc.c was
+        in (or a close approximation to that directory name).
+  5. "Make" the new version.
+
+Now, all of the old scripts or programs involving SMART will
+continue to work, since they'll use the old procedure, but you
+will be able to specify the new procedure in your run
+specification files.
+
+There may be times when you want to write a new procedure from
+scratch (actually, extremely rarely; I can't remember the last
+time I did).  In that case, .../Sample/skel.c has a very
+complicated skeleton procedure, that does as much SMART procedure
+setup as possible.  You may want to see .../Doc/overview/app.proc
+for explanations of much of what the skeleton does.
+
+Liblocal
+
+If you are going to be doing substantial additions to SMART, you may
+want to keep the actual distribution unchanged and add all of your
+local procedures in a liblocal directory hierarchy that mirrors the
+.../src hierarchy. (In fact Version 11.0 is distributed with this
+hierarchy set up.)  Exactly the same paradigm as above is used to add
+procedures in liblocal, except files will be changed in
+src/liblocal/...  Procedures in the hierarchy would be referred to in
+the same fashion, but with a "local" prepended, eg,
+        local.index.preparse.myproc
+
+Classroom use
+
+There are some special hierarchy names which provide an easy
+mechanism for linking a user defined replacement procedure into a
+temporary smart.  They are intended for use in a classroom
+environment where you don't want to give the students write
+access to the SMART code, but still want to allow them to write
+their own procedures and link them into SMART.  The idea is for a
+student (or experimenter) to write a hierarchy procedure (ie
+triplet) with procedure names init_exp1(), exp1(), and
+close_exp1().  The student then links that procedure along with
+the main procedure smart.c and the smart libraries
+  cc -o mysmart myexpproc.o ...src/smart/smart.c all_the_smart_libs
+Presumably the instructor would furnish this line.  Their
+procedure can then be referred to in their specification files as
+the hierarchy procedure "exp.1", and used however is desired.
+Procedure names exp1, exp2, exp3, and exp4 can be defined this way.
+
+User interface
+
+Just a couple of words about adding top-level interfaces to
+SMART.  This would include a reasonable X-window interface, a
+WAIS interface, or conversion into client-server model.
+
+Communication with the user is done mostly through the
+procedure libinter/inter.c.  Everything there is procedure table
+driven, with output for the user being sent back from these
+procedures in the form of a memory buffer.  It should be
+reasonably simple to take this output and display it in windows,
+or send it in messages elsewhere.
+
+The only other interaction with the user is in the query
+gathering procedures that actually get an interactive query from
+the user.  They are in libretrieve/user_q_*.c and would have to
+be rewritten to suit the application.

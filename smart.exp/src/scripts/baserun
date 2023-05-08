@@ -1,0 +1,83 @@
+#! /bin/csh
+# shell script to make the given inverted weighted runs on 
+# the test collection given by the arguments.
+#  baserun adi atc.nnn atc.atc  
+
+# WARNING: assumes single ctype
+# Assumes indexed vectors doc.nnn and query.nnn already exist.
+# You may need to change the definition of database and workdir
+# Should automatically print out results???
+# Should optimize conversion process so don't have to recreate new
+# doc weights for every run.
+
+# set echo verbose
+
+set nonomatch
+if ($#argv < 2) then
+    echo 'Usage: baserun database docwt.qwt [docwt.qwt ...] '
+    exit 1
+endif
+date
+
+set db = $1
+set run_set = ($argv[2-])
+
+set database = INDEXED/$db
+set workdir = TMPDIR
+if (! -d $workdir) mkdir $workdir
+
+# run_set is "docwt.querywt" with weights specified as coded in
+#       src/libconvert and documented in weight_tri
+
+
+    echo "Starting database $database"
+
+#############################################################################
+# Make each document collection run
+    foreach run ($run_set)
+        if (! -e rr.$run) then
+            echo "Running $run on $database"
+            set doc = $run:r
+            set query = $run:e
+            if (! -e $workdir/inv.${doc}) then
+                echo "    Making document collection $doc"
+                BIN/smart convert $database/spec proc convert.obj.vecwt_aux \
+                          in doc.nnn out $workdir/inv.$doc doc_weight $doc
+                set made_doc
+            endif
+
+            if (! -e $workdir/q.${query}) then
+                echo "    Making query collection $query"
+                BIN/smart convert $database/spec proc convert.obj.weight_query\
+                         in query.nnn out $workdir/q.$query query_weight $query
+            endif
+
+            cat > spec.$run << EOF
+include_file    $database/spec
+inv_file        $workdir/inv.${doc}
+doc_file        ""
+query_file      $workdir/q.${query}
+doc_weight      $doc
+query_weight    $query
+tr_file         ./tr.$run
+rr_file         ./rr.$run
+num_tr_wanted   15
+run_name        "$db. Run `date`.  Doc = $doc, Query = $query"
+EOF
+
+            BIN/smart retrieve spec.$run
+
+            set retrieve_status = $status
+
+            if ($?made_doc) /bin/rm $workdir/{inv.${doc},inv.${doc}.var}
+            /bin/rm $workdir/{q.$query,q.$query.var}
+            time
+
+            if ($retrieve_status) then
+                echo "baserun: retrieve $run failed.  baserun aborted."
+                /bin/rm -f rr.$run tr.$run
+                exit 1
+            endif
+
+        endif
+    end

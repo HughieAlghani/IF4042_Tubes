@@ -1,0 +1,24 @@
+#! /bin/csh
+# Run the args as a query to the docsmart collection, printing only the top
+# doc retrieved.
+
+set query = /tmp/sm_q_$$
+cat > $query << EOF
+run
+ *0 $*
+ *1 $*
+ *2 $*
+ *5 $*
+.
+
+q
+EOF
+
+/home/smart.11.0/src/bin/smart inter \
+        /home/smart.11.0/indexed_colls/docsmart/spec \
+        query_skel ""   get_query.editor_only 0 verbose 0    \
+        print.format\
+        "DESCRIPTION:\n%d\nPROCEDURE:\n%m%p%r\nHIERARCHY:\n%h\nUSES:\n%s%g\nFULL DESCRIPTION:\n%f\nALGORITHM:\n%a\nBUGS AND WARNINGS:\n%b" \
+        < $query
+
+/bin/rm -f $query

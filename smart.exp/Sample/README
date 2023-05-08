@@ -1,0 +1,126 @@
+Directory /smart/Sample
+        Directory containing examples of uses of SMART. Currently
+        extremely sparse; it should fill up rapidly.
+
+#########################################################################
+SAMPLE COLLECTIONS
+
+Almost all of the following scripts deal with indexing very simple
+collections.  In practice, the weighting, parsing, and storage
+mechanisms should be fine-tuned to suit the collection; what is given
+here is decidedly non-optimal in some circumstances.  But the samples
+should get you started!
+
+All of these creation scripts will create inverted files indexed with
+nnc (term-freq cosine-normalized) weights.  See the samples under the
+TEST COLLECTION heading for some alternatives.  Query weights for all
+these collections are ntc (tf * idf, cosine-normalized) weights.
+
+make_text       Index a collection from a set of text files.  Each file
+                is assumed to be a single document, with a single parsing 
+                method for the entire document.  Simplest indexing.
+
+make_man        Index a collection from text files in /usr/man/man*.
+                Each file is assumed to be a single document in
+                nroff input form (ie, nroff must be run on it before
+                it can be indexed or displayed).  Note that this same
+                mechanism can be used for compressed files.
+
+update_man      Update a collection previously made with "make_man" by
+                adding text files that are newer than the last indexing
+                of the man collection.  (Note, no document deletion done).
+
+make_mail       Index a collection from one or more text files which are
+                sendmail mbox files.  Each file has many documents in it.
+                Selected portions of the headers are indexed, as well as
+                the entire body of the message.
+
+make_news       Index a collection of one or more news files that contain
+                news articles.  Each file may have one or more news
+                articles in it.  Selected portions of the headers are
+                indexed, as well as the entire body of the message up
+                until a signature break (line consisting of "--").
+
+update_news     Update a collection previously made with "make_news" by
+                adding text files that are newer than the last indexing
+                of the news collection.  Then, the collection is checked
+                to ensure that a text file still exists for all documents.
+                Those documents without text files are deleted from
+                the collection.
+
+make_docsmart   The most complicated (and realistic) sample given. 
+                It indexes a collection of SMART procedure comments.
+                Each vector can have up to 4 types of information in it,
+                stored in 4 different inverted files.  Different types of
+                info use different dictionaries, weighting methods, and 
+                retrieval weights.  Stemming and/or stopwords depend
+                on the type of information found during the parse phase.
+                The user automatically enters an editor to give a query,
+                and receives formatted output.
+#########################################################################
+
+TEST COLLECTIONS
+All of the following scripts or directories deal with the standard 
+experimental test collections.  Each one of these collections contains
+document text, query text, and judgements as to which documents are
+relevant to which queries.  The indexing script (make_<collname>) for
+each collection creates all three of these.
+
+The indexing scripts (except where noted) run the standard SMART
+parsing for the collections, and end up with one or more weighted
+vector objects (eg, make_adi creates 2 versions of both doc and query
+weighted vectors; one a term freq, the other a tf*idf variant).
+Note that the parsing methods are different from earlier versions of SMART;
+ie, the results reported in our 86-90 papers are no longer directly
+comparable to results obtained from these indexings.
+
+Also see src/test_adi/test_adi as a sample of a script which performs
+and evaluates retrieval.  src/scripts/base_run and src/scripts/fdbk_run
+are also useful if you want to look at evaluatable retrieval on a
+test collection.
+
+make_adi        Index the adi collection. Create both tf (nnn) and 
+                tf*idf (atc) forms of docs, inverted files, and queries.
+                Indexing uses file operations.
+                Reduced dictionary size.
+
+make_cacm       Index the cacm collection. Create tf (nnn) and 
+                tf*idf (ntc) forms of queries; tf (nnn) form of docs;
+                and both tf (nnn) and tf*idf (ntc) form of inverted files.
+                (Don't normally need tf*idf form of docs)
+                Indexing uses memory operations (faster)
+                Ignores most extra information in cacm text (eg cocitations).
+
+make_cisi       Index the cisi collection. Create tf (nnn) and 
+                tf*idf (ntc) forms of queries; tf (nnn) form of docs;
+                and both tf (nnn) and tf*idf (ntc) form of inverted files.
+                Ignores extra information in cisi text (citations).
+
+make_cran       Index the cran collection. Create only a tf (nnc) form
+                of the inverted file (no doc vectors at all), and a
+                tf*idf (atc) form of the queries. (Ie, this uses the
+                minimal amount of disk space for the indexed collection).
+
+make_inspec     Index the inspec collection. Create tf (nnn) and 
+                tf*idf (ntc) forms of queries; tf (nnn) form of docs;
+                and both tf (nnn) and tf*idf (ntc) form of inverted files.
+
+make_med        Index the med collection. Create both tf (nnn) and 
+                tf*idf (atc) forms of docs, inverted files, and queries.
+
+make_npl        Index the npl collection from previously indexed
+                (non-SMART) version.  This shows one way to get
+                a collection indexed via some other ir system into
+                SMART.  Input is text tuples giving the doc and
+                query vectors; output is both tf (nnn) and
+                tf*idf (atc) forms of docs, inverted files, and queries.
+
+trec            A directory of scripts related to indexing the TREC
+                collection.  These scripts might be useful for those
+                people indexing large collections; eg, all of the above 
+                scripts assume that collections are small enough to fit 
+                into virtual memory.
+
+#######################################################################
+skel.c          Prototype for a smart hierarchical procedure.  Shouldn't
+                ever be needed outside of Cornell.

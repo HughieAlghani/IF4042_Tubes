@@ -1,0 +1,56 @@
+Directory /smart/src
+        Top-level source directory.  Contains all of smart source,
+        plus the default bin directory.
+
+bin/            SMART binaries, plus any scripts from
+                ../scripts that are wanted here.
+h/              Include files
+lib/            SMART object and lint libraries.
+makefile        Top level makefile
+makebin.templ   Template for the binary directories makefile
+                (smart and utility are the two binary directories)
+                Any changes in the general compilation scheme should
+                be made to this file, and will be propogated down to the
+                relevant directories' makefiles by "make makefiles"
+makelib.templ   Template for smart object libraries' makefiles.
+                Any changes in the general compilation scheme should
+                be made to this file, and will be propogated down to the
+                relevant directories' makefiles by "make makefiles"
+makebin.bfly.templ Special purpose makefile templates for compilation
+                on the BBN butterfly
+makelib.bfly.templ Special purpose makefile templates for compilation
+                on the BBN butterfly
+smart/          Location of the "main" procedure for smart.
+utility/        A couple of utility programs that do not depend on the
+                rest of SMART (a trie creation program needed for the
+                compilation of smart, and a news filtering program for
+                netnews.)
+user_contrib/   Software contributed from outside Cornell. At the moment
+                just a currently non-working X-window interface from
+                Berkeley.
+
+
+                The rest of the directories here are the source for the
+                SMART object libraries.  They are separated according to
+                function, and level.
+
+libdatabase/    Lowest level file access routines.  Called only by
+                procedures in libfile.
+libfile/        Low level file access routines.
+libgeneral/     General purpose, non-hierarchy utility procedures.  These
+                do not call procedures in any other directory.
+libproc/        Establishes the smart hierarchy of procedures.  If a 
+                procedure is to be added to smart, its name needs to be
+                entered here.
+libconvert/     Hierarchy routines to convert one smart object to another
+libretrieve/    Hierarchy routines to perform a retrieval
+libevaluate/    Hierarchy routines to evaluate a retrieval run.
+libexp/         Experimental skeletons that exist only to provide a
+                hierarchy name.  See .../Doc/howto/modify
+libfeedback/    Hierarchy routines to produce a feedback query.
+libindexing/    Hierarchy routines to index docs/queries
+libinter/       Top-level user interface routines.  Not currently part
+                of smart hierarchy, but should be.
+libprint/       Procedures to print smart objects to either memory or
+                a file.  Some of these of hierarchy procedures and others
+                are not.

@@ -1,0 +1,47 @@
+## INFORMATION LOCATIONS
+database                /amd/beyla/d/smart.11.0/src/test_adi/indexed
+include_file            /amd/beyla/d/smart.11.0/lib/spec.expcoll
+doc_loc                 /amd/beyla/d/smart.11.0/src/test_adi/indexed/doc_loc
+query_loc               /amd/beyla/d/smart.11.0/src/test_adi/indexed/query_loc
+qrels_text_file         /amd/beyla/d/smart.11.0/src/test_adi/coll/qrels.text
+
+## ADI DOCDESC
+#### GENERIC PREPARSER
+num_pp_sections                 6
+pp_section.0.string             ".I"
+pp_section.0.action             discard
+pp_section.0.oneline_flag       true
+pp_section.0.newdoc_flag        true
+pp_section.1.string             ".A"
+pp_section.1.section_name       a
+pp_section.2.string             ".B"
+pp_section.2.section_name       b
+pp_section.3.string             ".W"
+pp_section.3.section_name       w
+pp_section.4.string             ".T"
+pp_section.4.section_name       t
+pp_section.5.string             ".O"
+pp_section.5.action             discard
+
+#### DESCRIPTION OF PARSE INPUT
+index.num_sections              4
+index.section.0.name            a
+index.section.1.name            b
+index.section.2.name            w
+  index.section.2.method        index.parse_sect.full
+  index.section.2.word.ctype    0
+  index.section.2.proper.ctype  0
+index.section.3.name            t
+  index.section.3.method        index.parse_sect.full
+  index.section.3.word.ctype    0
+  index.section.3.proper.ctype  0
+title_section 3
+
+#### DESCRIPTION OF FINAL VECTORS
+num_ctypes                      1
+ctype.0.name                    words
+
+## ALTERATIONS OF STANDARD PARAMETERS
+dict_file_size                  3563
+
+## ALTERATIONS OF STANDARD PROCEDURES

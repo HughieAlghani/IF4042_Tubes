@@ -1,0 +1,22 @@
+#! /bin/csh
+# Convert the given rr relation to rr_vec relation, storing the old rr
+# relation in ,save<name>
+
+set spec = /home/smart/lib/spec.default
+
+if ($#argv < 1) then
+        echo 'Usage: conv_rr filename'
+        exit
+endif
+
+set filename = $1
+
+if (-e old$filename) then
+        echo "old$filename already exists. No conversion done"
+        exit
+endif
+
+mv $filename old$filename
+smart convert $spec proc convert.obj.oldrr_rrvec  in old$filename \
+                    out $filename
+

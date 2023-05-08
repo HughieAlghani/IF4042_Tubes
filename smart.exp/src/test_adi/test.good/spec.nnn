@@ -1,0 +1,4 @@
+include_file /amd/beyla/d/smart.11.0/src/test_adi/indexed/spec
+tr_file ./tr.nnn
+rr_file ./rr.nnn
+run_name "Doc weight == Query weight == nnn  (term-freq)"

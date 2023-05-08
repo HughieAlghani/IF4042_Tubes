@@ -1,0 +1,27 @@
+Release 11.0
+One process.
+Specification file all set up (but not fully populated).
+All non-low-level procedures dynamically determined by spec files.
+Textloc file will have only entire doc as the one section.
+Still separate steps for all operations (eg, no attempt to 
+    keep inverted file open throughout all of indexing,retrieval,feedback)
+Retrieval tie breaking done by inverse did instead of deterministic random.
+Make rr,tr all implemented via direct.  rr,tr,eval will all be treated
+    as vectors.
+
+Release 11.1
+Low-level changes to direct routines for caching and sharing of files.
+X-routines finished for casual user.
+Add server/client relationship.  One server per collection; one client
+    process per user.
+
+Release 11.2
+Low-level changes to direct to handle sparse keys.
+Ctype included as first byte of concept; thus changes in VEC object
+X routines finished for experimenter (examine equivalent).
+Full on-line documentation available for experimenter (PROC_TAB object
+    will have doc field, basically man entry.)
+Compression option available (add doc text to database - compressed, and
+    possibly pre-parsed)
+Distributed collections fully implemented.
+

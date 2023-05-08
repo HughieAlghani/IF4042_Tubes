@@ -1,0 +1,82 @@
+So far I've encountered 3 SunOS bugs as well as an undocumented
+(and unknown!) limitation.  I have short sample programs that
+demonstrate Bug 1 and 3; Bug 2 unfortunately reliably occurs only
+with the full SMART system after 2 hours of execution time.
+
+------------------------------------------------
+Bug 1. Affects 4.1.2 systems and 4.1.1 systems with the
+swap-order patch installed.
+
+Large processes hang the entire machine for 1 to 10 minutes at a
+time when they exit.  No activity at all occurs, even on/from the
+console. 
+
+Fix: Turn off the swap-order code (which by default is on, and
+gives a minor speedup for extremely long running processes).
+To turn it off on a running system:
+    echo swap_order/W0 | adb -w /vmunix /dev/kmem
+
+Here's Sun's latest update on it (Note that the problem actually
+affects all Sparc 2 type machines from the ELC on up to the 4M
+machines).
+> Date: 26-May-92
+> 
+> 
+> Description: 4M MACHINES HANG WHEN EXITING LARGE PROCESSES
+> 
+> PROBABILITY OGRESS CHANGE:
+> 
+> 05/26/92
+> We have satisfied ourselves that the workaround is acceptable. Have the customer
+> adb their kernel and set the global 'swap_order' to 0 (its 1 by default). This will
+> alleviate the problem. Engineering is working on a real fix, but this may take some
+> time.
+
+----------------------------------------------------------
+
+Bug 2. Affects all 4.1.1, 4.1.2 systems in Sparc 2 line (ELC,IPX, etc)
+
+Large processes (smallest I've seen it happen with is 259 Mbytes)
+can get either temporarily or permanently hung when doing a
+malloc while paging while ... (not sure of all conditions.  My
+standard example (other than SMART!) is lisp garbage collection)
+In a temporary hang, the process remains blocked until some other
+process uses and frees memory (if this is a dedicated processor,
+it may take hours!).  In a permanent hang, the process is stuck
+in disk wait and never frees itself.  System eventually has to be
+rebooted to reclaim processes swap space.
+
+Fix: Not known.  Patch 100330-05 fixes some problems in this
+area, but doesn't solve it completely (doesn't help SMART at all).
+I'm still talking with Sun about it, but they don't have any
+quick answers.
+
+My work-around is that I can write out my data to disk instead of
+malloc'ing space for it.  I then later use mmap to get it into
+memory.  This may not be suitable for everybody.
+
+----------------------------------------------------------------------
+
+Bug 3. Affects ELC but not IPX under both 4.1.1 and 4.1.2
+
+A program that needs a RSS (Resident Set Size) of more than 16-20
+Mbytes (this is on a machine with 64 Mbytes of memory) will spend
+most of it's time in the kernel (though no paging is occurring).
+My example is a 19 Mbyte dictionary that is being constantly
+randomly accessed.
+
+Fix: Not known.  I haven't talked to Sun about this one yet; I
+want them to concentrate on Bug 2!  In the meantime, I use a
+slower smaller dictionary.
+
+-----------------------------------------------------------------------
+
+There's also an unknown (at least I can't find it documented
+anywhere) limitation on the size of files you can have "mmap'ed"
+(or perhaps it's mmap'ed plus data space).
+It appears to be in the 800-900 Mbyte range, although I haven't
+bothered pin-pointing it exactly.  From looking at the include
+structures, I could understand a 1 Gbyte limit on just mmap'ing,
+but I'm far short of that.
+
+----------------------------------------------------------------------

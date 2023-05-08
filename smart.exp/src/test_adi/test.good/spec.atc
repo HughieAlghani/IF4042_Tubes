@@ -1,0 +1,7 @@
+include_file /amd/beyla/d/smart.11.0/src/test_adi/indexed/spec
+query_file query.atc
+doc_file doc.atc
+inv_file inv.atc
+tr_file ./tr.atc
+rr_file ./rr.atc
+run_name "Doc weight == Query weight == atc  (augmented tfidf)"

@@ -1,0 +1,21 @@
+All of the  files in each of the test collection sub-directories have the same format.
+
+Filenames ending in ...q.num
+      query number
+      number of terms / stems in the query
+      numbers of those terms / stems
+
+Filenames ending in ...if.num
+      term / stem number
+      number of documents in which it occurs
+      numbers of those documents
+
+Filenames ending in ...rj.num
+      query number
+      number of relevant documents
+      numbers of those documents
+
+Filenames ending in ...d.num
+      document number
+      number of terms / stems in the document
+      numbers of those terms / stems

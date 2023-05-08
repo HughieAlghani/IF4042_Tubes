@@ -1,0 +1,16 @@
+Directory /smart/Doc/overview
+        Documentation giving an overview of the SMART system.  The main
+        file should be skimmed, the appendices go into details for
+        primarily programmers.  Note, this was gathered together
+        from at least 3 different text-processing systems, and has
+        not been converted to latex yet.
+
+overview        Main introduction to the entire SMART system
+app.eval        Detailed explanation of evaluation output
+app.file_acc    Low level file access procedures
+app.procs       General schema for procedures
+app.rel_objs    Types of low-level relational objects 
+app.spec        Details of specification files, and how parameter matching
+                is done.
+
+

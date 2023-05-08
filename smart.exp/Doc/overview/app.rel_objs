@@ -1,0 +1,447 @@
+.sh 1 "Implementation of SMART Relational Objects"
+.pp
+The SMART relational objects, whose access methods are described in the
+above section, are designed to ease the task of the application programmer.
+Since they present a uniform interface to the programmer, once the
+programmer has learned to access one object type,
+he or she can access any object type.
+The programmer can then concentrate on the information needed to solve the
+particular task at hand.
+.pp
+At least 12 types of file objects are currently used within SMART.
+.(l
+1.  dictionary
+2.  vector
+3.  textloc
+4.  inverted_file
+5.  simple_inverted_file
+6.  graph
+7.  array
+8.  relevant_rank
+9.  top_rank
+10. pnorm_vector
+.)l
+Each relational object is used to store a different type of information.
+(For the most part, the type of information can be guessed from the name
+of the relation.)
+Each has its own set of access routines (described above) and has a
+separate external form to be used for these routines.
+The implementation of a file object may have an additional internal form
+which will be invisible outside of the implementation.
+.pp
+Each implementation keeps a static array which contains information
+about each opened relation of the appropriate type.
+Note that since this array is static, only a fixed number of relations
+of any type can be open at once.
+Each opened relation has its own buffers and pointers; it is never the
+case that an operation on one opened relation will affect an operation
+or any data associated with a different opened relation.
+.pp
+The SMART implementation of relational objects has two logical levels.
+The user (application programmer) can access a set of functions for each
+object without worrying about the implementation or storage method used
+for that relational object.
+Underneath this user level, though, is a lower level of database access
+methods.
+This lower level roughly corresponds with the normal relational database
+access methods: hashed access, direct access, sorted access.
+The user level roughly corresponds to the notion of a relational
+specification schema giving the attributes and features of a set of
+relations.
+The application programmer invokes an access routine (eg.
+\fBread_vector\fP) to access a tuple of a given relational type.
+The access routine then invokes the database routine of the appropriate
+type to physically access the tuple on disk.
+.pp
+This separation of relational access routines from database access
+routines is more logical than physical in several cases.
+There are several relational objects with implementations which join the
+two levels.
+Even in these cases, it is helpful to think of distinct layers of
+code.
+.sh 2 "The Database Access Level"
+.pp
+There are three database access methods used to implement most of the
+relational objects above.
+The \fIhash-dictionary\fP access method is specifically designed to meet
+the requirements of the dictionary relational object.
+The requirements and implementation are
+discussed in greater detail below in the section on
+the dictionary relational object.
+.pp
+The \fIsorted-fixed\fP access method corresponds very closely to the
+normal sorted relation of a relational database.
+The relational objects which use this method all have a fixed number of
+attributes, are kept sorted on one or two keys, and are generally fairly
+small (< 2000 tuples per relation).
+Each attribute is of a fixed size.
+This access method is generally used to store results of retrievals or
+experiments.
+These relations are normally written and read sequentially, so there is no
+need for immediate access to a random tuple.
+.pp
+The small size of these relations allows them to be kept entirely in main memory
+as a compact sequence of tuples.
+Positioning within the relation is done by binary-search of the keys.
+Insertion of a tuple in the middle of a relation is expensive, since
+every following tuple must be moved in order to make room for the new
+tuple.
+No disk accesses are involved other than the initial and final reading
+and writing of the entire relation.
+.pp
+The \fIdirect-variable\fP access method allows some attributes to be of
+variable length.
+There must be one distinguished attribute which assigns a unique value to
+each tuple within the relation.
+The relation is kept sorted on this attribute.
+Each variable length attribute must be associated with another attribute
+in the relation whose value gives the length of each tuple's variable length
+attribute.
+These relations are the ``work-horses'' of the SMART system.
+Most of the vital collection relations (eg. document representatives,
+inverted files) use this access method.
+The variable length attributes are used to store lists of items, like the
+list of concepts associated with a document.
+This means that an entire document representative can be read with one
+call to the access method.
+.pp
+The direct-variable relations are stored as two UNIX files.
+The first file (the direct file)
+contains the fixed-length attributes and a pointer to the
+location of the start of the variable-length attributes.
+These variable-length attributes are found in a second file.
+The records within the direct file are all of fixed length.
+This allows the distinguished attribute (\fItid\fP) value to be used as
+an offset into the direct file to immediately access the fixed-length
+attributes of a tuple.
+Since the lengths of the variable-length attributes are known once the
+fixed-length attributes are known,
+the location of each of the variable-length attributes can be directly
+determined.
+.pp
+If the application programmer has specified that the entire direct-access
+relation should be brought into memory (by using the flag SINCORE), then
+a tuple can be read by simply setting a few pointers.
+Most of the time, though, the relation will be too big to be brought into
+main memory. In this case, the fixed attribute is read into one internal
+buffer, and all of the variable length attributes into another buffer.
+Pointers are then assigned to address these buffers.
+Therefore, if a direct object is not SINCORE, the applications program
+must copy any tuple it wishes to save.
+.sh 2 "The Relational Object Level"
+.pp
+The three database access methods above are used for all of the relational
+objects below (although indirectly in some cases).
+The application programmer will probably never have contact with the
+database access methods.
+The relational objects provided are expected to accomodate most
+information retrieval purposes.
+.sh 3 "The Dictionary Relational Object"
+.pp
+The dictionary relation is used to map a token to a
+unique concept number.
+The user views the dictionary relation as a sequence of tuples of the form:
+.(l
+typedef struct {
+	char  *token;		/* pointer to the actual string */
+	long info;              /* User supplied meaning */
+	long  con;		/* unique index for this token pair */
+} DICT_ENTRY;
+.)l
+The relation is sorted by <con>, but can also be accessed given <token>.
+Note that the attribute <con> is really of type \fItid\fP.
+The user will enter a new concept by seeking on <token.
+The number <con> is assigned to the tuple by the system
+when the new concept is written.
+.pp
+The basic implementation of the dictionary object is as a simple hash table.
+Collisions are handled by linking to the next available spot, following
+a chain of links if necessary.
+If there are no available spots within a fixed number of entries,
+an overflow hash table (same implementation) is used, and the current
+operation is recursively invoked upon it.
+Note that the hash function used does not take into account the recursive
+level (probably a mistake) and thus any undesirable behavior in the
+initial dictionary will be repeated in the overflow dictionary (very large
+numbers of tokens hashing to one value cause serious problems).
+.pp
+The internal implementation of an entry
+.(l
+typedef struct hash_entry {
+	short collision_ptr;		/* offset of next word hashed here */
+					/* If IN_OVF_TABLE, then need to go to
+					/* (next) overflow hash table */
+	char prefix[2];                 /* First 2 bytes of string */
+					/* used to detect misses early */
+	long str_tab_off;		/* position of string (byte offset) */
+	long info;                      /* User supplied meaning */
+} HASH_ENTRY;
+.)l
+.pp
+The physical file contains 3 sections - a 20-byte REL_HEADER, a fixed size
+hash table, and an expanding string table. New token strings are added to
+the end of the string table, and the byte offset is placed in the internal
+entry.
+.pp
+Two methods are defined for accessing a dictionary entry: hashing on
+<token> or direct access through <con>.
+<con> is simply the dictionary entry index that <token> hashes into
+when the entry is originally placed in the dictionary.
+Thus, a quick direct access to the token exists given
+the values of <con>.
+This is used (possibly) during retrieval and feedback operations.
+There may be some similarity computations based upon the token (for
+example, experiments using fuzzy matching of dates).
+Accessing via <token> is essential during the indexing process.
+.pp
+In practice, the dictionary implementation is very fast for read access.
+The collision pointer is guaranteed to point to within either the current
+disk page or the next disk page (except if it points to the overflow
+table).
+There don't seem to be any efficiency problems for read access until the
+first overflow hash table starts to get full.
+Write access, which is done only when adding a document to the collection
+normally, becomes significantly slower when the initial hash table becomes 
+about three-quarters full.
+However, the parsing and other actions of the indexing process still take
+a bit longer than the dictionary accesses.
+In addition, document indexing is not time critical; a
+user is not normally sitting there waiting for the indexing to finish.
+.pp
+Problems with the implementation: 
+The size of the hash table is fixed (by the value of max_primary_entry
+in the relation header) when \fBcreate_dict\fP is called.
+The overflow dictionary works reasonably fast, but is space inefficient.
+Currently, if any write operations are to be done, the entire dictionary,
+must be brought in-core.
+There is no inherent reason for this; at some point in the future the
+implementation
+should be changed.
+A B-tree implementation would be nice, but that is difficult to
+program efficiently under UNIX.  
+The present approach works very well at query indexing time, where speed is
+important and the dictionary is not in core.  Most tokens are looked up
+in two disk accesses.
+.sh 3 "The Vector Relational Object"
+.pp
+The vector relation is used to store ``flat'' (no imposed structure)
+document or query representatives.
+Each tuple gives a list of concepts (with their types) and weights for one
+document.
+Thus the relation as a whole represents an entire document (or query)
+collection.
+The user view of a vector tuple:
+.(l
+typedef struct {
+	long id_num;		/* unique number for this vector within 
+				/* collection */
+	long num_conwt;	/* no. of tuples in the vector */
+	CON_WT *con_wtp;	/* pointer to concepts, weights for vector*/
+	long   num_ctype;	/* number of ctypes for this vector */
+	long   *ctype_len;	/* length of subvector for each ctype */
+				/* For i = 0..(num_ctypes-1),
+				/* ctype_len[i] is the number of concepts
+				/* in con_wtp for this document
+				/* with ctype i */
+} VEC;
+typedef struct {
+	long con;		/* Actual concept number */
+	float wt;		/* and its weight */
+} CON_WT;
+.)l
+.br
+Note the pointer to the CON_WT relation. The relation is sorted by <id_num>,
+with the con_wt tuples being sorted by <ctype , con>
+.pp
+The vector relational object uses the \fIdirect-variable\fP database
+access method discussed above.
+Since these routines bear the brunt of most of the data manipulation
+involved in indexing and retrieval, it is important that they be as fast
+as possible.
+The implementation performs reasonable actions
+with all possible access modes, both in and out of core.
+On a read_vector operation, the implementation will make sure that all the
+CON_WT tuples are in memory (if not, then they will be brought into memory)
+and the value of <con_wtp> is set to that location in memory.
+No copying of this portion of the vector is ever done.
+.sh 3 "The Textloc Relational Object"
+.pp
+The textloc relational object stores information needed for the display of
+documents after retrieval.
+The UNIX file name and location within that file for each section of
+a document are kept within a textloc relation tuple.
+The user's image of a textloc tuple is
+.(l
+typedef struct {
+    long  id_num;                   /* Id of text */
+    long begin_text;                /* Offset within file_name of text start */
+    long end_text;                  /* Offset within file_name of text end */
+    long doc_type;                  /* Collection dependent type of doc */
+    char  *file_name;               /* File to find text in */
+    char  *title;                   /* Title of text */
+} TEXTLOC;
+.)l
+.pp
+The \fIdirect-variable\fP access routines are used again.
+All of the comments pertaining to the vector relation apply here also.
+One optimization could be made for the textloc implementation which
+has not yet been made.
+Very often documents are stored sequentially in one UNIX file.
+Thus the filenames of all the tuples of a relation could actually
+be stored in one collection.
+.pp
+It is not clear that the title of a document needs to be stored in the
+textloc tuple since it can be obtained easily from the physical document.
+A lot of space can be used by storing the titles an extra time.
+However, an earlier implementation suggested that it is just too slow to
+read the titles from the documents.
+This is a classic time-space tradeoff; perhaps the textloc routines should
+allow for either choice.
+.sh 3 "The Inverted File Relational Object"
+.pp
+The main purpose for the inverted file relations is to provide an
+alternative (or perhaps only!) access method to a collection of 
+documents with concepts.
+Instead of storing the collection as a sequential list of vectors, each
+vector having a list of concepts associated with it; the collection is
+stored as a sequential list of concepts, each concept having a list of
+documents associated with it.
+Hence, an inverted file relation is an inverse of a vector relation.
+An inverted file tuple looks like
+.(l
+typedef struct {
+	long  id_num;	        /* key to access this inverted list with*/
+	long  num_listwt;       /* Number of elements in this list */
+	LISTWT *listwt;		/* pointer to list elements and weights */
+} INV;
+typedef struct {
+	long list;		/* Actual list element (eg docid) */
+	float wt;		/* and its weight */
+} CON_WT;
+.)l
+In its most common use, the id_num attribute of an inverted relation is a
+concept number,
+the listwt attribute is a set of documents ids (in increasing order) in
+which that concept occurs, with the weights for those occurrences.
+Note that other uses of an inverted file relation are also possible.
+.pp
+The \fIdirect-variable\fP database access method is used in the
+implementation.
+Unfortunately, one problem of this method mentioned earlier becomes much
+more serious here.
+Garbage collection of the variable-length UNIX file is not automatically
+done (yet).
+If a new document is added to a collection, then the inverted lists for
+all of the terms occurring in the document need to be re-written.
+These new inverted lists are written at the end of the UNIX file and the space
+taken up by the old versions is never re-claimed.
+The inverted object needs to be copied to reclaim the space.
+.sh 3 "The Simple Inverted File Relational Object"
+.pp
+The simple inverted file relations are just a tool for the application
+programmer.
+There is no particular application for this relational object.
+The object is basically the same as the regular inverted file object above
+except that no space is reserved for weights.
+.(l
+typedef struct {
+        long  node_num;	/* key to access this inverted list with*/
+        long  num_list;		/* Number of elements in this list */
+        long  *list;		/* pointer to list elements  */
+} SIMP_INV;
+.)l
+.sh 3 "The Graph Relational Object"
+.pp
+The graph relational object is also just a tool for the programmer.
+Graph relational objects can be used to represent a general graph
+with weighted edges.
+They are implemented using the \fIdirect-variable\fP access routines.
+.(l
+typedef struct {
+        long  node_num;	/* unique number for this node within 
+				/* graph */
+        long  info;		/* Information stored in node (often index */
+				/* into another relation or array) */
+        short num_parents;	/* Number of other nodes which point to node*/
+        short num_children;	/* Number of children of this node */
+        long  *parents;		/* node_nums of parents of node. */
+        long  *children;	/* node_nums of children of node. */
+        float *parent_weight;	/* Weights of each of the links in parents */
+        float *children_weight;	/* Weights of each of the links in children */
+} GRAPH;
+.)l
+.sh 3 "The Array Relational Object"
+.pp
+Again, these are a general purpose tool for the application programmer.
+The array relation simply gives you access to an integer value, given an
+integer index.
+.(l
+typedef struct {
+    long index;
+    long info;
+} ARRAY;
+.)l
+The array object just gives a uniform way of storing this type of
+information on disk.
+.sh 3 "The Top Ranks Relational Object"
+.pp
+A top ranked vector relation (TR_vec for short) stores the ranks of the 
+top documents seen for a query.
+This is the output form of a retrieval operation (and the input form for
+the display of documents).
+A "vector" appears as
+.(l
+typedef struct {
+    long  did;          /* document id */
+    long  rank;         /* Rank of this document */
+    char  action;       /* what action a user has taken with doc */
+    char  rel;          /* whether doc judged relevant(1) or not(0) */
+    char  iter;         /* Number of feedback runs for this query */
+    char trtup_unused;  /* Presently unused field */
+    float sim;          /* similarity of did to qid */
+} TR_TUP;
+
+typedef struct {
+    long  qid;          /* query id */
+    long  num_tr;       /* Number of tuples for tr_vec */
+    TR_TUP *tr;         /* tuples.  Invariant: tr sorted increasing did */
+} TR_VEC;
+.)l
+The tuples are sorted by <did> within the relation.
+.pp
+The major reason for having an TR relation at all is size.
+The experimental results of a retrieval need to be kept around long after
+the experiment is done.
+Unless attention is paid to keeping the results in a compact form, the
+size of the results quickly becomes larger than the size of the collection!
+.sh 3 "The Relevant Ranks Relational Object"
+.pp
+A relevant ranked vector relation (RR_VEC for short) stores 
+information needed for the evaluation of an experimental run.
+The ranks and similarity values for every relevant document seen are kept
+in the RR_VEC tuples.
+The user's (and system's) view of a vector:
+.(l
+typedef struct {
+    long  did;          /* document id */
+    long  rank;         /* Rank of this document */
+    float sim;          /* similarity of did to qid */
+} RR_TUP;
+
+typedef struct {
+    long  qid;          /* query id */
+    long  num_rr;       /* Number of tuples for rr_vec */
+    RR_TUP *rr;         /* tuples.  Invariant: rr sorted increasing did */
+} RR_VEC;
+.)l
+The relation is sorted by <did> within each query.
+.sh 3 "The Pnorm Vector Relational Object"
+.pp
+The pnorm objects are a special purpose kind of query vector.
+Along with the normal vector's list of attributes and weights,
+the pnorm vector includes a tree structure for each query.
+The tree structure allows boolean operators and boolean operator weights
+to be given in a query.
+Since the pnorm vectors are mainly of interest to experimenters, they are
+not discussed further here.
+There is currently no code in the system that operates on pnorm vectors.

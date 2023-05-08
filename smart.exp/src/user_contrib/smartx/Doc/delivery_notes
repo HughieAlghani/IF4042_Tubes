@@ -1,0 +1,39 @@
+/************************************************************************
+*                                                                       *
+*       Adding an X-Window interface to SMART --- delivery notes        *
+*                                                                       *
+*                                                                       *
+*    by Victuria Chiu, senior in CS from Univ. of Cal. at Berkeley,     *
+*                      e-mail: victoria@csr.lbl.gov                     *
+*                                                                       *
+*       Tong Li, graduate student in CS from Oregon State University,   *
+*                e-mail: lit@mist.cs.orst.edu                           *
+*                                                                       *
+*    at Lawrence berkeley Laboratory, Summer 1991                       *
+*                                                                       *
+************************************************************************/
+
+
+We will send you the coded directory consisting all the files that we added or
+changed, organied at the same structure as the previous version of SMART.
+
+To get them, please follow these instructions:
+
+1. Save the mail in a file say smartx.uue;
+
+2. Delete heading from smartx.uue file;
+
+3. Do "uudecode smartx.uue", the system will generate a file called smartx.tar.Z
+   at the current directory;
+
+4. Do "uncompress smartx.tar.Z";
+
+5. Do "tar xvf smartx.tar smartx", the directory smartx contents all the 
+   directories and files we have changed or added. Also a document directory.
+
+6. Note that we implemented this x-interface to SMART using DevGuide, an x 
+   interface builder. DevGuide is needed to run this interface.
+
+Follow the instruction in the "integration_notes" file to incorporate xinterfaceto smart
+
+

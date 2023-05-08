@@ -1,0 +1,34 @@
+#  Shell script to perform simple retrieval
+# set echo verbose
+
+set coll = /amd/beyla/a/trec
+set smartdir = /amd/beyla/d/smart.11.0
+set database = /amd/beyla/b/trec/trec.ntc
+
+set lib = $smartdir/lib
+#set bin = $smartdir/src/diropt/bin
+set bin = $smartdir/src/bin
+
+set tr_file = ./run_noeval.tr.ntc.ntc
+set output_method = ret_tr
+set num_wanted = 200
+set inv_file = inv.ntc
+set query_file = query.ntc
+
+cat > run_noeval.spec << EOF
+include_file    $database/spec 
+tr_file         $tr_file
+inv_file        $inv_file
+query_file      $query_file
+num_wanted      $num_wanted
+retrieve.output retrieve.output.$output_method
+smart.trace      2
+global_accounting 5
+run_name        ntc.ntc.$num_wanted
+EOF
+
+/bin/rm -f $tr_file $tr_file.var
+
+$bin/smart retrieve run_noeval.spec
+
+time

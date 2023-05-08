@@ -1,0 +1,110 @@
+#  Shell script to create a trec collection
+# set echo verbose
+
+set coll = /amd/beyla/a/trec
+set smartdir = /amd/beyla/d/smart.11.0
+set database = /amd/beyla/c/trec/trec
+set temp_dir = /amd/beyla/d/trec/tmp
+
+set lib = $smartdir/lib
+set bin = $smartdir/src/diropt/bin
+
+set query_loc = $coll/topics/topics.52
+if (! -e doc_list_trec) then
+        cp /dev/null doc_list_trec
+        foreach dir (ap doe fr)
+                /bin/ls $coll/$dir/* >> doc_list_trec
+        end
+        foreach dir (wsj/1987 wsj/1988 wsj/1989)
+                /bin/ls $coll/$dir/* >> doc_list_trec
+        end
+        /bin/ls $coll/ziff/* >> doc_list_trec
+endif
+
+cat > spec << EOF1
+database                $database
+include_file            $lib/spec.default
+doc_loc                 $database/doc_loc
+query_loc               $database/query_loc
+# qrels_text_file       $coll/qrels.text
+temp_dir                $temp_dir
+
+query_skel              query_skel
+doc_file                ""
+query_file              "query.ntc"
+inv_file                inv.nnc
+collstat_file           ""
+doc_weight              nnc
+query_weight            ntc
+tr_file                 ./tr.nnc.ntc
+query.textloc_file      q_textloc
+
+# Interactive procedures
+get_query               retrieve.get_query.get_q_vec
+query.weight            convert.weight.weight
+
+## TREC DOCDESC
+index.num_sections 6
+index.section.0.name i
+index.section.1.name t
+        index.section.1.method index.parse_sect.full_all
+        index.section.1.word.ctype 0
+        index.section.1.proper.ctype 0
+index.section.2.name w
+        index.section.2.method index.parse_sect.full_all
+        index.section.2.word.ctype 0
+        index.section.2.proper.ctype 0
+index.section.3.name s
+        index.section.3.method index.parse_sect.full_all
+        index.section.3.word.ctype 0
+        index.section.3.proper.ctype 0
+index.section.4.name n
+index.section.5.name o
+
+num_ctypes              1
+ctype.0.name            words
+
+title_section           1
+
+token_to_con            local.index.token_to_con.dict_niss
+preparse                local.index.preparse.trec
+query.preparse          local.index.preparse.trec_query
+query.addtextloc        index.addtextloc.add_textloc
+doc.store               index.store.store_aux
+rmode                   SRDONLY|SMMAP
+rwmode                  SRDWR
+rwcmode                 SRDWR|SCREATE
+
+dict_file_size          524003
+vec_inv.mem_usage       16000000
+vec_inv.virt_mem_usage  550000000
+EOF1
+
+# create the empty collection
+/bin/rm -rf $database
+mkdir $database
+
+# Copy auxiliary files to collection
+cp spec $database
+cp ./doc_list_trec $database/doc_loc
+echo "$query_loc" > $database/query_loc
+
+cat > $database/query_skel << EOF4
+<con>
+EOF4
+
+
+#index the collection
+echo Indexing docs at `date`
+/bin/rm -f gmon.out
+$bin/smart index.doc spec smart.trace 4 global_accounting 5 vec_inv.trace 1
+
+time
+echo Indexing queries at `date`
+$bin/smart index.query $database/spec smart.trace 4 global_accounting 5
+
+#gprof $bin/smart > gprof.trec.$$
+
+time
+
+echo All done at `date`

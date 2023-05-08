@@ -1,0 +1,38 @@
+#! /bin/csh
+# Simple shell script that just goes through docsmart document 
+# collection and prints out all the documents in the given format.
+# Assumes that the database collection already exists (made by
+# make_docsmart).
+
+# Format here is much too simple; should have it print out in
+# either man or latex format to get readable copies.
+# Also, should be able to get a function name from the documentation
+# and call the output file that.  That may allow sorting in some 
+# reasonable order!
+
+set database = /home/smart/indexed_colls/docsmart
+set destdir = /home/smart/Doc/man
+set destfile = $destdir/man.all
+
+# Output is one file for all man entries (separated by ^L)
+smart print $database/spec proc print.obj.doctext \
+                    print.format   "\nDESCRIPTION:\n%d\nPROCEDURE:\n%m%p%r\nHIERARCHY:\n%h\nUSES:\n%s%g\nFULL DESCRIPTION:\n%f\nALGORITHM:\n%a\nBUGS AND WARNINGS:\n%b" \
+        > $destfile
+
+
+# Output is one file per man entry
+#
+# First find the max docid in the indexed collection
+#set max_doc = `smart print $database/spec proc print.obj.rel_header in $database/doc | awk '/max_primary_value/ {print $2}'`
+#
+# set i = 0
+# @ max_doc++        
+# while ($i != $max_doc)
+#         smart print $database/spec proc print.obj.doctext \
+#                     global_start $i global_end $i  \
+#                     print.format   "DESCRIPTION:\n%d\nPROCEDURE:\n%m%p%r\nHIERARCHY:\n%h\nUSES:\n%s%g\nFULL DESCRIPTION:\n%f\nALGORITHM:\n%a\nBUGS AND WARNINGS:\n%b" \
+#         > $destdir/out.$i
+#         if (-z $destdir/out.$i) /bin/rm $destdir/out.$i
+#         @ i ++
+# end
+

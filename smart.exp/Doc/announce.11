@@ -1,0 +1,69 @@
+The release of SMART version 11 is now (finally!)
+available via anonymous ftp from  ftp.cs.cornell.edu.
+        ~ftp/pub/smart/smart.11.0.tar.Z
+
+SMART is being made available via anonymous ftp only.  For the time
+being (until we work out a potential legal problem) it's being made
+available for research use only.  We still hope the next release will
+be available for all non-commercial use, although the code is
+copyrighted and is not public domain.
+
+SMART is an implementation of the vector-space model of
+information retrieval proposed by Salton back in the 60's.  The
+primary purpose of SMART is to provide a framework in which to
+conduct information retrieval research.  Standard versions of
+indexing, retrieval, and evaluation are provided.
+
+A secondary goal is to have an actual low-medium end information
+retrieval system available to users.  I'm not sure how to define
+low end; the largest collection I've worked with was about 1200
+Mbytes of newswire/other.  Indexing speed was reasonable, from
+120 - 250 Mbytes per hour.  Retrieval speed was a second or two
+on a Sparc 1 for simple queries.  It uses natural language
+queries.
+
+SMART suffers from the advantages and disadvantages of most
+academic research software.  It's designed to be extremely
+flexible (as long as you know what you're doing!).  But it is
+correspondingly not strongly optimized for any one particular
+use.  The code is relatively straightforward and should run (with
+possible minor modifications) on most UNIX systems of sufficient
+size.  Our standard setup is a SPARC 1 with 12 Mbytes of memory.
+(For the large collection above, it was a Sparc ELC with 24 Mbytes).
+A standard disadvantage of much academic software is
+documentation, and SMART is no exception.  Currently,
+documentation consists of about 40 pages of overview material,
+about 200 procedure descriptions in a "man"-like format, and
+random other writeups on how to do various things.  It needs
+more.
+
+SMART versions 10/11 are a complete rewrite of the mid and
+top levels of SMART version 8 (the last version we released).
+About 5% of the version 8 code is recognizable in version 11
+It's much more flexible and easily modified, and the various
+modules have much more potential for interaction than the old
+version.  (Getting access to more information at retrieval time
+was a major reason for the rewrite).
+
+Version 11 is not yet as fully featured as I would like, but it
+seems reasonably solid.  New features are still being added, but
+we've now reached the point where the existing features are
+stable.  Features still missing include Pnorm retrieval and
+clustering.
+
+It still doesn't have a working X-windows interface; I'm hoping
+someone out there might be interested in putting one up!  The
+source includes a simple X-window interface for SMART version 9,
+written by kind folks at Berkeley.  Unfortunately I don't have
+the interface builder that was used, and so I haven't adapted it
+for version 10 or 11.  I know there are other people who were
+going to attempt an interface, but I haven't heard back from them
+yet. 
+
+Hope to hear from you!
+If you want to be put on the smart-people mailing list, mail a 
+note to either me or  smart-people-request@cs.cornell.edu
+
+                                ChrisB
+                                chrisb@cs.cornell.edu
+

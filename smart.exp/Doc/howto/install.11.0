@@ -1,0 +1,74 @@
+Hello, 
+
+Installing SMART Version 11.0
+
+If you don't have a copy of SMART, you can pick it up using 
+anonymous ftp from ftp.cs.cornell.edu.
+
+        ~ftp/pub/smart/smart.11.0.tar.Z
+
+The following commands should get and then create the smart
+directory hierarchy in your current directory:
+% ftp ftp.cs.cornell.edu
+Name: anonymous
+Password: <your login name>
+ftp> cd pub/smart
+ftp> binary
+ftp> get smart.10.1.tar.Z
+ftp> quit
+% uncompress < smart.11.0.tar.Z | tar xfv -
+        
+Let me know immediately if this doesn't work!
+
+If you need any of the standard test collections, they're in
+        ~ftp/pub/smart/<collection>
+Note that thanks to Bruce Croft and Karen Spark-Jones, we now
+have the source of the NPL test collection to distribute.
+
+
+To get smart running, you'll need to
+1. cd install
+
+2. Edit "makefile" to change the pathname and possibly other options
+
+3. Possibly edit compiler options in 
+        makefile.top
+        makebin.templ
+        makelib.templ 
+(Choice of compilers is chosen in "makefile"; you shouldn't need to
+edit these other files unless you have some special needs).
+
+4. Possibly edit 
+        src/h/param.h
+The only machine dependent define is
+        #define MMAP
+I don't know if mmap will work on non-Sun systems.  It's an
+excellent option to have on Suns.
+
+5. Run "make"
+This will construct all needed makefiles from the templates, and
+then compile the system.  Finally the system is tested with
+the test suite in src/test_adi; you should only get differences
+in pathnames and in number of bytes when pathnames are written out.
+If you get other differences, there was an error in the installation
+procedure somewhere.
+
+
+
+Mail questions, comments, and problems to 
+        smart-people@cs.cornell.edu 
+I'll be setting up an informal mailing list operating from that
+address to all the sites taht have expressed an interest.  Unless
+privacy is specifically requested, I'll feel free to forward any
+questions/answers of general interest to this mailing list.
+
+For the near future, my work on the release will be confined to
+improving documentation and fixing any bugs you find.  I'll
+continue to add features to SMART as the features become useful
+to us in our own research.  At the moment, I'm not planning any
+research involving WAIS, or a good user interface, so those
+features may depend on your participation, which is certainly
+welcome!
+
+Good luck!
+                                        ChrisB

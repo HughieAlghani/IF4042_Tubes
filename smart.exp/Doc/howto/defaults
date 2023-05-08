@@ -1,0 +1,669 @@
+This is a description of the type and purpose of some of the
+default parameter values for the SMART system.  It actually is
+complete as of release 10.1, but the default parameters/values
+may have been changed at your site.  Don't be scared by this;
+you'll never have to use most of these parameters!
+
+The general form of the spec file is pairs of
+        parameter_name parameter_value
+Each procedure of smart will look at the incore form of the spec
+file to find the run parameter values it needs.  The matching
+algorithm used to match procedure parameter_names against
+spec file parameter_names is described in detail in
+Doc/overview/app.spec.
+
+Parameter values can have a number of different types.  The list
+of types with system supplied interpretation procedures, along
+with the data type they expect to fill in, are
+
+float     float
+double    double
+string    char *
+intstring char *   Same as getspec_string, except recognizes
+                   standard backslash escape sequences.
+char      char
+bool      int      Recognizes true,on,1,false,off,0
+long      long
+filemode  long     Recognizes smart io flags (see h/io.h)
+                   possibly several separated by |
+db_file   char *   Recognizes smart database filename.
+                   If string value is not explictly
+                   located elsewhere (by beginning with a
+                   '/' or '.') it is assumed to relative
+                   to the database name given by the
+                   parameter "database".
+func   PROC_TAB *  Interprets the parameter value as the
+                   name of a procedure set.  This name will be
+                   looked up in a procedure hierarchy to
+                   find the corresponding procedures
+                   (there'll be an initialization procedure,
+                   a main procedure and a closing procedure)
+                   See documentation for procedures for
+                   more information.
+
+In the description of defaults below, the line from the default
+spec file will be given, followed by the type of the parameter
+value, followed by the general purpose of the parameter, followed
+by other comments.  The default file is found in ...smart/lib/spec.default.
+                                
+
+text_stop_file          /home/smart/lib/common_words
+        "string"   Pathname of a file giving the standard list of
+        words to ignore while indexing.
+database                "."
+        "string"   Directory of the indexed collection.  This
+        value must be changed within a collection spec file.
+temp_dir                ""
+        "db_file"  Directory in which large temporary files created during
+        indexing should reside.  Default is in the collection directory.
+trace                   0
+        "long"     Level of tracing. Can be set on an
+        individual procedure basis, eg index.parse_sect.trace 6
+        0 indicates no tracing.
+global_trace_start      -1
+        "long"     Starting point where tracing should start; eg
+        docid if indexing documents, queryid if retrieving on a
+        set of queries.  -1 indicates start at beginning.
+global_trace_end        2147483647      
+        "long"     Ending point of tracing
+        MAXLONG indicates no effective end.
+global_trace_file       ""
+        "db_file"  File in which to put tracing output.
+        Default is to use stdout.
+global_start            -1      
+        "long"     Starting point of execution of main action.  Eg, if
+        printing, the id to begin with. -1 indicates start at
+        beginning.
+global_end              2147483647     
+        "long"     Ending point of execution of main action. 
+        MAXLONG indicates no effective end.
+global_accounting       0
+        "long"     Level of accounting to be done at each point
+        being traced.  0 indicates none.
+
+# Indexing Locations    
+doc_loc                 -       
+        "db_file"  File containing full path filenames of
+        documents to be indexed. If "-", then standard input is
+        read for the list instead.
+query_loc               -       
+        "db_file"  File containing full path filenames of
+        queries to be indexed. If "-", then standard input is
+        read for the list instead.
+qrels_text_file         ""    
+        "string"   File for experimental collections that
+        contains a text version of relevance judgments.
+query_skel              ""     
+        "db_file"  File containing a query skeleton that all
+        user interactive queries will start with.
+
+# DEFAULTS FOR INDEXING PROCEDURES AND FLAGS
+index_pp                index.index_pp.index_pp
+        "func"     Procedure to take a preparsed document and
+        index it.  Value given is currently only possibility.
+index_vec               index.vec_index.doc
+        "func"     Procedure to index a document given its
+        text location.  Value given indexes a document, other
+        possibility is to index a query.
+query.index_vec         index.vec_index.query
+        "func"     Procedure to index a query given its
+        text location.
+preparse                index.preparse.generic
+        "func"     Procedure to preparse a raw document.
+        Value given assumes the document can be described by keywords
+        occurring at the start of the line.  These keywords must be given
+        in the collection spec file.
+        Possibilities are generic, fw
+next_vecid              index.next_vecid.next_vecid
+        "func"     Proc to get next docid. Value given will
+        start docids at one more than the greatest docid
+        currently in the collection.
+query.next_vecid        index.next_vecid.next_vecid_1
+        "func"     Proc to get next queryid. Value given will
+        start queryids at one.
+addtextloc              index.addtextloc.add_textloc
+        "func"     Proc to add document location information for
+        a document to the collection textloc object file.
+query.addtextloc        index.addtextloc.empty
+        "func"     Proc to add query location information for
+        a query to the collection query textloc object file.
+        Value is not to do it.
+token_sect              index.token_sect.token_sect
+        "func"     Proc to take a section of preparsed text and
+        break it into tokens.  Value is currently only option.
+interior_char           "'.@!_"
+        "string"   Used by token_sect.
+        Special character's which should not break a
+        token when found surrounded by normal token characters
+        (eg, by default "a.b" will be a single token, but
+        "a. b" will be four tokens).  
+        Can be specified on a per-section basis.
+interior_hyphenation    false
+        "bool"     Used by token_sect.
+        Whether hyphens should be removed from the interior
+        of words.  This default plus the default interior_char value
+        (not including '-') means that hyphenated words in the middle of
+        a line are treated as two or more separate tokens.
+        Can be specified on a per-section basis.
+endline_hyphenation     true
+        "bool"     Used by token_sect.
+        Whether hyphens should be removed if they occur at the end of
+        a line. Can be specified on a per-section basis.
+parse.single_case       false
+        "Boolean"  Flag used by parser to indicate if text will
+        be in single case (sentence breaking algorithms, and
+        detection of proper nouns depend on this).
+makevec                 index.makevec.makevec
+        "func"     Proc to convert a list of concept numbers to a
+        vector.  Other values for this option are no longer used.
+expand                  index.expand.none
+        "func"     Proc to expand an indexed vector (eg,
+        thesaurus, phrase, additional information).  Value
+        does nothing and is the only option being distributed
+        at the moment.
+weight                  convert.weight.weight
+        "func"     Proc to take an indexed vector and alter the
+        weight. Procedure given just calls weight_ctype (see
+        below) procedure for each ctype of information in the vector.
+store                   index.store.store_vec
+        "func"     Proc to store the indexed vector in the
+        collection.  Value given just stores a vector.  Other
+        values are store_aux and store_vec_aux.
+doc.store               index.store.store_aux
+        "func"     Proc to store the indexed document vector in the
+        collection.  Value given stores only
+        auxiliary files (normally inverted files).  The procedure
+        to store the aux files is ctype.store_aux (see below) and
+        is called for each ctype.  Other values are store_vec,
+        and store_vec_aux.
+
+
+# DEFAULTS FOR DATABASE FILES AND MODES
+dict_file               dict
+        "db_file"  Relational object filename for dictionary.  Can be
+        specified separately for each ctype. (Eg 
+                ctype.1.dict_file   dict_1)
+doc_file                doc
+        "db_file"  Relational object filename for indexed document vectors.
+textloc_file            textloc
+        "db_file"  Relational object filename for locations of
+        document texts.
+query.textloc_file      ""      
+        "db_file"  Relational object filename for locations of
+        query texts.
+inv_file                inv     
+        "db_file"  Relation object filename for inverted lists.
+        Can be specifed separately for each ctype.
+query_file              ""      
+        "db_file"  Relation object filename for indexed query vectors.
+qrels_file              ""      
+        "db_file"  Relation object filename giving relevance judgements.
+collstat_file           ""
+        "db_file"  Relation object filename giving collection statistics.
+        Often stores collection frequency information for terms that will
+        later be used to compute idf values.
+rwmode                  SRDWR
+        "filemode" Mode in either octal or symbolic form giving
+        method of accessing relational objects when both reading
+        and writing are desired.  Additional flags (separate by
+        '|' with no spaces) include
+        SAPPEND, STRUNCATE, SEXCL, SINCORE, SBACKUP
+rmode                   SRDONLY
+        "filemode" Mode in either octal or symbolic form giving
+        method of accessing relational objects when reading is
+        desired.  Additional flags (separate by '|' with no spaces)
+        include SEXCL, SINCORE, SMMAP (if defined)
+rwcmode                 SRDWR|SCREATE
+        "filemode" Mode in either octal or symbolic form giving
+        method of accessing relational objects when the object
+        needs to be created (error if already exists) and reading
+        and writing are desired.  Additional flags (separate by
+        '|' with no spaces) include
+        SAPPEND, SEXCL, SINCORE, SBACKUP
+
+## DEFAULTS FOR DOCDESC
+#### GENERIC PREPARSING  (description of keywords that depict section starts)
+num_pp_sections                 0
+        "long"     Number of keyword/pp_sections described.  Logically, each
+        pp_section has a string, section_name, action, and two flags 
+        (oneline_flag and newdoc_flag) defined for it; eg pp_section.1.string.
+pp_section.string               ""
+        "intstring" Used by index.preparse.pp_generic
+        Keyword string (including standard escape sequences) that
+        indicates start of this pp_section if it occurs at the beginning
+        of a line.
+pp_section.section_name         -
+        "string"   Used by index.preparse.pp_generic
+        String, of which only the first character is significant, identifying
+        parsing section name to be assigned this pp_section.  (This parsing
+        section name will then in turn tell how this section is to be parsed.)
+        Default is "-", which by convention means this pp_section will be
+        discarded and never tokenized or parsed.
+pp_section.action               copy
+        "string"   Used by index.preparse.pp_generic
+        The action to be taken for the text of this pp_section.  Default is
+        to copy all text until the next section is found.  Alternatives
+        are "discard" (discard the text) and "copy_nb" which copies all
+        characters, except that it discards backspaces and the following 
+        character (sometimes used for underlining).
+pp_section.oneline_flag         false
+        "bool"     Used by index.preparse.pp_generic
+        Whether this section occurs all on one line.  If true, then the
+        next line will always starts a new section (if no keyword match
+        occurs at the start of the next line, pp_default_section_name
+        is used).
+pp_section.newdoc_flag          false
+        "bool"     Used by index.preparse.pp_generic
+        Whether the occurrence of this keyword at the beginning of
+        a line indicates a new document (as well as a new section)
+        is starting.
+pp.default_section_name         -
+        "string"   Used by index.preparse.pp_generic
+        Section name to be used when text is encountered and there
+        is no pp_section currently assigned.  Default name by convention
+        says that text will be discarded.
+pp.default_section_action       discard
+        "string"   Used by index.preparse.pp_generic
+        Action to be taken when text is encountered and there
+        is no pp_section currently assigned.
+pp_filter                       ""
+        "string"   Used by index.preparse.pp_generic
+        If non-empty, a shell command that will be run on every document
+        textfile of the collection before any preparsing occurs.
+        Any occurrence of $in within the string is replaced by document
+        textfile name.  Any occurrence of $out is replaced by a temporary
+        file name to then be used as the preparsing input. 
+        If $in does not appear, add "< <textfile name>" to the end of 
+        the command.
+        if $out does not appear, add "> <tempfile name>" to
+        the end of the command.
+        Examples of pp_filters might be "zcat",  "deroff"
+        "nroff -man $in | col"
+
+#### PARSING INPUT
+index.section.name      none
+        "string"   Name of section.  First character only is
+        significant (so all sections must start with a different
+        character).  Default value given is "none"
+        Non-default values specified (for example) as
+                index.section.1.name  a
+index.section.ctype     -1
+        "long"    Ctype (type of information) assigned to a
+        particular type of information in a section. Default
+        value indicates that type of information is to be
+        ignored. Non-default values normally specified giving
+        both section and parsetype of information. Eg.
+                index.section.4.proper.ctype 0
+        Standard parsetypes of information are
+        word, proper, date, number, phrase, class, time, other.
+        (Not all of these occur using standard parsers.)
+method                  index.parse_sect.none
+        "func"     Proc to parse a section.  Value is not to
+        parse, this obviously should be set to something else
+        for at least one section in the text!  Other values are
+        full (normal choice),
+        full_all (much the same as full, except explicitly does
+                  stemming and stopwords itself, instead of having 
+                  token_to_con do them.)
+        name, (put a name into standard format (last_name, first_initial)
+        asis, (assumes each line is already parsed output)
+        adj,  (adjacency phrasing)
+token_to_con            index.token_to_con.dict
+        "func"     Proc to convert a token to a concept number.
+        Stopword checking and stemming can be done by the default procedure
+        (which is normally used with most parse methods except "full_all").
+        index.token_to_con.dict_noss does no stopwords or stemming and
+        is normally used with parse method "full_all" ("full_all" does
+        stemming and stopwords itself).
+        Can be specified for each ctype.
+stem_wanted             1
+        "bool"    Flag indicating whether stemming is wanted for
+        this ctype.  Unfortunately, for historical reasons, one method
+        of parsing (full_all) does stemming on a parsetype in section
+        basis, and all other methods do stemming on a ctype basis (ie
+        stemming can only be varied for entire ctypes at once.)  The
+        latter setup can be much more efficient, but the former offers
+        more flexibility.  I'm not sure what will win out in the end.
+stemmer                 index.stem.triestem
+        "func"    function to be used for stemming a
+        particular parsetype of information in a section.
+        Default is to use a triestem approach to full stemming. 
+        Other values are remove_s, none.  
+        Non-default values for most methods (eg "full") normally specifed as
+                index.ctype.0.stemmer index.stem.none
+        Non-default values for method "full_all" normally specifed as
+                index.section.1.proper.stemmer index.stem.none
+stopword_wanted         1
+        "bool"    Flag indicating whether stopword checking is wanted for
+        this ctype.  Unfortunately, for historical reasons, one method
+        of parsing (full_all) does stopwords on a parsetype in section
+        basis, and all other methods do stopwords on a ctype basis (ie
+        stopwords can only be varied for entire ctypes at once.)  The
+        latter setup can be much more efficient, but the former offers
+        more flexibility.  I'm not sure what will win out in the end.
+stopword                index.stop.stop_dict
+        "func"     Proc used by parse method full_all to check if a 
+        word is a common word which should not be indexed.  Default is to 
+        use a stopword dictionary to check all words.  Other values
+        include none.  Other parse methods (eg "full") do stopword lookup
+        implicitly and do not call this function at all.
+        Non-default values for method "full_all" normally specifed as
+                index.section.1.proper.stopword index.stop.none
+stop_file               common_words
+        "db_file"  Relational object giving a list of common
+        words not to be indexed.  Used by "stopword" proc above and
+        by some "token_to_con" procedures.  Can be specified on a ctype
+        basis.
+        Default is to use "common_words", which is normally
+        created from "text_stop_file" parameter (top parameter above).
+thesaurus_wanted        0
+        "bool"     Flag indicating whether a thesaurus is to be used for
+        this ctype.  Used only by index.token_to_con.dict.
+text_thesaurus_file     ""
+        "db_file"  Text file giving thesaurus entries.
+        Used only by index.token_to_con.dict if thesaurus_wanted flag is true.
+
+index.ctype.name        none
+        "string"   Name telling type of information that ctype
+        contains. Ignored by system completely.
+        Specified for each ctype.
+con_to_token            index.con_to_token.contok_dict
+        "func"     Proc to convert a concept number to a token.
+        Default is to use a dictionary.
+        Can be specified for each ctype.
+store_aux               convert.tup.vec_inv
+        "func"     Proc to store a ctype of a vector in an
+        auxiliary file.  Default is to store in inverted file
+        (if called).
+        Can be specified for each ctype.
+weight_ctype            convert.wt_ctype.weight_tri
+        "func"     Proc to convert a ctype of a term freq
+        weighted vector to a different weighting scheme.
+        Default is get a triplet weighting scheme from either
+        doc_weight or query_weight parameter value. First letter
+        of triplet indicates term freq weighting procedure to
+        call, second letter indicates idf weighting procedure to
+        call, and third letter indicates normalization procedure 
+        to call
+doc_weight              nnn
+        "string"   Interpreted by weight_tri as above.  Default
+        value leaves a term freq ctype vector unchanged. Other
+        values include combinations of
+                [xnbmasl][xntipsf][xncsCP]
+query_weight            nnn
+        "string"   Interpreted by weight_tri as above.  Default
+        value leaves a term freq ctype vector unchanged. Other
+        values include combinations of
+                [xnbmasl][xntipsf][xncsCP]
+sect_weight            nnn
+        "string"   Interpreted by weight_tri as above.  Used only
+        for indexing methods that weight parts of documents
+        separately (ie, almost always ignored)
+        Default value leaves a term freq ctype vector unchanged. Other
+        values include combinations of
+                [xnbmasl][xntipsf][xncsCP]
+
+num_sections            0
+        "long"     Number of different section names in text
+        Default is 0, and should be changed in a collection
+        spec file.
+num_ctypes              0
+        "long"     Number of different ctypes in text
+        Default is 0, and should be changed in a collection
+        spec file.
+
+## DEFAULTS FOR COLLECTION CREATION
+stop_file_size          1501
+        "long"     Size of dictionary to be used for stopwords
+dict_file_size          30001
+        "long"     Size of dictionary to be used for tokcon_dict
+        (see above)  This is reasonable for most test
+        collections, but should be increased for real
+        collections. General rule is it should be 4/3 the
+        number of distinct tokens in the collection (which I
+        realize is difficult to estimate.) 
+
+## DEFAULTS FOR CONVERSION
+vec_inv.mem_usage       4194000
+        "long"     Maximum real memory (resident set size) that
+        the vec_inv procedure should expect to have available
+        just for it.  This can be tweaked for efficiency
+        depending on machine you have available.  My rule is
+        1/3 the size of actual real memory.  Note: should be
+        just less than a power of 2 on a Sun.
+vec_inv.virt_mem_usage  50000000
+        "long"     Maximum virtual memory (swap space) that
+        the vec_inv procedure should expect to have available to
+        it.  If the procedure needs more (eg, indexing 100,000
+        documents at once), it has to write out its current lists
+        to disk, at a possibly large cost to efficiency.  So this
+        should be as large as feasible on your machine.
+in                      ""
+        "string"   Short-term relational object name used by
+        top-level actions convert and print
+        (convert "in" to "out", print "in" to file "out")
+        Should be left the empty string in all spec files.
+out                     ""
+        "string"   Short-term relational object name used by
+        top-level actions convert and print
+        (convert "in" to "out", print "in" to file "out")
+        Should be left the empty string in all spec files.
+deleted_doc_file        ""
+        "db_file"   Short-term relational object name used by
+        top-level actions convert when copying objects.
+        (copy "in" to "out", but remove all docs with doc ids in
+        deleted_doc_file)
+        Should be left the empty string in all spec files.
+
+#########################################
+## DEFAULTS FOR RETRIEVAL
+## Procedures
+get_query               retrieve.get_query.get_q_user
+        "func"     Proc to get the next query for retrieval.
+        Default is to use interactive query.  Other possibilities
+        are get_q_text, get_q_vec, and other minor variants
+user_qdisp              retrieve.user_query.edit_skel
+        "func"     Proc to interact with user to get interactive
+        query.  Default is to use editable query.  Other
+        values include cat_skel.
+get_query.editor_only   0
+        "Boolean"  Flag that indicates whether user should
+        immediately be put in an editor when a query is to be
+        submitted.  Default is no.
+qdisp_query             retrieve.query_index.std_vec
+        "func"     Proc to take a text query and index it.
+        Default is only current possibility.
+get_seen_docs           retrieve.get_seen_docs.empty
+        "func"     Proc that looks for previously retrieved
+        documents for the current query, in order not to retrieve
+        those same documents over again.  Default is to do
+        nothing, other value is get_seen_docs.
+coll_sim                retrieve.coll_sim.inverted
+        "func"     Proc that takes query vector and runs it 
+        against entire collection, by calling appropriate
+        procedure for each vtype of vector.  Default is inverted 
+        retrieval. Other major possibilities are seq, and text.
+inv_sim                 retrieve.ctype_coll.ctype_inv
+        "func"     Proc that computes sim for a single ctype of
+        a vector query using inverted file for documents.
+        Value is currently only possibility
+seq_sim                 retrieve.ctype_vec.inner
+        "func"     Proc that computes sim for a single ctype of
+        a vector query using sequential document file.  Value is
+        only current possibility, but that will change.
+vecs_vecs               retrieve.vecs_vecs.vecs_vecs
+        "func"     Proc that takes a set of queries and a set of
+        documents, and computes all similarities.  Not generally 
+        useful.  Value is only possibility.
+vec_vec                 retrieve.vec_vec.vec_vec
+        "func"     Proc that takes a single vector query and
+        single document and computes similarity, normally by
+        calling seq_sim.
+retrieve.output         retrieve.output.ret_tr
+        "func"     Proc that formats and possibly outputs results
+        of retrieval.  Value only formats tr (top-ranked)
+        results, writing them to file "tr_file" (see below) if
+        that  is valid file name.  Other major possibility is
+        ret_tr_rr which does the same thing for test collections,
+        but in addition computes rank for all relevant documents,
+        writing the output to file "rr_file" (rr is relevant ranks).
+rank_tr                 retrieve.rank_tr.rank_did
+        "func"     Proc that keeps track of highest ranked
+        documents seen for the current query. Value will keep
+        track of highest num_wanted (see below), breaking ties by
+        preferring highest document id.
+sim_ctype_weight        1.0
+        "float"    Retrieval weight for ctype of a query vector.
+        This can be set for each ctype separately.  Default is
+        to weight all ctypes the same.
+eval.num_queries        0
+        "long"     Evaluation parameter to be ignored most of the
+        time. Gives default value for number of queries that
+        should have been run in an experimental retrieval run.
+        Most of the time, this can be calculated from other info.
+num_wanted              10
+        "long"     Number of top-ranked documents to be shown to
+        the user.
+
+## Files
+tr_file                 ""
+        "db_file"  Location of file to put experimental top
+        ranked output in.  Default is not to write out to a file.
+rr_file                 ""
+        "db_file"  Location of file to put experimental relevant
+        rank output in.  Default is not to write out to a file.
+seen_docs_file          ""
+        "db_file"  Location of file that contains list of
+        documents already seen for each experimental query.
+        File is kept in top-ranked form.
+        Default is that file does not exist.
+run_name                ""
+        "string"   Name of the current retrieval run.  This will
+        be printed on evaluation output
+
+#########################################
+## DEFAULTS FOR FEEDBACK
+## Procedures
+feedback                feedback.feedback.feedback
+        "func"     Proc that given retrieval results produces a
+        new query by calling other feedback procs.  Value is
+        only current possibility.
+feedback.expand         feedback.expand.exp_const
+        "func"     Proc that takes original query and adds
+        additional terms from relevant documents.  Value will
+        add 'best' num_expand (below) terms.  Other current 
+        possibility is exp_rel_doc.
+feedback.occ_info       feedback.occ_info.ide
+        "func"     Proc that finds occurrence information of
+        feedback query terms in both retrieved and nonretrieved
+        documents.  Value gets Ide dec-hi information, which
+        considers all relevant retrieved documents, but only
+        the top ranked non-relevant retrieved document.  Other
+        values include inv_occ
+feedback.weight         feedback.weight.ide
+        "func"     Proc that weights the feedback query terms
+        given the occurrence information.  Value uses Ide dec-hi
+        formula.  Other current possibilities are fdbk, roccio
+feedback.form           feedback.form.form_query
+        "func"     Proc that takes weighted query terms and forms
+        a query of the appropriate type.  Value forms a standard
+        vector query.  No other current possibilities.
+
+
+feedback.num_expand     15
+        "long"     Number of terms to add to original query
+        during feedback.
+feedback.num_iterations 0
+        "long"     Number of previous iterations of feedback
+        to assume.  To be ignored.
+feedback.alpha          1.0
+        "float"    In standard feedback models, final query
+        weight is alpha * original query weight +
+                  beta * weight due to relevant documents -
+                  gamma * weight due to non-relevant documents.
+feedback.beta           1.0
+        "float"    In standard feedback models, final query
+        weight is alpha * original query weight +
+                  beta * weight due to relevant documents -
+                  gamma * weight due to non-relevant documents.
+feedback.gamma          0.5
+        "float"    In standard feedback models, final query
+        weight is alpha * original query weight +
+                  beta * weight due to relevant documents -
+                  gamma * weight due to non-relevant documents.
+
+#########################################
+## DEFAULTS FOR TOP-LEVEL INTERACTIVE DISPLAY AND PRINTING DOCS
+indivtext               print.indivtext.text_filter
+        "func"     Proc that prints a document given its
+        location. Value will run a filter (see below) on the raw document 
+        and print  the result.  Other values are 
+        text_pp (print unformatted preparsed document), 
+        text_raw (print raw document)
+        text_form print a preparsed document according to "format" (see below) 
+filter                  ""
+        "string"   Command string to be run on a raw document before printing.
+        Any occurrence of $in within the string is replaced by document
+        textfile name.  Any occurrence of $out is replaced by a temporary
+        file name to then be used as the preparsing input. 
+        If $in does not appear, add "< <textfile name>" to the end of 
+        the command.
+        if $out does not appear, add "> <tempfile name>" to
+        the end of the command.
+        Examples of filter might be "zcat",  "deroff",  "nroff -man $in | col"
+print.format            ""
+        "string"   Format in which text_form will print
+        documents.  Roughly printf like, with %x indicating
+        all text from sections named x should be printed.  Eg.
+        "Title: %t\nAbstract %a\n" would print the string 
+        "Title:" followed by the 't' section (presumable title) etc.
+print.rawdocflag        0
+        "Boolean"  Flag to indicate whether procedure indivtext
+        (see above) should be ignored and just the raw document
+        should be printed.
+spec_list               ""
+        "string"   List of specification files describing
+        experimental runs.  Used to evaluate and compare a number
+        of runs at once. Format of string is pathnames separated
+        by blanks.
+verbose                 1
+        "long"     Level of verbosity to use when communicating
+        with user.  0 indicates only print what is explicitly
+        asked for (sometimes used in shell scripts). 1 is normal
+        level.  More than 1 is explanatory level - almost nothing
+        takes advantage of this.
+max_title_len           68
+        "long"     Maximum length of title to be stored and
+        displayed to user.
+
+
+## SUBSET OF TOP-LEVEL ROUTINES (these are ones that are often called
+## elsewhere, and substitution of routines may be desired.  A lot
+## of these are obsolete and included only for backward
+## compatibility with old shell scripts).
+## Invocation of smart is normally
+##      smart  top_level_routine  spec_file  [spec_file_alterations]
+index.doc               index.top.doc_coll
+index.query             index.top.query_coll
+top.exp_coll            index.top.exp_coll
+top.inter               inter.inter
+exp_coll                index.top.exp_coll
+inter                   inter.inter
+convert                 convert.convert.convert
+print                   print.top.print
+retrieve                retrieve.top.retrieve
+
+
+## OBSOLETE (only included for backward compatibility)
+text_loc_prefix         ""      
+        "string"   No Longer Used
+spec_file               ./spec
+        "db_file"  No Longer Used.
+token                   index.token.std_token
+        "func"     Proc to take a preparsed text and break it
+        into tokens.  Value is only option (this will change).
+parse                   index.parse.std_parse
+        "func"     Proc to take a tokenized text, and convert to
+        a list of concept numbers.  Does this by calling the
+        appropriate parse_sect func (see below) for each section.
+        Value is only option (this will change).

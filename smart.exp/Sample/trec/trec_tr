@@ -1,0 +1,28 @@
+#  Shell script to translate tr file into trec format
+# trec_tr trec_file tr_file
+# set echo verbose
+
+set coll = /amd/beyla/a/trec
+set trec_qrels_file = $coll/rel/qrels.text
+set smartdir = /amd/beyla/d/smart.11.0
+
+#set bin = $smartdir/src/diropt/bin
+set bin = $smartdir/src/bin
+set lib = $smartdir/lib
+
+
+if ($#argv < 2) then
+        echo "Usage: trec_tr trec_file tr_file
+        exit 1
+endif
+
+set trec_file = $1
+set tr_file = $2
+
+/bin/rm -f $tr_file $tr_file.var
+
+$bin/smart convert $lib/spec.default proc local.convert.obj.trec_tr \
+                        in $trec_file out $tr_file \
+                        trec_qrels_file $trec_qrels_file \
+                        trace 9
+time

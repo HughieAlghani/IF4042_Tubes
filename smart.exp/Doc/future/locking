@@ -1,0 +1,67 @@
+As of 10.1, have reading rights while updating with some proviso's.
+This is implemented by never overwriting any of an object's lists of
+data (eg an inverted file's lists of docs for a term).  A user may get
+a pointer to old data, but it will not be an invalid pointer.
+
+1. Docs may not exist by time user gets around to viewing them.
+User sees "No such Doc" message.
+
+2. Old inverted file used for part or all of query retrieval.
+Inaccurate similarity for docs being added or deleted.
+
+3. Modulo above, user will continue to have correct reading rights
+throughout multiple updates as long as docids are not re-used
+(default).  If docid's are re-used, there is the potential for
+displaying a new doc that has the same id as a doc that was deleted
+during the current user's session.
+
+4. Space wasted due to, eg, updating inverted list will only be
+reclaimed by a full copy_inv done explicitly by administrator.  This
+should not affect any concurrent reader except for the extremely brief
+period between links and unlinks while the new files replace the old
+files.  If a user is initializing smart in this period, they possibly
+may get "file not found" and be kicked out of smart.
+
+5. In the event of a crash while writing, if the mode of writing
+requested backups (SBACKUP), there will be a file named
+<smart_object>.bk.  (eg "inv.nnn.bk").  The smart object may be
+restored to its previous state by replacing the current file (here
+"inv.nnn") by the backup file.
+
+6. The administrator (and scripts) are responsible for ensuring that
+        a. Only one process is writing at once.
+        b. Backup files (if they were desired) are removed at the end of a
+        successful update run.
+
+----------------------------------------------- 
+Plans for 11.2 
+
+We need to have the option of reusing space within an object's
+lists.  Indicated by a flag when creating the object, with flag
+being stored in "internal" field of rh.  Approach used will be
+"can only re-use space that was freed on previous update
+invocations".  This means that adminstrator's (and scripts/smart)
+responsibilities include.
+        a. Only one process is writing at once.
+        b. Backup files removed upon successful completion.
+        c. A reader cannot be active throughout more than one
+        update.
+
+Responsibility (c) can be achieved if using a server approach:
+server is responsible for satisfying all read requests itself,
+sequentially.  It will fork off an update request when it gets
+it.  All previous readers must have been satisfied by the time a
+new update request is honored.  (Server is responsible for
+re-initializing a user's multiple request session in mid stream
+if needed.)
+
+Wait til server model implemented before doing any of this.
+
+
+
+
+
+
+
+
+

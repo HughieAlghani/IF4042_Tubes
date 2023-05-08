@@ -1,0 +1,218 @@
+Procedure tree:
+
+The proc tree associates text names with procedures, allowing
+run-time determination of what procedures will be called.
+
+Format of name is
+        proc_class.proc_member
+where proc_class is the name of a class of procedures with the
+same input/output behavior, performing the same global task.
+Proc_class is normally a dotted component list itself.
+Eg. 
+        retrieve.get_query.get_q_text
+The proc_class is retrieve.get_query.  The functionality of that
+class happens to be obtaining the next query for the retrieval
+procedure to be operating on.  Get_q_text, the proc_member,
+performs that function by reading a file containing query texts.
+Other members of that same class are get_q_user (obtain query
+from user) and get_q_vec (obtain query from already indexed
+vector).
+
+
+Associated with each name is a triplet of procedures.  All
+procedures return integer values, with UNDEF (-1) indicating an
+error was detected.  Return value of 0 may indicate the desired
+action was not done for a particular proc_class - for example,
+get_q_text from above returns 0 if there are no more queries.
+Otherwise the return value is normally some non-negative integer.
+
+The triplet of procedures includes:
+        1. init_proc ((SPEC *) spec, (char *) additional)
+where the first argument is a pointer to the specification
+values, and the second is a pointer to any additional information
+that is valid for this procedure instantiation alone.  The
+second field is most often NULL.  init_proc returns UNDEF if
+error, and otherwise returns a non-negative index identifying
+this particular instantiation.  This index can always be 0 if the
+procedure set does not care about instantiations.  Init_proc must
+be called once before proc is ever called.
+
+        2. proc ((char *) input, (char *) output, int instant)
+The first argument is normally a pointer to a structure containing
+the input arguments, and the second is a pointer to a structure
+for the output arguments.  The third argument is the
+instantiation value returned by the initialization of this
+procedure set.  UNDEF is returned if error, 0 is returned if no
+error but no action was done, 1 is normally returned otherwise.
+
+By convention, if the general proc_class is an output procedure,
+if the second argument is NULL, output is written to the designated
+file (or stdout).  If it is non-NULL, the output is instead put
+into the memory object (of type SM_BUF) pointed to by the second
+argument.  If the general proc_class is an input procedure, if
+the first argument is NULL, input is gotten from whatever is the
+usual source.  If it is non-NULL, the input is gotten from the
+procedure dependent first arg pointer instead.
+
+        3. close_proc (int instant)
+The argument is the instantiation value returned by the
+initialization of this procedure set.  It should be an error if
+that instantiation value is not set, but this may not always be
+checked.
+
+
+In normal usage, the init_proc gets called soon after entry into
+SMART.  It initializes all variables, gets the value of all
+needed spec parameters, and reserves whatever space will be
+statically needed.  The main proc may then get called many times.
+When an exit from SMART is desired, close_proc gets called to
+finish off all the needed actions of this proc, and free all space.
+
+The calling procedure is responsible for furnishing space for the
+top-level output structure.  Normally, the proc itself is
+responsible for the space for objects pointed to by that
+top-level output structure.  That space should be guaranteed not
+to be overwritten until the next call to proc with the same
+instantiation value (or until a call to close_proc with that
+value).  This means if the calling procedure wishes to save a
+value through multiple calls to the proc, it must make a copy of
+that value itself.  However, the calling procedure is guaranteed
+that no other call to proc that it doesn't know about will ever
+disturb its data.
+
+The procedure hierarchy is rooted by a declaration in the main
+procedure of smart, with the first level of the hierarchy given
+in libproc/proc.c, and lower levels given in
+libproc/proc_<module>.c.
+
+Eventually, the structures PROC_TAB and TAB_PROC_TAB should
+contain a field pointing to the documentation of that procedure.
+For the time being, the main documentation of a procedure is
+given by a procedure description comment, described below. This
+procedure comment is in a regular form that is indexable through
+smart.  Thus it is currently possible to perform an information
+retrieval search of smart procedures.  See the shell scripts
+src/scripts/make_docsmart and src/scripts/docsmart.
+[At the moment, only the hierarchic procedures have such 
+a procedure description].
+
+Procedure description:
+Each file with significant procedures has in it one or more comment 
+skeletons (all fields do not have to be filled in).  Every comment line
+has a number.  *0 must be only one line, next *0 indicates comments
+for new procedure starting.  *0 is only required comment line.
+
+/********************   PROCEDURE DESCRIPTION   ************************
+ *0 one line description of procedure
+ *1 procedure hierarchy name
+ *2 main procedure name
+ *3 typed args
+ *4 associated proc names (init_ , close_ ) with args
+ *5 spec file args used by proc (or init_ proc)
+ *6 global variables used
+ *7 full description of actions of procedures including
+ *7 return values.
+ *8 description of implementation
+ *9 bugs and warnings
+***********************************************************************/
+
+Each table in libproc has a comment of the form
+
+/*****************   PROCEDURE TABLE DESCRIPTION   *********************
+ *0 rooted table name
+ *1 typed args of all procedures in table (should be the same for all)
+ *2 one line description of table function
+ *7 full description of actions of procedure
+ *9 bugs and warnings
+***********************************************************************/
+
+
+Conversion and Print Routines.
+
+There is a need to have top-level access to conversion and print
+routines; an experimenter needs to be able to examine all of the
+binary relational data objects, and often needs to be able to
+convert one form to another.  Very often this needs to be done at
+the UNIX command level, rather than inside of one of the
+interactive packages.
+
+There's a general schema for these routines.  At the shell level,
+they are invoked (the convert routines are demonstrated, the
+print routines are similar):
+    smart  convert  spec_file  proc      convert.obj.<conversion_routine> \
+                               in        input_object  \
+                               out       output_object  \
+                               global_start  start_id \
+                               global_end end_id
+
+This says that the
+    top-level action is "convert",
+    general database specification is spec_file
+    conversion procedure to be invoked is 
+         convert.obj.<conversion_routine>
+    file/object to be converted is input_object
+    output file/object is output_object
+    conversion should start at start_id
+    conversion should end at end_id
+Generally, global_start and global_end values are not given; they
+default to the entire object.
+It's possible for in and out values to not be given since they
+default to reasonable filenames; but this can be quite dangerous and
+is not recommended.
+
+Internally, the object level procedure given by
+convert.obj.<conversion_routine> is invoked (by the top-level
+convert routine):
+        object-proc (input_object, output_object, inst)
+to add all designated tuples in input_object to output_object.
+If input_object or output_object are not valid file or object
+names, then the default values are used.  Object-proc then calls
+the appropriate low-level procedure to convert each tuple of type
+input_object to a tuple of type output_object.  Occasionally, it
+might be the case that a single tuple of type output_object might
+be need several tuples of type input_object to be complete.
+
+An example
+    smart convert adi/indexed/spec  proc  convert.obj.text_rr_obj
+                                    in    adi/coll/qrels.text
+                                    out   qrels
+might be called to convert a text representation of the relevance
+judgements for an experimental collection into the internal form
+expected by the rest of the system (that form being the RR
+relational object form, RR meaning Relevance Ranks).
+
+The print routines are extremely similar.  The out parameter name
+is always expected to be a text file name; if not included the default
+will be the standard output device.
+    smart print adi/indexed/spec  proc print.obj.vec_dict
+                                  in   adi/indexed/doc.atc
+                                  global_start 30
+                                  global_end   32
+will print the indexed vectors for documents 30, 31, and 32 to
+standard output, looking up the concept number in the standard
+collection dictionary in order to map concept number to the
+actual text word.
+
+Most object types can be printed with no collection dependent
+information.  For these object types it might be easier to use
+the shell script  src/scripts/smprint.
+    smprint -b 30 -e 32 vec adi/indexed/doc.atc
+prints out the "vec" object type file doc.atc (this is basically
+the same output as above, except there is no collection
+dictionary so the concept numbers remain unmapped).
+
+    smprint dict adi/indexed/dict
+would print out the entire collection dictionary for adi.
+
+If collection dependent information is desired, a specification
+file can be given with the -s flag:
+    smprint -b 30 -e 32 -s test_adi/indexed/spec  
+             vec_dict test_adi/indexed/doc.atc
+is equivalent to the full smart command above.
+
+Note that a special object type exists to print the names of
+portions of the document hierarchy.
+    smprint proc index
+will give all procedures in the "index" subhierarchy.
+    smprint proc ""
+will give all procedures in the hierarchy.
