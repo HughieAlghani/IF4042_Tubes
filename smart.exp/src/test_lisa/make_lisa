@@ -8,7 +8,7 @@ set bin = /mnt/c/Users/Ghanie/project/smart.exp/src/bin
 set srcdir = /mnt/c/Users/Ghanie/project/smart.exp/src
 set tlibdir = /mnt/c/Users/Ghanie/project/smart.exp/lib
 
-set current  = $srcdir/test_lisa1
+set current  = $srcdir/test_lisa
 set database = $current/indexed
 set coll     = $current/coll
 set doc_loc  = $coll/lisa_new.all
