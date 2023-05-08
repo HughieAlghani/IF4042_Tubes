@@ -8,7 +8,7 @@
     - src/test_lisa/base_test_lisa
 2. Buka terminal
     - Masuk ke path /smart.exp/src/bin, lalu run 'chmod +x smart'
-    - Masuk ke path /smart.exp/src/test_lisa, lalu run 'chmod +x make_lisa'
+    - Masuk ke path /smart.exp/src/test_lisa, lalu run './gen_lisa.sh' dan run 'chmod +x make_lisa'
 
 ## Make Test Collection Weighting Scheme
 1. Buka terminal
