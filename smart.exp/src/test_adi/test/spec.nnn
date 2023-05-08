@@ -1,4 +1,4 @@
-include_file /media/sf_sementara/smart.exp/src/test_adi/indexed/spec
+include_file /mnt/d/Data/Personal/Kuliah/smart.exp/src/test_adi/indexed/spec
 tr_file ./tr.nnn
 rr_file ./rr.nnn
 run_name "Doc weight == Query weight == nnn  (term-freq)"

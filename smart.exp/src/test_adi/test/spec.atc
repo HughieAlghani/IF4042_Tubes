@@ -1,4 +1,4 @@
-include_file /media/sf_sementara/smart.exp/src/test_adi/indexed/spec
+include_file /mnt/d/Data/Personal/Kuliah/smart.exp/src/test_adi/indexed/spec
 query_file query.atc
 doc_file doc.atc
 inv_file inv.atc

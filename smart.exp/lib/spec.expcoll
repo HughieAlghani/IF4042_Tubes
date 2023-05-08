@@ -1,5 +1,5 @@
 # USE STANDARD DEFAULTS, EXCEPT FOR THOSE SPECIFIED IN THIS FILE
-include_file            /media/sf_sementara/smart.exp/lib/spec.default
+include_file            /mnt/c/Users/Ghanie/project/smart.exp/lib/spec.default
 
 # FOR SMART EXPERIMENTAL FILES, ASSUME DEFAULT SECTION IS W
 pp.default_section_name  w
@@ -32,4 +32,4 @@ rr_file                 ./rr
 eval_file               ./eval
 
 # INCREASE NUM_WANTED (SHOULD BE 15 IN STANDARD DEFAULT FILE TOO?)
-num_wanted 15
+num_wanted 30

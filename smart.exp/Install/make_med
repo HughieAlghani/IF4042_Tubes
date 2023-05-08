@@ -1,0 +1,94 @@
+#! /bin/csh
+# Make the med test collection.  Change first 3 pathnames as appropriate.
+# Med collection obtainable in ~ftp/pub/smart/med on  ftp.cs.cornell.edu
+
+# set echo verbose
+
+# 
+set bin = /home/varrick/smart.exp/src/bin
+set srcdir = /home/varrick/smart.exp/src
+set tlibdir = /home/varrick/smart.exp/lib
+
+# set bin = <path_to_smart>/smart.exp/src/bin
+# set srcdir = <path_to_smart>/smart.exp/src
+# set tlibdir = <path_to_smart>/smart.exp/lib
+
+set current  = $srcdir/test_med
+set database = $current/indexed
+set coll     = $current/coll
+set doc_loc  = $coll/med.all
+set query_loc = $coll/query.text
+
+# create the empty collection
+/bin/rm -rf $database
+mkdir $database
+
+cat > $database/spec << EOF1
+## INFORMATION LOCATIONS
+database                $database
+include_file            $tlibdir/spec.expcoll
+doc_loc                 $database/doc_loc
+query_loc               $database/query_loc
+qrels_text_file         $coll/qrels.text
+
+## MED DOCDESC
+#### GENERIC PREPARSER
+num_pp_sections                 3
+pp_section.0.string             ".I"
+pp_section.0.action             discard
+pp_section.0.oneline_flag       true
+pp_section.0.newdoc_flag        true
+pp_section.1.string             ".W"
+pp_section.1.section_name       w
+pp_section.2.string             ".O"
+pp_section.2.action             discard
+
+#### DESCRIPTION OF PARSE INPUT
+index.num_sections              1
+index.section.0.name            w
+  index.section.0.method        index.parse_sect.full
+  index.section.0.word.ctype    0
+  index.section.0.proper.ctype  0
+title_section 0
+
+#### DESCRIPTION OF FINAL VECTORS
+num_ctypes                      1
+ctype.0.name                    words
+
+## ALTERATIONS OF STANDARD PARAMETERS
+rmode                           SRDONLY|SMMAP
+rwmode                          SRDWR|SINCORE
+rwcmode                         SRDWR|SCREATE|SINCORE
+dict_file_size                  20011
+
+## ALTERATIONS OF STANDARD PROCEDURES
+EOF1
+
+echo Creating new database at `date`
+# Copy auxiliary files to collection
+echo "$doc_loc" > $database/doc_loc
+echo "$query_loc" > $database/query_loc
+
+#index the collection
+echo Indexing docs,queries,rels at `date`
+$bin/smart exp_coll $database/spec
+
+# Raw TF
+# echo "Create nnn versions at `date`"
+# $bin/smart convert $database/spec   proc convert.obj.weight_query \
+#                    in query.nnn  out query.nnn   query_weight nnn
+# $bin/smart convert $database/spec   proc convert.obj.weight_doc \
+#                    in doc.nnn  out doc.nnn   doc_weight nnn
+# $bin/smart convert $database/spec   proc convert.obj.vec_aux  \
+#                    in doc.nnn  out inv.nnn
+
+echo "Create atc.ltc versions at `date`"
+$bin/smart convert $database/spec   proc convert.obj.weight_query \
+                   in query.nnn  out query.ltc   query_weight ltc
+$bin/smart convert $database/spec   proc convert.obj.weight_doc \
+                   in doc.nnn  out doc.atc   doc_weight atc
+$bin/smart convert $database/spec   proc convert.obj.vec_aux  \
+                   in doc.atc  out inv.atc
+
+
+

@@ -1,0 +1,57 @@
+#! /bin/tcsh
+
+set bin = /home/varrick/smart.exp/src/bin
+
+set current = /home/varrick/smart.exp/src/test_med
+set database = $current/indexed
+
+# Very small test suite for smart on the included adi collection
+# Run using "csh".  You can figure out more of what is going on by
+# running this, and afterwords running
+#        cd test
+#        smart top.inter spec.atc spec_list "spec.nnn spec.atc"
+# and playing around with the commands (try "help", "adv", "exp" first
+# to get full list of available commands)
+
+#########################################################################
+# Make the med test collection
+#########################################################################
+./make_med
+
+echo "collection made"
+
+/bin/rm -rf test
+mkdir test
+cd test
+
+
+#########################################################################
+# Perform two retrieval runs with the vectors already prepared by make_med
+#########################################################################
+# cat > spec.nnn << EOF
+# include_file $database/spec
+# tr_file ./tr.nnn # Retrieve n document
+# rr_file ./rr.nnn # Retrieve all relevant document
+# run_name "Doc weight == Query weight == nnn"
+# EOF
+
+# $bin/smart retrieve spec.nnn
+# echo "retrieval run nnn.nnn done"
+
+#########################################################################
+# Additional Retrieval
+#########################################################################
+
+# atc.ltc experiment
+cat > spec.atc.ltc << EOF
+include_file $database/spec
+query_file query.ltc
+doc_file doc.atc
+inv_file inv.atc
+tr_file ./tr.atc.ltc
+rr_file ./rr.atc.ltc
+run_name "Query weight == atc; Doc weight == ltc"
+EOF
+
+$bin/smart retrieve spec.atc.ltc
+echo "Retrieval run atc.ltc done"

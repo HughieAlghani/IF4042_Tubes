@@ -15,8 +15,8 @@ set database = $current/indexed
 #########################################################################
 # Make the lisa test collection
 #########################################################################
-./make_lisa
-echo "collection made"
+# ./make_lisa
+# echo "collection made"
 
 /bin/rm -rf test
 mkdir test

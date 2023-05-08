@@ -14,8 +14,8 @@ LIBFILES  = proc.o proc_index.o proc_inter.o proc_ret.o proc_convert.o \
 
 # Flags normally set in top level makefile.  Make sure you want these
 # default if you compile locally in this directory
-PREFIX = /home/smart.exp/src
-SRCDIR = /home/smart.exp/src
+PREFIX = /mnt/d/Data/Personal/Kuliah/smart.exp/src
+SRCDIR = /mnt/d/Data/Personal/Kuliah/smart.exp/src
 BIN = $(PREFIX)/bin
 LIB = $(PREFIX)/lib
 H   = -I$(SRCDIR)/h

@@ -17,8 +17,8 @@ LIBFILES  =  copy.o backup.o get_rel_head.o \
 
 # Flags normally set in top level makefile.  Make sure you want these
 # default if you compile locally in this directory
-PREFIX = /home/smart.exp/src
-SRCDIR = /home/smart.exp/src
+PREFIX = /mnt/d/Data/Personal/Kuliah/smart.exp/src
+SRCDIR = /mnt/d/Data/Personal/Kuliah/smart.exp/src
 BIN = $(PREFIX)/bin
 LIB = $(PREFIX)/lib
 H   = -I$(SRCDIR)/h

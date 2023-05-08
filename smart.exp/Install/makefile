@@ -17,7 +17,7 @@
 # Note: none of these pathnames will occur within the SMART executable.
 # The pathnames are used by shell-scripts (see src/scripts) and by
 # makefiles to construct smart itself.
-SMART   = /home/smart.exp
+SMART   = /mnt/d/Data/Personal/Kuliah/smart.exp
 
 # SRCDIR gives the directory for the smart source code
 SRCDIR  = $(SMART)/src

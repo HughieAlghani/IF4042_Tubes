@@ -1,0 +1,195 @@
+#! /bin/csh
+# Make the lisa test collection.  Change first 3 pathnames as appropriate.
+# Lisa collection obtainable in ~ftp/pub/smart/lisa on  ftp.cs.cornell.edu
+
+# set echo verbose
+
+set bin = /mnt/c/Users/Ghanie/project/smart.exp/src/bin
+set srcdir = /mnt/c/Users/Ghanie/project/smart.exp/src
+set tlibdir = /mnt/c/Users/Ghanie/project/smart.exp/lib
+
+set current  = $srcdir/test_lisa1
+set database = $current/indexed
+set coll     = $current/coll
+set doc_loc  = $coll/lisa_new.all
+set query_loc = $coll/query_new.text
+
+# create the empty collection
+/bin/rm -rf $database
+mkdir $database
+
+cat > $database/spec << EOF1
+## INFORMATION LOCATIONS
+database                $database
+include_file            $tlibdir/spec.expcoll
+doc_loc                 $database/doc_loc
+query_loc               $database/query_loc
+qrels_text_file         $coll/qrels.text
+
+## LISA DOCDESC
+#### GENERIC PREPARSER
+num_pp_sections                 3
+pp_section.0.string             "~I"
+pp_section.0.action             discard
+pp_section.0.oneline_flag       true
+pp_section.0.newdoc_flag        true
+pp_section.1.string             "~T"
+pp_section.1.section_name       t
+pp_section.2.string             "~W"
+pp_section.2.section_name       w
+
+#### DESCRIPTION OF PARSE INPUT
+index.num_sections              2
+index.section.0.name            w
+  index.section.0.method        index.parse_sect.full
+  index.section.0.word.ctype    0
+  index.section.0.proper.ctype  0
+index.section.1.name            t
+  index.section.1.method        index.parse_sect.full
+  index.section.1.word.ctype    0
+  index.section.1.proper.ctype  0
+title_section 1
+
+#### DESCRIPTION OF FINAL VECTORS
+num_ctypes                      1
+ctype.0.name                    words
+
+## ALTERATIONS OF STANDARD PARAMETERS
+dict_file_size                  20011
+
+## ALTERATIONS OF STANDARD PROCEDURES
+EOF1
+
+# echo Creating new database at `date`
+# Copy auxiliary files to collection
+echo "$doc_loc" > $database/doc_loc
+echo "$query_loc" > $database/query_loc
+
+#index the collection
+# echo Indexing docs,queries,rels at `date`
+$bin/smart exp_coll $database/spec
+
+# Raw TF
+# Create atc (a tf*idf variant) versions of docs and queries
+# Notation refer to this docs: https://cdn-edunex.itb.ac.id/47660-Information-Retrieval-System/157157-Minggu-5/1677021843836_Term-Weighting-TFIDFNormalization-SMART-Notation.pdf
+
+echo "Create ntn versions at `date`"
+$bin/smart convert $database/spec   proc convert.obj.weight_query \
+                   in query.nnn  out query.ntn   query_weight ntn
+$bin/smart convert $database/spec   proc convert.obj.weight_doc \
+                   in doc.nnn  out doc.ntn   doc_weight ntn
+$bin/smart convert $database/spec   proc convert.obj.vec_aux  \
+                   in doc.ntn  out inv.ntn
+
+echo "Create nnc versions at `date`"
+$bin/smart convert $database/spec   proc convert.obj.weight_query \
+                   in query.nnn  out query.nnc   query_weight nnc
+$bin/smart convert $database/spec   proc convert.obj.weight_doc \
+                   in doc.nnn  out doc.nnc   doc_weight nnc
+$bin/smart convert $database/spec   proc convert.obj.vec_aux  \
+                   in doc.nnc  out inv.nnc
+
+echo "Create ntc versions at `date`"
+$bin/smart convert $database/spec   proc convert.obj.weight_query \
+                   in query.nnn  out query.ntc   query_weight ntc
+$bin/smart convert $database/spec   proc convert.obj.weight_doc \
+                   in doc.nnn  out doc.ntc   doc_weight ntc
+$bin/smart convert $database/spec   proc convert.obj.vec_aux  \
+                   in doc.ntc  out inv.ntc
+
+echo "Create bnn versions at `date`"
+$bin/smart convert $database/spec   proc convert.obj.weight_query \
+                   in query.nnn  out query.bnn   query_weight bnn
+$bin/smart convert $database/spec   proc convert.obj.weight_doc \
+                   in doc.nnn  out doc.bnn   doc_weight bnn
+$bin/smart convert $database/spec   proc convert.obj.vec_aux  \
+                   in doc.bnn  out inv.bnn
+
+echo "Create btn versions at `date`"
+$bin/smart convert $database/spec   proc convert.obj.weight_query \
+                   in query.nnn  out query.btn   query_weight btn
+$bin/smart convert $database/spec   proc convert.obj.weight_doc \
+                   in doc.nnn  out doc.btn   doc_weight btn
+$bin/smart convert $database/spec   proc convert.obj.vec_aux  \
+                   in doc.btn  out inv.btn
+
+echo "Create bnc versions at `date`"
+$bin/smart convert $database/spec   proc convert.obj.weight_query \
+                   in query.nnn  out query.bnc   query_weight bnc
+$bin/smart convert $database/spec   proc convert.obj.weight_doc \
+                   in doc.nnn  out doc.bnc   doc_weight bnc
+$bin/smart convert $database/spec   proc convert.obj.vec_aux  \
+                   in doc.bnc  out inv.bnc
+
+echo "Create btc versions at `date`"
+$bin/smart convert $database/spec   proc convert.obj.weight_query \
+                   in query.nnn  out query.btc   query_weight btc
+$bin/smart convert $database/spec   proc convert.obj.weight_doc \
+                   in doc.nnn  out doc.btc   doc_weight btc
+$bin/smart convert $database/spec   proc convert.obj.vec_aux  \
+                   in doc.btc  out inv.btc
+
+echo "Create ann versions at `date`"
+$bin/smart convert $database/spec   proc convert.obj.weight_query \
+                   in query.nnn  out query.ann   query_weight ann
+$bin/smart convert $database/spec   proc convert.obj.weight_doc \
+                   in doc.nnn  out doc.ann   doc_weight ann
+$bin/smart convert $database/spec   proc convert.obj.vec_aux  \
+                   in doc.ann  out inv.ann
+
+echo "Create atn versions at `date`"
+$bin/smart convert $database/spec   proc convert.obj.weight_query \
+                   in query.nnn  out query.atn   query_weight atn
+$bin/smart convert $database/spec   proc convert.obj.weight_doc \
+                   in doc.nnn  out doc.atn   doc_weight atn
+$bin/smart convert $database/spec   proc convert.obj.vec_aux  \
+                   in doc.atn  out inv.atn
+
+echo "Create anc versions at `date`"
+$bin/smart convert $database/spec   proc convert.obj.weight_query \
+                   in query.nnn  out query.anc   query_weight anc
+$bin/smart convert $database/spec   proc convert.obj.weight_doc \
+                   in doc.nnn  out doc.anc   doc_weight anc
+$bin/smart convert $database/spec   proc convert.obj.vec_aux  \
+                   in doc.anc  out inv.anc
+
+echo "Create atc versions at `date`"
+$bin/smart convert $database/spec   proc convert.obj.weight_query \
+                   in query.nnn  out query.atc   query_weight atc
+$bin/smart convert $database/spec   proc convert.obj.weight_doc \
+                   in doc.nnn  out doc.atc   doc_weight atc
+$bin/smart convert $database/spec   proc convert.obj.vec_aux  \
+                   in doc.atc  out inv.atc
+
+echo "Create lnn versions at `date`"
+$bin/smart convert $database/spec   proc convert.obj.weight_query \
+                   in query.nnn  out query.lnn   query_weight lnn
+$bin/smart convert $database/spec   proc convert.obj.weight_doc \
+                   in doc.nnn  out doc.lnn   doc_weight lnn
+$bin/smart convert $database/spec   proc convert.obj.vec_aux  \
+                   in doc.lnn  out inv.lnn
+
+echo "Create ltn versions at `date`"
+$bin/smart convert $database/spec   proc convert.obj.weight_query \
+                   in query.nnn  out query.ltn   query_weight ltn
+$bin/smart convert $database/spec   proc convert.obj.weight_doc \
+                   in doc.nnn  out doc.ltn   doc_weight ltn
+$bin/smart convert $database/spec   proc convert.obj.vec_aux  \
+                   in doc.ltn  out inv.ltn
+
+echo "Create lnc versions at `date`"
+$bin/smart convert $database/spec   proc convert.obj.weight_query \
+                   in query.nnn  out query.lnc   query_weight lnc
+$bin/smart convert $database/spec   proc convert.obj.weight_doc \
+                   in doc.nnn  out doc.lnc   doc_weight lnc
+$bin/smart convert $database/spec   proc convert.obj.vec_aux  \
+                   in doc.lnc  out inv.lnc
+
+echo "Create ltc versions at `date`"
+$bin/smart convert $database/spec   proc convert.obj.weight_query \
+                   in query.nnn  out query.ltc   query_weight ltc
+$bin/smart convert $database/spec   proc convert.obj.weight_doc \
+                   in doc.nnn  out doc.ltc   doc_weight ltc
+$bin/smart convert $database/spec   proc convert.obj.vec_aux  \
+                   in doc.ltc  out inv.ltc
+

@@ -1,0 +1,3626 @@
+#! /bin/tcsh
+
+set bin = /mnt/c/Users/Ghanie/project/smart.exp/src/bin
+set current = /mnt/c/Users/Ghanie/project/smart.exp/src/test_lisa
+set database = $current/indexed
+
+# Very small test suite for smart on the included adi collection
+# Run using "csh".  You can figure out more of what is going on by
+# running this, and afterwords running
+#        cd test
+#        smart top.inter spec.atc spec_list "spec.nnn spec.atc"
+# and playing around with the commands (try "help", "adv", "exp" first
+# to get full list of available commands)
+
+#########################################################################
+# Make the lisa test collection
+#########################################################################
+# ./make_lisa
+# echo "collection made"
+
+/bin/rm -rf test
+mkdir test
+cd test
+
+
+#########################################################################
+# Perform two retrieval runs with the vectors already prepared by make_lisa
+#########################################################################
+cat > spec.nnn << EOF
+include_file $database/spec
+tr_file ./tr.nnn # Retrieve n document
+rr_file ./rr.nnn # Retrieve all relevant document
+run_name "Doc weight == Query weight == nnn"
+EOF
+
+$bin/smart retrieve spec.nnn
+echo "retrieval run nnn.nnn done"
+
+#########################################################################
+# Additional Retrieval
+#########################################################################
+
+# nnn.nnn experiment
+cat > spec.nnn.nnn << EOF
+include_file $database/spec
+query_file query.nnn
+doc_file doc.nnn
+inv_file inv.nnn
+tr_file ./tr.nnn.nnn
+rr_file ./rr.nnn.nnn
+run_name " Doc weight == nnn; Query weight == nnn;"
+EOF
+
+$bin/smart retrieve spec.nnn.nnn
+echo "Retrieval run nnn.nnn done"
+
+# nnn.ntn experiment
+cat > spec.nnn.ntn << EOF
+include_file $database/spec
+query_file query.ntn
+doc_file doc.nnn
+inv_file inv.nnn
+tr_file ./tr.nnn.ntn
+rr_file ./rr.nnn.ntn
+run_name " Doc weight == nnn; Query weight == ntn;"
+EOF
+
+$bin/smart retrieve spec.nnn.ntn
+echo "Retrieval run nnn.ntn done"
+
+# nnn.nnc experiment
+cat > spec.nnn.nnc << EOF
+include_file $database/spec
+query_file query.nnc
+doc_file doc.nnn
+inv_file inv.nnn
+tr_file ./tr.nnn.nnc
+rr_file ./rr.nnn.nnc
+run_name " Doc weight == nnn; Query weight == nnc;"
+EOF
+
+$bin/smart retrieve spec.nnn.nnc
+echo "Retrieval run nnn.nnc done"
+
+# nnn.ntc experiment
+cat > spec.nnn.ntc << EOF
+include_file $database/spec
+query_file query.ntc
+doc_file doc.nnn
+inv_file inv.nnn
+tr_file ./tr.nnn.ntc
+rr_file ./rr.nnn.ntc
+run_name " Doc weight == nnn; Query weight == ntc;"
+EOF
+
+$bin/smart retrieve spec.nnn.ntc
+echo "Retrieval run nnn.ntc done"
+
+# nnn.bnn experiment
+cat > spec.nnn.bnn << EOF
+include_file $database/spec
+query_file query.bnn
+doc_file doc.nnn
+inv_file inv.nnn
+tr_file ./tr.nnn.bnn
+rr_file ./rr.nnn.bnn
+run_name " Doc weight == nnn; Query weight == bnn;"
+EOF
+
+$bin/smart retrieve spec.nnn.bnn
+echo "Retrieval run nnn.bnn done"
+
+# nnn.btn experiment
+cat > spec.nnn.btn << EOF
+include_file $database/spec
+query_file query.btn
+doc_file doc.nnn
+inv_file inv.nnn
+tr_file ./tr.nnn.btn
+rr_file ./rr.nnn.btn
+run_name " Doc weight == nnn; Query weight == btn;"
+EOF
+
+$bin/smart retrieve spec.nnn.btn
+echo "Retrieval run nnn.btn done"
+
+# nnn.bnc experiment
+cat > spec.nnn.bnc << EOF
+include_file $database/spec
+query_file query.bnc
+doc_file doc.nnn
+inv_file inv.nnn
+tr_file ./tr.nnn.bnc
+rr_file ./rr.nnn.bnc
+run_name " Doc weight == nnn; Query weight == bnc;"
+EOF
+
+$bin/smart retrieve spec.nnn.bnc
+echo "Retrieval run nnn.bnc done"
+
+# nnn.btc experiment
+cat > spec.nnn.btc << EOF
+include_file $database/spec
+query_file query.btc
+doc_file doc.nnn
+inv_file inv.nnn
+tr_file ./tr.nnn.btc
+rr_file ./rr.nnn.btc
+run_name " Doc weight == nnn; Query weight == btc;"
+EOF
+
+$bin/smart retrieve spec.nnn.btc
+echo "Retrieval run nnn.btc done"
+
+# nnn.ann experiment
+cat > spec.nnn.ann << EOF
+include_file $database/spec
+query_file query.ann
+doc_file doc.nnn
+inv_file inv.nnn
+tr_file ./tr.nnn.ann
+rr_file ./rr.nnn.ann
+run_name " Doc weight == nnn; Query weight == ann;"
+EOF
+
+$bin/smart retrieve spec.nnn.ann
+echo "Retrieval run nnn.ann done"
+
+# nnn.atn experiment
+cat > spec.nnn.atn << EOF
+include_file $database/spec
+query_file query.atn
+doc_file doc.nnn
+inv_file inv.nnn
+tr_file ./tr.nnn.atn
+rr_file ./rr.nnn.atn
+run_name " Doc weight == nnn; Query weight == atn;"
+EOF
+
+$bin/smart retrieve spec.nnn.atn
+echo "Retrieval run nnn.atn done"
+
+# nnn.anc experiment
+cat > spec.nnn.anc << EOF
+include_file $database/spec
+query_file query.anc
+doc_file doc.nnn
+inv_file inv.nnn
+tr_file ./tr.nnn.anc
+rr_file ./rr.nnn.anc
+run_name " Doc weight == nnn; Query weight == anc;"
+EOF
+
+$bin/smart retrieve spec.nnn.anc
+echo "Retrieval run nnn.anc done"
+
+# nnn.atc experiment
+cat > spec.nnn.atc << EOF
+include_file $database/spec
+query_file query.atc
+doc_file doc.nnn
+inv_file inv.nnn
+tr_file ./tr.nnn.atc
+rr_file ./rr.nnn.atc
+run_name " Doc weight == nnn; Query weight == atc;"
+EOF
+
+$bin/smart retrieve spec.nnn.atc
+echo "Retrieval run nnn.atc done"
+
+# nnn.lnn experiment
+cat > spec.nnn.lnn << EOF
+include_file $database/spec
+query_file query.lnn
+doc_file doc.nnn
+inv_file inv.nnn
+tr_file ./tr.nnn.lnn
+rr_file ./rr.nnn.lnn
+run_name " Doc weight == nnn; Query weight == lnn;"
+EOF
+
+$bin/smart retrieve spec.nnn.lnn
+echo "Retrieval run nnn.lnn done"
+
+# nnn.ltn experiment
+cat > spec.nnn.ltn << EOF
+include_file $database/spec
+query_file query.ltn
+doc_file doc.nnn
+inv_file inv.nnn
+tr_file ./tr.nnn.ltn
+rr_file ./rr.nnn.ltn
+run_name " Doc weight == nnn; Query weight == ltn;"
+EOF
+
+$bin/smart retrieve spec.nnn.ltn
+echo "Retrieval run nnn.ltn done"
+
+# nnn.lnc experiment
+cat > spec.nnn.lnc << EOF
+include_file $database/spec
+query_file query.lnc
+doc_file doc.nnn
+inv_file inv.nnn
+tr_file ./tr.nnn.lnc
+rr_file ./rr.nnn.lnc
+run_name " Doc weight == nnn; Query weight == lnc;"
+EOF
+
+$bin/smart retrieve spec.nnn.lnc
+echo "Retrieval run nnn.lnc done"
+
+# nnn.ltc experiment
+cat > spec.nnn.ltc << EOF
+include_file $database/spec
+query_file query.ltc
+doc_file doc.nnn
+inv_file inv.nnn
+tr_file ./tr.nnn.ltc
+rr_file ./rr.nnn.ltc
+run_name " Doc weight == nnn; Query weight == ltc;"
+EOF
+
+$bin/smart retrieve spec.nnn.ltc
+echo "Retrieval run nnn.ltc done"
+
+# ntn.nnn experiment
+cat > spec.ntn.nnn << EOF
+include_file $database/spec
+query_file query.nnn
+doc_file doc.ntn
+inv_file inv.ntn
+tr_file ./tr.ntn.nnn
+rr_file ./rr.ntn.nnn
+run_name " Doc weight == ntn; Query weight == nnn;"
+EOF
+
+$bin/smart retrieve spec.ntn.nnn
+echo "Retrieval run ntn.nnn done"
+
+# ntn.ntn experiment
+cat > spec.ntn.ntn << EOF
+include_file $database/spec
+query_file query.ntn
+doc_file doc.ntn
+inv_file inv.ntn
+tr_file ./tr.ntn.ntn
+rr_file ./rr.ntn.ntn
+run_name " Doc weight == ntn; Query weight == ntn;"
+EOF
+
+$bin/smart retrieve spec.ntn.ntn
+echo "Retrieval run ntn.ntn done"
+
+# ntn.nnc experiment
+cat > spec.ntn.nnc << EOF
+include_file $database/spec
+query_file query.nnc
+doc_file doc.ntn
+inv_file inv.ntn
+tr_file ./tr.ntn.nnc
+rr_file ./rr.ntn.nnc
+run_name " Doc weight == ntn; Query weight == nnc;"
+EOF
+
+$bin/smart retrieve spec.ntn.nnc
+echo "Retrieval run ntn.nnc done"
+
+# ntn.ntc experiment
+cat > spec.ntn.ntc << EOF
+include_file $database/spec
+query_file query.ntc
+doc_file doc.ntn
+inv_file inv.ntn
+tr_file ./tr.ntn.ntc
+rr_file ./rr.ntn.ntc
+run_name " Doc weight == ntn; Query weight == ntc;"
+EOF
+
+$bin/smart retrieve spec.ntn.ntc
+echo "Retrieval run ntn.ntc done"
+
+# ntn.bnn experiment
+cat > spec.ntn.bnn << EOF
+include_file $database/spec
+query_file query.bnn
+doc_file doc.ntn
+inv_file inv.ntn
+tr_file ./tr.ntn.bnn
+rr_file ./rr.ntn.bnn
+run_name " Doc weight == ntn; Query weight == bnn;"
+EOF
+
+$bin/smart retrieve spec.ntn.bnn
+echo "Retrieval run ntn.bnn done"
+
+# ntn.btn experiment
+cat > spec.ntn.btn << EOF
+include_file $database/spec
+query_file query.btn
+doc_file doc.ntn
+inv_file inv.ntn
+tr_file ./tr.ntn.btn
+rr_file ./rr.ntn.btn
+run_name " Doc weight == ntn; Query weight == btn;"
+EOF
+
+$bin/smart retrieve spec.ntn.btn
+echo "Retrieval run ntn.btn done"
+
+# ntn.bnc experiment
+cat > spec.ntn.bnc << EOF
+include_file $database/spec
+query_file query.bnc
+doc_file doc.ntn
+inv_file inv.ntn
+tr_file ./tr.ntn.bnc
+rr_file ./rr.ntn.bnc
+run_name " Doc weight == ntn; Query weight == bnc;"
+EOF
+
+$bin/smart retrieve spec.ntn.bnc
+echo "Retrieval run ntn.bnc done"
+
+# ntn.btc experiment
+cat > spec.ntn.btc << EOF
+include_file $database/spec
+query_file query.btc
+doc_file doc.ntn
+inv_file inv.ntn
+tr_file ./tr.ntn.btc
+rr_file ./rr.ntn.btc
+run_name " Doc weight == ntn; Query weight == btc;"
+EOF
+
+$bin/smart retrieve spec.ntn.btc
+echo "Retrieval run ntn.btc done"
+
+# ntn.ann experiment
+cat > spec.ntn.ann << EOF
+include_file $database/spec
+query_file query.ann
+doc_file doc.ntn
+inv_file inv.ntn
+tr_file ./tr.ntn.ann
+rr_file ./rr.ntn.ann
+run_name " Doc weight == ntn; Query weight == ann;"
+EOF
+
+$bin/smart retrieve spec.ntn.ann
+echo "Retrieval run ntn.ann done"
+
+# ntn.atn experiment
+cat > spec.ntn.atn << EOF
+include_file $database/spec
+query_file query.atn
+doc_file doc.ntn
+inv_file inv.ntn
+tr_file ./tr.ntn.atn
+rr_file ./rr.ntn.atn
+run_name " Doc weight == ntn; Query weight == atn;"
+EOF
+
+$bin/smart retrieve spec.ntn.atn
+echo "Retrieval run ntn.atn done"
+
+# ntn.anc experiment
+cat > spec.ntn.anc << EOF
+include_file $database/spec
+query_file query.anc
+doc_file doc.ntn
+inv_file inv.ntn
+tr_file ./tr.ntn.anc
+rr_file ./rr.ntn.anc
+run_name " Doc weight == ntn; Query weight == anc;"
+EOF
+
+$bin/smart retrieve spec.ntn.anc
+echo "Retrieval run ntn.anc done"
+
+# ntn.atc experiment
+cat > spec.ntn.atc << EOF
+include_file $database/spec
+query_file query.atc
+doc_file doc.ntn
+inv_file inv.ntn
+tr_file ./tr.ntn.atc
+rr_file ./rr.ntn.atc
+run_name " Doc weight == ntn; Query weight == atc;"
+EOF
+
+$bin/smart retrieve spec.ntn.atc
+echo "Retrieval run ntn.atc done"
+
+# ntn.lnn experiment
+cat > spec.ntn.lnn << EOF
+include_file $database/spec
+query_file query.lnn
+doc_file doc.ntn
+inv_file inv.ntn
+tr_file ./tr.ntn.lnn
+rr_file ./rr.ntn.lnn
+run_name " Doc weight == ntn; Query weight == lnn;"
+EOF
+
+$bin/smart retrieve spec.ntn.lnn
+echo "Retrieval run ntn.lnn done"
+
+# ntn.ltn experiment
+cat > spec.ntn.ltn << EOF
+include_file $database/spec
+query_file query.ltn
+doc_file doc.ntn
+inv_file inv.ntn
+tr_file ./tr.ntn.ltn
+rr_file ./rr.ntn.ltn
+run_name " Doc weight == ntn; Query weight == ltn;"
+EOF
+
+$bin/smart retrieve spec.ntn.ltn
+echo "Retrieval run ntn.ltn done"
+
+# ntn.lnc experiment
+cat > spec.ntn.lnc << EOF
+include_file $database/spec
+query_file query.lnc
+doc_file doc.ntn
+inv_file inv.ntn
+tr_file ./tr.ntn.lnc
+rr_file ./rr.ntn.lnc
+run_name " Doc weight == ntn; Query weight == lnc;"
+EOF
+
+$bin/smart retrieve spec.ntn.lnc
+echo "Retrieval run ntn.lnc done"
+
+# ntn.ltc experiment
+cat > spec.ntn.ltc << EOF
+include_file $database/spec
+query_file query.ltc
+doc_file doc.ntn
+inv_file inv.ntn
+tr_file ./tr.ntn.ltc
+rr_file ./rr.ntn.ltc
+run_name " Doc weight == ntn; Query weight == ltc;"
+EOF
+
+$bin/smart retrieve spec.ntn.ltc
+echo "Retrieval run ntn.ltc done"
+
+# nnc.nnn experiment
+cat > spec.nnc.nnn << EOF
+include_file $database/spec
+query_file query.nnn
+doc_file doc.nnc
+inv_file inv.nnc
+tr_file ./tr.nnc.nnn
+rr_file ./rr.nnc.nnn
+run_name " Doc weight == nnc; Query weight == nnn;"
+EOF
+
+$bin/smart retrieve spec.nnc.nnn
+echo "Retrieval run nnc.nnn done"
+
+# nnc.ntn experiment
+cat > spec.nnc.ntn << EOF
+include_file $database/spec
+query_file query.ntn
+doc_file doc.nnc
+inv_file inv.nnc
+tr_file ./tr.nnc.ntn
+rr_file ./rr.nnc.ntn
+run_name " Doc weight == nnc; Query weight == ntn;"
+EOF
+
+$bin/smart retrieve spec.nnc.ntn
+echo "Retrieval run nnc.ntn done"
+
+# nnc.nnc experiment
+cat > spec.nnc.nnc << EOF
+include_file $database/spec
+query_file query.nnc
+doc_file doc.nnc
+inv_file inv.nnc
+tr_file ./tr.nnc.nnc
+rr_file ./rr.nnc.nnc
+run_name " Doc weight == nnc; Query weight == nnc;"
+EOF
+
+$bin/smart retrieve spec.nnc.nnc
+echo "Retrieval run nnc.nnc done"
+
+# nnc.ntc experiment
+cat > spec.nnc.ntc << EOF
+include_file $database/spec
+query_file query.ntc
+doc_file doc.nnc
+inv_file inv.nnc
+tr_file ./tr.nnc.ntc
+rr_file ./rr.nnc.ntc
+run_name " Doc weight == nnc; Query weight == ntc;"
+EOF
+
+$bin/smart retrieve spec.nnc.ntc
+echo "Retrieval run nnc.ntc done"
+
+# nnc.bnn experiment
+cat > spec.nnc.bnn << EOF
+include_file $database/spec
+query_file query.bnn
+doc_file doc.nnc
+inv_file inv.nnc
+tr_file ./tr.nnc.bnn
+rr_file ./rr.nnc.bnn
+run_name " Doc weight == nnc; Query weight == bnn;"
+EOF
+
+$bin/smart retrieve spec.nnc.bnn
+echo "Retrieval run nnc.bnn done"
+
+# nnc.btn experiment
+cat > spec.nnc.btn << EOF
+include_file $database/spec
+query_file query.btn
+doc_file doc.nnc
+inv_file inv.nnc
+tr_file ./tr.nnc.btn
+rr_file ./rr.nnc.btn
+run_name " Doc weight == nnc; Query weight == btn;"
+EOF
+
+$bin/smart retrieve spec.nnc.btn
+echo "Retrieval run nnc.btn done"
+
+# nnc.bnc experiment
+cat > spec.nnc.bnc << EOF
+include_file $database/spec
+query_file query.bnc
+doc_file doc.nnc
+inv_file inv.nnc
+tr_file ./tr.nnc.bnc
+rr_file ./rr.nnc.bnc
+run_name " Doc weight == nnc; Query weight == bnc;"
+EOF
+
+$bin/smart retrieve spec.nnc.bnc
+echo "Retrieval run nnc.bnc done"
+
+# nnc.btc experiment
+cat > spec.nnc.btc << EOF
+include_file $database/spec
+query_file query.btc
+doc_file doc.nnc
+inv_file inv.nnc
+tr_file ./tr.nnc.btc
+rr_file ./rr.nnc.btc
+run_name " Doc weight == nnc; Query weight == btc;"
+EOF
+
+$bin/smart retrieve spec.nnc.btc
+echo "Retrieval run nnc.btc done"
+
+# nnc.ann experiment
+cat > spec.nnc.ann << EOF
+include_file $database/spec
+query_file query.ann
+doc_file doc.nnc
+inv_file inv.nnc
+tr_file ./tr.nnc.ann
+rr_file ./rr.nnc.ann
+run_name " Doc weight == nnc; Query weight == ann;"
+EOF
+
+$bin/smart retrieve spec.nnc.ann
+echo "Retrieval run nnc.ann done"
+
+# nnc.atn experiment
+cat > spec.nnc.atn << EOF
+include_file $database/spec
+query_file query.atn
+doc_file doc.nnc
+inv_file inv.nnc
+tr_file ./tr.nnc.atn
+rr_file ./rr.nnc.atn
+run_name " Doc weight == nnc; Query weight == atn;"
+EOF
+
+$bin/smart retrieve spec.nnc.atn
+echo "Retrieval run nnc.atn done"
+
+# nnc.anc experiment
+cat > spec.nnc.anc << EOF
+include_file $database/spec
+query_file query.anc
+doc_file doc.nnc
+inv_file inv.nnc
+tr_file ./tr.nnc.anc
+rr_file ./rr.nnc.anc
+run_name " Doc weight == nnc; Query weight == anc;"
+EOF
+
+$bin/smart retrieve spec.nnc.anc
+echo "Retrieval run nnc.anc done"
+
+# nnc.atc experiment
+cat > spec.nnc.atc << EOF
+include_file $database/spec
+query_file query.atc
+doc_file doc.nnc
+inv_file inv.nnc
+tr_file ./tr.nnc.atc
+rr_file ./rr.nnc.atc
+run_name " Doc weight == nnc; Query weight == atc;"
+EOF
+
+$bin/smart retrieve spec.nnc.atc
+echo "Retrieval run nnc.atc done"
+
+# nnc.lnn experiment
+cat > spec.nnc.lnn << EOF
+include_file $database/spec
+query_file query.lnn
+doc_file doc.nnc
+inv_file inv.nnc
+tr_file ./tr.nnc.lnn
+rr_file ./rr.nnc.lnn
+run_name " Doc weight == nnc; Query weight == lnn;"
+EOF
+
+$bin/smart retrieve spec.nnc.lnn
+echo "Retrieval run nnc.lnn done"
+
+# nnc.ltn experiment
+cat > spec.nnc.ltn << EOF
+include_file $database/spec
+query_file query.ltn
+doc_file doc.nnc
+inv_file inv.nnc
+tr_file ./tr.nnc.ltn
+rr_file ./rr.nnc.ltn
+run_name " Doc weight == nnc; Query weight == ltn;"
+EOF
+
+$bin/smart retrieve spec.nnc.ltn
+echo "Retrieval run nnc.ltn done"
+
+# nnc.lnc experiment
+cat > spec.nnc.lnc << EOF
+include_file $database/spec
+query_file query.lnc
+doc_file doc.nnc
+inv_file inv.nnc
+tr_file ./tr.nnc.lnc
+rr_file ./rr.nnc.lnc
+run_name " Doc weight == nnc; Query weight == lnc;"
+EOF
+
+$bin/smart retrieve spec.nnc.lnc
+echo "Retrieval run nnc.lnc done"
+
+# nnc.ltc experiment
+cat > spec.nnc.ltc << EOF
+include_file $database/spec
+query_file query.ltc
+doc_file doc.nnc
+inv_file inv.nnc
+tr_file ./tr.nnc.ltc
+rr_file ./rr.nnc.ltc
+run_name " Doc weight == nnc; Query weight == ltc;"
+EOF
+
+$bin/smart retrieve spec.nnc.ltc
+echo "Retrieval run nnc.ltc done"
+
+# ntc.nnn experiment
+cat > spec.ntc.nnn << EOF
+include_file $database/spec
+query_file query.nnn
+doc_file doc.ntc
+inv_file inv.ntc
+tr_file ./tr.ntc.nnn
+rr_file ./rr.ntc.nnn
+run_name " Doc weight == ntc; Query weight == nnn;"
+EOF
+
+$bin/smart retrieve spec.ntc.nnn
+echo "Retrieval run ntc.nnn done"
+
+# ntc.ntn experiment
+cat > spec.ntc.ntn << EOF
+include_file $database/spec
+query_file query.ntn
+doc_file doc.ntc
+inv_file inv.ntc
+tr_file ./tr.ntc.ntn
+rr_file ./rr.ntc.ntn
+run_name " Doc weight == ntc; Query weight == ntn;"
+EOF
+
+$bin/smart retrieve spec.ntc.ntn
+echo "Retrieval run ntc.ntn done"
+
+# ntc.nnc experiment
+cat > spec.ntc.nnc << EOF
+include_file $database/spec
+query_file query.nnc
+doc_file doc.ntc
+inv_file inv.ntc
+tr_file ./tr.ntc.nnc
+rr_file ./rr.ntc.nnc
+run_name " Doc weight == ntc; Query weight == nnc;"
+EOF
+
+$bin/smart retrieve spec.ntc.nnc
+echo "Retrieval run ntc.nnc done"
+
+# ntc.ntc experiment
+cat > spec.ntc.ntc << EOF
+include_file $database/spec
+query_file query.ntc
+doc_file doc.ntc
+inv_file inv.ntc
+tr_file ./tr.ntc.ntc
+rr_file ./rr.ntc.ntc
+run_name " Doc weight == ntc; Query weight == ntc;"
+EOF
+
+$bin/smart retrieve spec.ntc.ntc
+echo "Retrieval run ntc.ntc done"
+
+# ntc.bnn experiment
+cat > spec.ntc.bnn << EOF
+include_file $database/spec
+query_file query.bnn
+doc_file doc.ntc
+inv_file inv.ntc
+tr_file ./tr.ntc.bnn
+rr_file ./rr.ntc.bnn
+run_name " Doc weight == ntc; Query weight == bnn;"
+EOF
+
+$bin/smart retrieve spec.ntc.bnn
+echo "Retrieval run ntc.bnn done"
+
+# ntc.btn experiment
+cat > spec.ntc.btn << EOF
+include_file $database/spec
+query_file query.btn
+doc_file doc.ntc
+inv_file inv.ntc
+tr_file ./tr.ntc.btn
+rr_file ./rr.ntc.btn
+run_name " Doc weight == ntc; Query weight == btn;"
+EOF
+
+$bin/smart retrieve spec.ntc.btn
+echo "Retrieval run ntc.btn done"
+
+# ntc.bnc experiment
+cat > spec.ntc.bnc << EOF
+include_file $database/spec
+query_file query.bnc
+doc_file doc.ntc
+inv_file inv.ntc
+tr_file ./tr.ntc.bnc
+rr_file ./rr.ntc.bnc
+run_name " Doc weight == ntc; Query weight == bnc;"
+EOF
+
+$bin/smart retrieve spec.ntc.bnc
+echo "Retrieval run ntc.bnc done"
+
+# ntc.btc experiment
+cat > spec.ntc.btc << EOF
+include_file $database/spec
+query_file query.btc
+doc_file doc.ntc
+inv_file inv.ntc
+tr_file ./tr.ntc.btc
+rr_file ./rr.ntc.btc
+run_name " Doc weight == ntc; Query weight == btc;"
+EOF
+
+$bin/smart retrieve spec.ntc.btc
+echo "Retrieval run ntc.btc done"
+
+# ntc.ann experiment
+cat > spec.ntc.ann << EOF
+include_file $database/spec
+query_file query.ann
+doc_file doc.ntc
+inv_file inv.ntc
+tr_file ./tr.ntc.ann
+rr_file ./rr.ntc.ann
+run_name " Doc weight == ntc; Query weight == ann;"
+EOF
+
+$bin/smart retrieve spec.ntc.ann
+echo "Retrieval run ntc.ann done"
+
+# ntc.atn experiment
+cat > spec.ntc.atn << EOF
+include_file $database/spec
+query_file query.atn
+doc_file doc.ntc
+inv_file inv.ntc
+tr_file ./tr.ntc.atn
+rr_file ./rr.ntc.atn
+run_name " Doc weight == ntc; Query weight == atn;"
+EOF
+
+$bin/smart retrieve spec.ntc.atn
+echo "Retrieval run ntc.atn done"
+
+# ntc.anc experiment
+cat > spec.ntc.anc << EOF
+include_file $database/spec
+query_file query.anc
+doc_file doc.ntc
+inv_file inv.ntc
+tr_file ./tr.ntc.anc
+rr_file ./rr.ntc.anc
+run_name " Doc weight == ntc; Query weight == anc;"
+EOF
+
+$bin/smart retrieve spec.ntc.anc
+echo "Retrieval run ntc.anc done"
+
+# ntc.atc experiment
+cat > spec.ntc.atc << EOF
+include_file $database/spec
+query_file query.atc
+doc_file doc.ntc
+inv_file inv.ntc
+tr_file ./tr.ntc.atc
+rr_file ./rr.ntc.atc
+run_name " Doc weight == ntc; Query weight == atc;"
+EOF
+
+$bin/smart retrieve spec.ntc.atc
+echo "Retrieval run ntc.atc done"
+
+# ntc.lnn experiment
+cat > spec.ntc.lnn << EOF
+include_file $database/spec
+query_file query.lnn
+doc_file doc.ntc
+inv_file inv.ntc
+tr_file ./tr.ntc.lnn
+rr_file ./rr.ntc.lnn
+run_name " Doc weight == ntc; Query weight == lnn;"
+EOF
+
+$bin/smart retrieve spec.ntc.lnn
+echo "Retrieval run ntc.lnn done"
+
+# ntc.ltn experiment
+cat > spec.ntc.ltn << EOF
+include_file $database/spec
+query_file query.ltn
+doc_file doc.ntc
+inv_file inv.ntc
+tr_file ./tr.ntc.ltn
+rr_file ./rr.ntc.ltn
+run_name " Doc weight == ntc; Query weight == ltn;"
+EOF
+
+$bin/smart retrieve spec.ntc.ltn
+echo "Retrieval run ntc.ltn done"
+
+# ntc.lnc experiment
+cat > spec.ntc.lnc << EOF
+include_file $database/spec
+query_file query.lnc
+doc_file doc.ntc
+inv_file inv.ntc
+tr_file ./tr.ntc.lnc
+rr_file ./rr.ntc.lnc
+run_name " Doc weight == ntc; Query weight == lnc;"
+EOF
+
+$bin/smart retrieve spec.ntc.lnc
+echo "Retrieval run ntc.lnc done"
+
+# ntc.ltc experiment
+cat > spec.ntc.ltc << EOF
+include_file $database/spec
+query_file query.ltc
+doc_file doc.ntc
+inv_file inv.ntc
+tr_file ./tr.ntc.ltc
+rr_file ./rr.ntc.ltc
+run_name " Doc weight == ntc; Query weight == ltc;"
+EOF
+
+$bin/smart retrieve spec.ntc.ltc
+echo "Retrieval run ntc.ltc done"
+
+# bnn.nnn experiment
+cat > spec.bnn.nnn << EOF
+include_file $database/spec
+query_file query.nnn
+doc_file doc.bnn
+inv_file inv.bnn
+tr_file ./tr.bnn.nnn
+rr_file ./rr.bnn.nnn
+run_name " Doc weight == bnn; Query weight == nnn;"
+EOF
+
+$bin/smart retrieve spec.bnn.nnn
+echo "Retrieval run bnn.nnn done"
+
+# bnn.ntn experiment
+cat > spec.bnn.ntn << EOF
+include_file $database/spec
+query_file query.ntn
+doc_file doc.bnn
+inv_file inv.bnn
+tr_file ./tr.bnn.ntn
+rr_file ./rr.bnn.ntn
+run_name " Doc weight == bnn; Query weight == ntn;"
+EOF
+
+$bin/smart retrieve spec.bnn.ntn
+echo "Retrieval run bnn.ntn done"
+
+# bnn.nnc experiment
+cat > spec.bnn.nnc << EOF
+include_file $database/spec
+query_file query.nnc
+doc_file doc.bnn
+inv_file inv.bnn
+tr_file ./tr.bnn.nnc
+rr_file ./rr.bnn.nnc
+run_name " Doc weight == bnn; Query weight == nnc;"
+EOF
+
+$bin/smart retrieve spec.bnn.nnc
+echo "Retrieval run bnn.nnc done"
+
+# bnn.ntc experiment
+cat > spec.bnn.ntc << EOF
+include_file $database/spec
+query_file query.ntc
+doc_file doc.bnn
+inv_file inv.bnn
+tr_file ./tr.bnn.ntc
+rr_file ./rr.bnn.ntc
+run_name " Doc weight == bnn; Query weight == ntc;"
+EOF
+
+$bin/smart retrieve spec.bnn.ntc
+echo "Retrieval run bnn.ntc done"
+
+# bnn.bnn experiment
+cat > spec.bnn.bnn << EOF
+include_file $database/spec
+query_file query.bnn
+doc_file doc.bnn
+inv_file inv.bnn
+tr_file ./tr.bnn.bnn
+rr_file ./rr.bnn.bnn
+run_name " Doc weight == bnn; Query weight == bnn;"
+EOF
+
+$bin/smart retrieve spec.bnn.bnn
+echo "Retrieval run bnn.bnn done"
+
+# bnn.btn experiment
+cat > spec.bnn.btn << EOF
+include_file $database/spec
+query_file query.btn
+doc_file doc.bnn
+inv_file inv.bnn
+tr_file ./tr.bnn.btn
+rr_file ./rr.bnn.btn
+run_name " Doc weight == bnn; Query weight == btn;"
+EOF
+
+$bin/smart retrieve spec.bnn.btn
+echo "Retrieval run bnn.btn done"
+
+# bnn.bnc experiment
+cat > spec.bnn.bnc << EOF
+include_file $database/spec
+query_file query.bnc
+doc_file doc.bnn
+inv_file inv.bnn
+tr_file ./tr.bnn.bnc
+rr_file ./rr.bnn.bnc
+run_name " Doc weight == bnn; Query weight == bnc;"
+EOF
+
+$bin/smart retrieve spec.bnn.bnc
+echo "Retrieval run bnn.bnc done"
+
+# bnn.btc experiment
+cat > spec.bnn.btc << EOF
+include_file $database/spec
+query_file query.btc
+doc_file doc.bnn
+inv_file inv.bnn
+tr_file ./tr.bnn.btc
+rr_file ./rr.bnn.btc
+run_name " Doc weight == bnn; Query weight == btc;"
+EOF
+
+$bin/smart retrieve spec.bnn.btc
+echo "Retrieval run bnn.btc done"
+
+# bnn.ann experiment
+cat > spec.bnn.ann << EOF
+include_file $database/spec
+query_file query.ann
+doc_file doc.bnn
+inv_file inv.bnn
+tr_file ./tr.bnn.ann
+rr_file ./rr.bnn.ann
+run_name " Doc weight == bnn; Query weight == ann;"
+EOF
+
+$bin/smart retrieve spec.bnn.ann
+echo "Retrieval run bnn.ann done"
+
+# bnn.atn experiment
+cat > spec.bnn.atn << EOF
+include_file $database/spec
+query_file query.atn
+doc_file doc.bnn
+inv_file inv.bnn
+tr_file ./tr.bnn.atn
+rr_file ./rr.bnn.atn
+run_name " Doc weight == bnn; Query weight == atn;"
+EOF
+
+$bin/smart retrieve spec.bnn.atn
+echo "Retrieval run bnn.atn done"
+
+# bnn.anc experiment
+cat > spec.bnn.anc << EOF
+include_file $database/spec
+query_file query.anc
+doc_file doc.bnn
+inv_file inv.bnn
+tr_file ./tr.bnn.anc
+rr_file ./rr.bnn.anc
+run_name " Doc weight == bnn; Query weight == anc;"
+EOF
+
+$bin/smart retrieve spec.bnn.anc
+echo "Retrieval run bnn.anc done"
+
+# bnn.atc experiment
+cat > spec.bnn.atc << EOF
+include_file $database/spec
+query_file query.atc
+doc_file doc.bnn
+inv_file inv.bnn
+tr_file ./tr.bnn.atc
+rr_file ./rr.bnn.atc
+run_name " Doc weight == bnn; Query weight == atc;"
+EOF
+
+$bin/smart retrieve spec.bnn.atc
+echo "Retrieval run bnn.atc done"
+
+# bnn.lnn experiment
+cat > spec.bnn.lnn << EOF
+include_file $database/spec
+query_file query.lnn
+doc_file doc.bnn
+inv_file inv.bnn
+tr_file ./tr.bnn.lnn
+rr_file ./rr.bnn.lnn
+run_name " Doc weight == bnn; Query weight == lnn;"
+EOF
+
+$bin/smart retrieve spec.bnn.lnn
+echo "Retrieval run bnn.lnn done"
+
+# bnn.ltn experiment
+cat > spec.bnn.ltn << EOF
+include_file $database/spec
+query_file query.ltn
+doc_file doc.bnn
+inv_file inv.bnn
+tr_file ./tr.bnn.ltn
+rr_file ./rr.bnn.ltn
+run_name " Doc weight == bnn; Query weight == ltn;"
+EOF
+
+$bin/smart retrieve spec.bnn.ltn
+echo "Retrieval run bnn.ltn done"
+
+# bnn.lnc experiment
+cat > spec.bnn.lnc << EOF
+include_file $database/spec
+query_file query.lnc
+doc_file doc.bnn
+inv_file inv.bnn
+tr_file ./tr.bnn.lnc
+rr_file ./rr.bnn.lnc
+run_name " Doc weight == bnn; Query weight == lnc;"
+EOF
+
+$bin/smart retrieve spec.bnn.lnc
+echo "Retrieval run bnn.lnc done"
+
+# bnn.ltc experiment
+cat > spec.bnn.ltc << EOF
+include_file $database/spec
+query_file query.ltc
+doc_file doc.bnn
+inv_file inv.bnn
+tr_file ./tr.bnn.ltc
+rr_file ./rr.bnn.ltc
+run_name " Doc weight == bnn; Query weight == ltc;"
+EOF
+
+$bin/smart retrieve spec.bnn.ltc
+echo "Retrieval run bnn.ltc done"
+
+# btn.nnn experiment
+cat > spec.btn.nnn << EOF
+include_file $database/spec
+query_file query.nnn
+doc_file doc.btn
+inv_file inv.btn
+tr_file ./tr.btn.nnn
+rr_file ./rr.btn.nnn
+run_name " Doc weight == btn; Query weight == nnn;"
+EOF
+
+$bin/smart retrieve spec.btn.nnn
+echo "Retrieval run btn.nnn done"
+
+# btn.ntn experiment
+cat > spec.btn.ntn << EOF
+include_file $database/spec
+query_file query.ntn
+doc_file doc.btn
+inv_file inv.btn
+tr_file ./tr.btn.ntn
+rr_file ./rr.btn.ntn
+run_name " Doc weight == btn; Query weight == ntn;"
+EOF
+
+$bin/smart retrieve spec.btn.ntn
+echo "Retrieval run btn.ntn done"
+
+# btn.nnc experiment
+cat > spec.btn.nnc << EOF
+include_file $database/spec
+query_file query.nnc
+doc_file doc.btn
+inv_file inv.btn
+tr_file ./tr.btn.nnc
+rr_file ./rr.btn.nnc
+run_name " Doc weight == btn; Query weight == nnc;"
+EOF
+
+$bin/smart retrieve spec.btn.nnc
+echo "Retrieval run btn.nnc done"
+
+# btn.ntc experiment
+cat > spec.btn.ntc << EOF
+include_file $database/spec
+query_file query.ntc
+doc_file doc.btn
+inv_file inv.btn
+tr_file ./tr.btn.ntc
+rr_file ./rr.btn.ntc
+run_name " Doc weight == btn; Query weight == ntc;"
+EOF
+
+$bin/smart retrieve spec.btn.ntc
+echo "Retrieval run btn.ntc done"
+
+# btn.bnn experiment
+cat > spec.btn.bnn << EOF
+include_file $database/spec
+query_file query.bnn
+doc_file doc.btn
+inv_file inv.btn
+tr_file ./tr.btn.bnn
+rr_file ./rr.btn.bnn
+run_name " Doc weight == btn; Query weight == bnn;"
+EOF
+
+$bin/smart retrieve spec.btn.bnn
+echo "Retrieval run btn.bnn done"
+
+# btn.btn experiment
+cat > spec.btn.btn << EOF
+include_file $database/spec
+query_file query.btn
+doc_file doc.btn
+inv_file inv.btn
+tr_file ./tr.btn.btn
+rr_file ./rr.btn.btn
+run_name " Doc weight == btn; Query weight == btn;"
+EOF
+
+$bin/smart retrieve spec.btn.btn
+echo "Retrieval run btn.btn done"
+
+# btn.bnc experiment
+cat > spec.btn.bnc << EOF
+include_file $database/spec
+query_file query.bnc
+doc_file doc.btn
+inv_file inv.btn
+tr_file ./tr.btn.bnc
+rr_file ./rr.btn.bnc
+run_name " Doc weight == btn; Query weight == bnc;"
+EOF
+
+$bin/smart retrieve spec.btn.bnc
+echo "Retrieval run btn.bnc done"
+
+# btn.btc experiment
+cat > spec.btn.btc << EOF
+include_file $database/spec
+query_file query.btc
+doc_file doc.btn
+inv_file inv.btn
+tr_file ./tr.btn.btc
+rr_file ./rr.btn.btc
+run_name " Doc weight == btn; Query weight == btc;"
+EOF
+
+$bin/smart retrieve spec.btn.btc
+echo "Retrieval run btn.btc done"
+
+# btn.ann experiment
+cat > spec.btn.ann << EOF
+include_file $database/spec
+query_file query.ann
+doc_file doc.btn
+inv_file inv.btn
+tr_file ./tr.btn.ann
+rr_file ./rr.btn.ann
+run_name " Doc weight == btn; Query weight == ann;"
+EOF
+
+$bin/smart retrieve spec.btn.ann
+echo "Retrieval run btn.ann done"
+
+# btn.atn experiment
+cat > spec.btn.atn << EOF
+include_file $database/spec
+query_file query.atn
+doc_file doc.btn
+inv_file inv.btn
+tr_file ./tr.btn.atn
+rr_file ./rr.btn.atn
+run_name " Doc weight == btn; Query weight == atn;"
+EOF
+
+$bin/smart retrieve spec.btn.atn
+echo "Retrieval run btn.atn done"
+
+# btn.anc experiment
+cat > spec.btn.anc << EOF
+include_file $database/spec
+query_file query.anc
+doc_file doc.btn
+inv_file inv.btn
+tr_file ./tr.btn.anc
+rr_file ./rr.btn.anc
+run_name " Doc weight == btn; Query weight == anc;"
+EOF
+
+$bin/smart retrieve spec.btn.anc
+echo "Retrieval run btn.anc done"
+
+# btn.atc experiment
+cat > spec.btn.atc << EOF
+include_file $database/spec
+query_file query.atc
+doc_file doc.btn
+inv_file inv.btn
+tr_file ./tr.btn.atc
+rr_file ./rr.btn.atc
+run_name " Doc weight == btn; Query weight == atc;"
+EOF
+
+$bin/smart retrieve spec.btn.atc
+echo "Retrieval run btn.atc done"
+
+# btn.lnn experiment
+cat > spec.btn.lnn << EOF
+include_file $database/spec
+query_file query.lnn
+doc_file doc.btn
+inv_file inv.btn
+tr_file ./tr.btn.lnn
+rr_file ./rr.btn.lnn
+run_name " Doc weight == btn; Query weight == lnn;"
+EOF
+
+$bin/smart retrieve spec.btn.lnn
+echo "Retrieval run btn.lnn done"
+
+# btn.ltn experiment
+cat > spec.btn.ltn << EOF
+include_file $database/spec
+query_file query.ltn
+doc_file doc.btn
+inv_file inv.btn
+tr_file ./tr.btn.ltn
+rr_file ./rr.btn.ltn
+run_name " Doc weight == btn; Query weight == ltn;"
+EOF
+
+$bin/smart retrieve spec.btn.ltn
+echo "Retrieval run btn.ltn done"
+
+# btn.lnc experiment
+cat > spec.btn.lnc << EOF
+include_file $database/spec
+query_file query.lnc
+doc_file doc.btn
+inv_file inv.btn
+tr_file ./tr.btn.lnc
+rr_file ./rr.btn.lnc
+run_name " Doc weight == btn; Query weight == lnc;"
+EOF
+
+$bin/smart retrieve spec.btn.lnc
+echo "Retrieval run btn.lnc done"
+
+# btn.ltc experiment
+cat > spec.btn.ltc << EOF
+include_file $database/spec
+query_file query.ltc
+doc_file doc.btn
+inv_file inv.btn
+tr_file ./tr.btn.ltc
+rr_file ./rr.btn.ltc
+run_name " Doc weight == btn; Query weight == ltc;"
+EOF
+
+$bin/smart retrieve spec.btn.ltc
+echo "Retrieval run btn.ltc done"
+
+# bnc.nnn experiment
+cat > spec.bnc.nnn << EOF
+include_file $database/spec
+query_file query.nnn
+doc_file doc.bnc
+inv_file inv.bnc
+tr_file ./tr.bnc.nnn
+rr_file ./rr.bnc.nnn
+run_name " Doc weight == bnc; Query weight == nnn;"
+EOF
+
+$bin/smart retrieve spec.bnc.nnn
+echo "Retrieval run bnc.nnn done"
+
+# bnc.ntn experiment
+cat > spec.bnc.ntn << EOF
+include_file $database/spec
+query_file query.ntn
+doc_file doc.bnc
+inv_file inv.bnc
+tr_file ./tr.bnc.ntn
+rr_file ./rr.bnc.ntn
+run_name " Doc weight == bnc; Query weight == ntn;"
+EOF
+
+$bin/smart retrieve spec.bnc.ntn
+echo "Retrieval run bnc.ntn done"
+
+# bnc.nnc experiment
+cat > spec.bnc.nnc << EOF
+include_file $database/spec
+query_file query.nnc
+doc_file doc.bnc
+inv_file inv.bnc
+tr_file ./tr.bnc.nnc
+rr_file ./rr.bnc.nnc
+run_name " Doc weight == bnc; Query weight == nnc;"
+EOF
+
+$bin/smart retrieve spec.bnc.nnc
+echo "Retrieval run bnc.nnc done"
+
+# bnc.ntc experiment
+cat > spec.bnc.ntc << EOF
+include_file $database/spec
+query_file query.ntc
+doc_file doc.bnc
+inv_file inv.bnc
+tr_file ./tr.bnc.ntc
+rr_file ./rr.bnc.ntc
+run_name " Doc weight == bnc; Query weight == ntc;"
+EOF
+
+$bin/smart retrieve spec.bnc.ntc
+echo "Retrieval run bnc.ntc done"
+
+# bnc.bnn experiment
+cat > spec.bnc.bnn << EOF
+include_file $database/spec
+query_file query.bnn
+doc_file doc.bnc
+inv_file inv.bnc
+tr_file ./tr.bnc.bnn
+rr_file ./rr.bnc.bnn
+run_name " Doc weight == bnc; Query weight == bnn;"
+EOF
+
+$bin/smart retrieve spec.bnc.bnn
+echo "Retrieval run bnc.bnn done"
+
+# bnc.btn experiment
+cat > spec.bnc.btn << EOF
+include_file $database/spec
+query_file query.btn
+doc_file doc.bnc
+inv_file inv.bnc
+tr_file ./tr.bnc.btn
+rr_file ./rr.bnc.btn
+run_name " Doc weight == bnc; Query weight == btn;"
+EOF
+
+$bin/smart retrieve spec.bnc.btn
+echo "Retrieval run bnc.btn done"
+
+# bnc.bnc experiment
+cat > spec.bnc.bnc << EOF
+include_file $database/spec
+query_file query.bnc
+doc_file doc.bnc
+inv_file inv.bnc
+tr_file ./tr.bnc.bnc
+rr_file ./rr.bnc.bnc
+run_name " Doc weight == bnc; Query weight == bnc;"
+EOF
+
+$bin/smart retrieve spec.bnc.bnc
+echo "Retrieval run bnc.bnc done"
+
+# bnc.btc experiment
+cat > spec.bnc.btc << EOF
+include_file $database/spec
+query_file query.btc
+doc_file doc.bnc
+inv_file inv.bnc
+tr_file ./tr.bnc.btc
+rr_file ./rr.bnc.btc
+run_name " Doc weight == bnc; Query weight == btc;"
+EOF
+
+$bin/smart retrieve spec.bnc.btc
+echo "Retrieval run bnc.btc done"
+
+# bnc.ann experiment
+cat > spec.bnc.ann << EOF
+include_file $database/spec
+query_file query.ann
+doc_file doc.bnc
+inv_file inv.bnc
+tr_file ./tr.bnc.ann
+rr_file ./rr.bnc.ann
+run_name " Doc weight == bnc; Query weight == ann;"
+EOF
+
+$bin/smart retrieve spec.bnc.ann
+echo "Retrieval run bnc.ann done"
+
+# bnc.atn experiment
+cat > spec.bnc.atn << EOF
+include_file $database/spec
+query_file query.atn
+doc_file doc.bnc
+inv_file inv.bnc
+tr_file ./tr.bnc.atn
+rr_file ./rr.bnc.atn
+run_name " Doc weight == bnc; Query weight == atn;"
+EOF
+
+$bin/smart retrieve spec.bnc.atn
+echo "Retrieval run bnc.atn done"
+
+# bnc.anc experiment
+cat > spec.bnc.anc << EOF
+include_file $database/spec
+query_file query.anc
+doc_file doc.bnc
+inv_file inv.bnc
+tr_file ./tr.bnc.anc
+rr_file ./rr.bnc.anc
+run_name " Doc weight == bnc; Query weight == anc;"
+EOF
+
+$bin/smart retrieve spec.bnc.anc
+echo "Retrieval run bnc.anc done"
+
+# bnc.atc experiment
+cat > spec.bnc.atc << EOF
+include_file $database/spec
+query_file query.atc
+doc_file doc.bnc
+inv_file inv.bnc
+tr_file ./tr.bnc.atc
+rr_file ./rr.bnc.atc
+run_name " Doc weight == bnc; Query weight == atc;"
+EOF
+
+$bin/smart retrieve spec.bnc.atc
+echo "Retrieval run bnc.atc done"
+
+# bnc.lnn experiment
+cat > spec.bnc.lnn << EOF
+include_file $database/spec
+query_file query.lnn
+doc_file doc.bnc
+inv_file inv.bnc
+tr_file ./tr.bnc.lnn
+rr_file ./rr.bnc.lnn
+run_name " Doc weight == bnc; Query weight == lnn;"
+EOF
+
+$bin/smart retrieve spec.bnc.lnn
+echo "Retrieval run bnc.lnn done"
+
+# bnc.ltn experiment
+cat > spec.bnc.ltn << EOF
+include_file $database/spec
+query_file query.ltn
+doc_file doc.bnc
+inv_file inv.bnc
+tr_file ./tr.bnc.ltn
+rr_file ./rr.bnc.ltn
+run_name " Doc weight == bnc; Query weight == ltn;"
+EOF
+
+$bin/smart retrieve spec.bnc.ltn
+echo "Retrieval run bnc.ltn done"
+
+# bnc.lnc experiment
+cat > spec.bnc.lnc << EOF
+include_file $database/spec
+query_file query.lnc
+doc_file doc.bnc
+inv_file inv.bnc
+tr_file ./tr.bnc.lnc
+rr_file ./rr.bnc.lnc
+run_name " Doc weight == bnc; Query weight == lnc;"
+EOF
+
+$bin/smart retrieve spec.bnc.lnc
+echo "Retrieval run bnc.lnc done"
+
+# bnc.ltc experiment
+cat > spec.bnc.ltc << EOF
+include_file $database/spec
+query_file query.ltc
+doc_file doc.bnc
+inv_file inv.bnc
+tr_file ./tr.bnc.ltc
+rr_file ./rr.bnc.ltc
+run_name " Doc weight == bnc; Query weight == ltc;"
+EOF
+
+$bin/smart retrieve spec.bnc.ltc
+echo "Retrieval run bnc.ltc done"
+
+# btc.nnn experiment
+cat > spec.btc.nnn << EOF
+include_file $database/spec
+query_file query.nnn
+doc_file doc.btc
+inv_file inv.btc
+tr_file ./tr.btc.nnn
+rr_file ./rr.btc.nnn
+run_name " Doc weight == btc; Query weight == nnn;"
+EOF
+
+$bin/smart retrieve spec.btc.nnn
+echo "Retrieval run btc.nnn done"
+
+# btc.ntn experiment
+cat > spec.btc.ntn << EOF
+include_file $database/spec
+query_file query.ntn
+doc_file doc.btc
+inv_file inv.btc
+tr_file ./tr.btc.ntn
+rr_file ./rr.btc.ntn
+run_name " Doc weight == btc; Query weight == ntn;"
+EOF
+
+$bin/smart retrieve spec.btc.ntn
+echo "Retrieval run btc.ntn done"
+
+# btc.nnc experiment
+cat > spec.btc.nnc << EOF
+include_file $database/spec
+query_file query.nnc
+doc_file doc.btc
+inv_file inv.btc
+tr_file ./tr.btc.nnc
+rr_file ./rr.btc.nnc
+run_name " Doc weight == btc; Query weight == nnc;"
+EOF
+
+$bin/smart retrieve spec.btc.nnc
+echo "Retrieval run btc.nnc done"
+
+# btc.ntc experiment
+cat > spec.btc.ntc << EOF
+include_file $database/spec
+query_file query.ntc
+doc_file doc.btc
+inv_file inv.btc
+tr_file ./tr.btc.ntc
+rr_file ./rr.btc.ntc
+run_name " Doc weight == btc; Query weight == ntc;"
+EOF
+
+$bin/smart retrieve spec.btc.ntc
+echo "Retrieval run btc.ntc done"
+
+# btc.bnn experiment
+cat > spec.btc.bnn << EOF
+include_file $database/spec
+query_file query.bnn
+doc_file doc.btc
+inv_file inv.btc
+tr_file ./tr.btc.bnn
+rr_file ./rr.btc.bnn
+run_name " Doc weight == btc; Query weight == bnn;"
+EOF
+
+$bin/smart retrieve spec.btc.bnn
+echo "Retrieval run btc.bnn done"
+
+# btc.btn experiment
+cat > spec.btc.btn << EOF
+include_file $database/spec
+query_file query.btn
+doc_file doc.btc
+inv_file inv.btc
+tr_file ./tr.btc.btn
+rr_file ./rr.btc.btn
+run_name " Doc weight == btc; Query weight == btn;"
+EOF
+
+$bin/smart retrieve spec.btc.btn
+echo "Retrieval run btc.btn done"
+
+# btc.bnc experiment
+cat > spec.btc.bnc << EOF
+include_file $database/spec
+query_file query.bnc
+doc_file doc.btc
+inv_file inv.btc
+tr_file ./tr.btc.bnc
+rr_file ./rr.btc.bnc
+run_name " Doc weight == btc; Query weight == bnc;"
+EOF
+
+$bin/smart retrieve spec.btc.bnc
+echo "Retrieval run btc.bnc done"
+
+# btc.btc experiment
+cat > spec.btc.btc << EOF
+include_file $database/spec
+query_file query.btc
+doc_file doc.btc
+inv_file inv.btc
+tr_file ./tr.btc.btc
+rr_file ./rr.btc.btc
+run_name " Doc weight == btc; Query weight == btc;"
+EOF
+
+$bin/smart retrieve spec.btc.btc
+echo "Retrieval run btc.btc done"
+
+# btc.ann experiment
+cat > spec.btc.ann << EOF
+include_file $database/spec
+query_file query.ann
+doc_file doc.btc
+inv_file inv.btc
+tr_file ./tr.btc.ann
+rr_file ./rr.btc.ann
+run_name " Doc weight == btc; Query weight == ann;"
+EOF
+
+$bin/smart retrieve spec.btc.ann
+echo "Retrieval run btc.ann done"
+
+# btc.atn experiment
+cat > spec.btc.atn << EOF
+include_file $database/spec
+query_file query.atn
+doc_file doc.btc
+inv_file inv.btc
+tr_file ./tr.btc.atn
+rr_file ./rr.btc.atn
+run_name " Doc weight == btc; Query weight == atn;"
+EOF
+
+$bin/smart retrieve spec.btc.atn
+echo "Retrieval run btc.atn done"
+
+# btc.anc experiment
+cat > spec.btc.anc << EOF
+include_file $database/spec
+query_file query.anc
+doc_file doc.btc
+inv_file inv.btc
+tr_file ./tr.btc.anc
+rr_file ./rr.btc.anc
+run_name " Doc weight == btc; Query weight == anc;"
+EOF
+
+$bin/smart retrieve spec.btc.anc
+echo "Retrieval run btc.anc done"
+
+# btc.atc experiment
+cat > spec.btc.atc << EOF
+include_file $database/spec
+query_file query.atc
+doc_file doc.btc
+inv_file inv.btc
+tr_file ./tr.btc.atc
+rr_file ./rr.btc.atc
+run_name " Doc weight == btc; Query weight == atc;"
+EOF
+
+$bin/smart retrieve spec.btc.atc
+echo "Retrieval run btc.atc done"
+
+# btc.lnn experiment
+cat > spec.btc.lnn << EOF
+include_file $database/spec
+query_file query.lnn
+doc_file doc.btc
+inv_file inv.btc
+tr_file ./tr.btc.lnn
+rr_file ./rr.btc.lnn
+run_name " Doc weight == btc; Query weight == lnn;"
+EOF
+
+$bin/smart retrieve spec.btc.lnn
+echo "Retrieval run btc.lnn done"
+
+# btc.ltn experiment
+cat > spec.btc.ltn << EOF
+include_file $database/spec
+query_file query.ltn
+doc_file doc.btc
+inv_file inv.btc
+tr_file ./tr.btc.ltn
+rr_file ./rr.btc.ltn
+run_name " Doc weight == btc; Query weight == ltn;"
+EOF
+
+$bin/smart retrieve spec.btc.ltn
+echo "Retrieval run btc.ltn done"
+
+# btc.lnc experiment
+cat > spec.btc.lnc << EOF
+include_file $database/spec
+query_file query.lnc
+doc_file doc.btc
+inv_file inv.btc
+tr_file ./tr.btc.lnc
+rr_file ./rr.btc.lnc
+run_name " Doc weight == btc; Query weight == lnc;"
+EOF
+
+$bin/smart retrieve spec.btc.lnc
+echo "Retrieval run btc.lnc done"
+
+# btc.ltc experiment
+cat > spec.btc.ltc << EOF
+include_file $database/spec
+query_file query.ltc
+doc_file doc.btc
+inv_file inv.btc
+tr_file ./tr.btc.ltc
+rr_file ./rr.btc.ltc
+run_name " Doc weight == btc; Query weight == ltc;"
+EOF
+
+$bin/smart retrieve spec.btc.ltc
+echo "Retrieval run btc.ltc done"
+
+# ann.nnn experiment
+cat > spec.ann.nnn << EOF
+include_file $database/spec
+query_file query.nnn
+doc_file doc.ann
+inv_file inv.ann
+tr_file ./tr.ann.nnn
+rr_file ./rr.ann.nnn
+run_name " Doc weight == ann; Query weight == nnn;"
+EOF
+
+$bin/smart retrieve spec.ann.nnn
+echo "Retrieval run ann.nnn done"
+
+# ann.ntn experiment
+cat > spec.ann.ntn << EOF
+include_file $database/spec
+query_file query.ntn
+doc_file doc.ann
+inv_file inv.ann
+tr_file ./tr.ann.ntn
+rr_file ./rr.ann.ntn
+run_name " Doc weight == ann; Query weight == ntn;"
+EOF
+
+$bin/smart retrieve spec.ann.ntn
+echo "Retrieval run ann.ntn done"
+
+# ann.nnc experiment
+cat > spec.ann.nnc << EOF
+include_file $database/spec
+query_file query.nnc
+doc_file doc.ann
+inv_file inv.ann
+tr_file ./tr.ann.nnc
+rr_file ./rr.ann.nnc
+run_name " Doc weight == ann; Query weight == nnc;"
+EOF
+
+$bin/smart retrieve spec.ann.nnc
+echo "Retrieval run ann.nnc done"
+
+# ann.ntc experiment
+cat > spec.ann.ntc << EOF
+include_file $database/spec
+query_file query.ntc
+doc_file doc.ann
+inv_file inv.ann
+tr_file ./tr.ann.ntc
+rr_file ./rr.ann.ntc
+run_name " Doc weight == ann; Query weight == ntc;"
+EOF
+
+$bin/smart retrieve spec.ann.ntc
+echo "Retrieval run ann.ntc done"
+
+# ann.bnn experiment
+cat > spec.ann.bnn << EOF
+include_file $database/spec
+query_file query.bnn
+doc_file doc.ann
+inv_file inv.ann
+tr_file ./tr.ann.bnn
+rr_file ./rr.ann.bnn
+run_name " Doc weight == ann; Query weight == bnn;"
+EOF
+
+$bin/smart retrieve spec.ann.bnn
+echo "Retrieval run ann.bnn done"
+
+# ann.btn experiment
+cat > spec.ann.btn << EOF
+include_file $database/spec
+query_file query.btn
+doc_file doc.ann
+inv_file inv.ann
+tr_file ./tr.ann.btn
+rr_file ./rr.ann.btn
+run_name " Doc weight == ann; Query weight == btn;"
+EOF
+
+$bin/smart retrieve spec.ann.btn
+echo "Retrieval run ann.btn done"
+
+# ann.bnc experiment
+cat > spec.ann.bnc << EOF
+include_file $database/spec
+query_file query.bnc
+doc_file doc.ann
+inv_file inv.ann
+tr_file ./tr.ann.bnc
+rr_file ./rr.ann.bnc
+run_name " Doc weight == ann; Query weight == bnc;"
+EOF
+
+$bin/smart retrieve spec.ann.bnc
+echo "Retrieval run ann.bnc done"
+
+# ann.btc experiment
+cat > spec.ann.btc << EOF
+include_file $database/spec
+query_file query.btc
+doc_file doc.ann
+inv_file inv.ann
+tr_file ./tr.ann.btc
+rr_file ./rr.ann.btc
+run_name " Doc weight == ann; Query weight == btc;"
+EOF
+
+$bin/smart retrieve spec.ann.btc
+echo "Retrieval run ann.btc done"
+
+# ann.ann experiment
+cat > spec.ann.ann << EOF
+include_file $database/spec
+query_file query.ann
+doc_file doc.ann
+inv_file inv.ann
+tr_file ./tr.ann.ann
+rr_file ./rr.ann.ann
+run_name " Doc weight == ann; Query weight == ann;"
+EOF
+
+$bin/smart retrieve spec.ann.ann
+echo "Retrieval run ann.ann done"
+
+# ann.atn experiment
+cat > spec.ann.atn << EOF
+include_file $database/spec
+query_file query.atn
+doc_file doc.ann
+inv_file inv.ann
+tr_file ./tr.ann.atn
+rr_file ./rr.ann.atn
+run_name " Doc weight == ann; Query weight == atn;"
+EOF
+
+$bin/smart retrieve spec.ann.atn
+echo "Retrieval run ann.atn done"
+
+# ann.anc experiment
+cat > spec.ann.anc << EOF
+include_file $database/spec
+query_file query.anc
+doc_file doc.ann
+inv_file inv.ann
+tr_file ./tr.ann.anc
+rr_file ./rr.ann.anc
+run_name " Doc weight == ann; Query weight == anc;"
+EOF
+
+$bin/smart retrieve spec.ann.anc
+echo "Retrieval run ann.anc done"
+
+# ann.atc experiment
+cat > spec.ann.atc << EOF
+include_file $database/spec
+query_file query.atc
+doc_file doc.ann
+inv_file inv.ann
+tr_file ./tr.ann.atc
+rr_file ./rr.ann.atc
+run_name " Doc weight == ann; Query weight == atc;"
+EOF
+
+$bin/smart retrieve spec.ann.atc
+echo "Retrieval run ann.atc done"
+
+# ann.lnn experiment
+cat > spec.ann.lnn << EOF
+include_file $database/spec
+query_file query.lnn
+doc_file doc.ann
+inv_file inv.ann
+tr_file ./tr.ann.lnn
+rr_file ./rr.ann.lnn
+run_name " Doc weight == ann; Query weight == lnn;"
+EOF
+
+$bin/smart retrieve spec.ann.lnn
+echo "Retrieval run ann.lnn done"
+
+# ann.ltn experiment
+cat > spec.ann.ltn << EOF
+include_file $database/spec
+query_file query.ltn
+doc_file doc.ann
+inv_file inv.ann
+tr_file ./tr.ann.ltn
+rr_file ./rr.ann.ltn
+run_name " Doc weight == ann; Query weight == ltn;"
+EOF
+
+$bin/smart retrieve spec.ann.ltn
+echo "Retrieval run ann.ltn done"
+
+# ann.lnc experiment
+cat > spec.ann.lnc << EOF
+include_file $database/spec
+query_file query.lnc
+doc_file doc.ann
+inv_file inv.ann
+tr_file ./tr.ann.lnc
+rr_file ./rr.ann.lnc
+run_name " Doc weight == ann; Query weight == lnc;"
+EOF
+
+$bin/smart retrieve spec.ann.lnc
+echo "Retrieval run ann.lnc done"
+
+# ann.ltc experiment
+cat > spec.ann.ltc << EOF
+include_file $database/spec
+query_file query.ltc
+doc_file doc.ann
+inv_file inv.ann
+tr_file ./tr.ann.ltc
+rr_file ./rr.ann.ltc
+run_name " Doc weight == ann; Query weight == ltc;"
+EOF
+
+$bin/smart retrieve spec.ann.ltc
+echo "Retrieval run ann.ltc done"
+
+# atn.nnn experiment
+cat > spec.atn.nnn << EOF
+include_file $database/spec
+query_file query.nnn
+doc_file doc.atn
+inv_file inv.atn
+tr_file ./tr.atn.nnn
+rr_file ./rr.atn.nnn
+run_name " Doc weight == atn; Query weight == nnn;"
+EOF
+
+$bin/smart retrieve spec.atn.nnn
+echo "Retrieval run atn.nnn done"
+
+# atn.ntn experiment
+cat > spec.atn.ntn << EOF
+include_file $database/spec
+query_file query.ntn
+doc_file doc.atn
+inv_file inv.atn
+tr_file ./tr.atn.ntn
+rr_file ./rr.atn.ntn
+run_name " Doc weight == atn; Query weight == ntn;"
+EOF
+
+$bin/smart retrieve spec.atn.ntn
+echo "Retrieval run atn.ntn done"
+
+# atn.nnc experiment
+cat > spec.atn.nnc << EOF
+include_file $database/spec
+query_file query.nnc
+doc_file doc.atn
+inv_file inv.atn
+tr_file ./tr.atn.nnc
+rr_file ./rr.atn.nnc
+run_name " Doc weight == atn; Query weight == nnc;"
+EOF
+
+$bin/smart retrieve spec.atn.nnc
+echo "Retrieval run atn.nnc done"
+
+# atn.ntc experiment
+cat > spec.atn.ntc << EOF
+include_file $database/spec
+query_file query.ntc
+doc_file doc.atn
+inv_file inv.atn
+tr_file ./tr.atn.ntc
+rr_file ./rr.atn.ntc
+run_name " Doc weight == atn; Query weight == ntc;"
+EOF
+
+$bin/smart retrieve spec.atn.ntc
+echo "Retrieval run atn.ntc done"
+
+# atn.bnn experiment
+cat > spec.atn.bnn << EOF
+include_file $database/spec
+query_file query.bnn
+doc_file doc.atn
+inv_file inv.atn
+tr_file ./tr.atn.bnn
+rr_file ./rr.atn.bnn
+run_name " Doc weight == atn; Query weight == bnn;"
+EOF
+
+$bin/smart retrieve spec.atn.bnn
+echo "Retrieval run atn.bnn done"
+
+# atn.btn experiment
+cat > spec.atn.btn << EOF
+include_file $database/spec
+query_file query.btn
+doc_file doc.atn
+inv_file inv.atn
+tr_file ./tr.atn.btn
+rr_file ./rr.atn.btn
+run_name " Doc weight == atn; Query weight == btn;"
+EOF
+
+$bin/smart retrieve spec.atn.btn
+echo "Retrieval run atn.btn done"
+
+# atn.bnc experiment
+cat > spec.atn.bnc << EOF
+include_file $database/spec
+query_file query.bnc
+doc_file doc.atn
+inv_file inv.atn
+tr_file ./tr.atn.bnc
+rr_file ./rr.atn.bnc
+run_name " Doc weight == atn; Query weight == bnc;"
+EOF
+
+$bin/smart retrieve spec.atn.bnc
+echo "Retrieval run atn.bnc done"
+
+# atn.btc experiment
+cat > spec.atn.btc << EOF
+include_file $database/spec
+query_file query.btc
+doc_file doc.atn
+inv_file inv.atn
+tr_file ./tr.atn.btc
+rr_file ./rr.atn.btc
+run_name " Doc weight == atn; Query weight == btc;"
+EOF
+
+$bin/smart retrieve spec.atn.btc
+echo "Retrieval run atn.btc done"
+
+# atn.ann experiment
+cat > spec.atn.ann << EOF
+include_file $database/spec
+query_file query.ann
+doc_file doc.atn
+inv_file inv.atn
+tr_file ./tr.atn.ann
+rr_file ./rr.atn.ann
+run_name " Doc weight == atn; Query weight == ann;"
+EOF
+
+$bin/smart retrieve spec.atn.ann
+echo "Retrieval run atn.ann done"
+
+# atn.atn experiment
+cat > spec.atn.atn << EOF
+include_file $database/spec
+query_file query.atn
+doc_file doc.atn
+inv_file inv.atn
+tr_file ./tr.atn.atn
+rr_file ./rr.atn.atn
+run_name " Doc weight == atn; Query weight == atn;"
+EOF
+
+$bin/smart retrieve spec.atn.atn
+echo "Retrieval run atn.atn done"
+
+# atn.anc experiment
+cat > spec.atn.anc << EOF
+include_file $database/spec
+query_file query.anc
+doc_file doc.atn
+inv_file inv.atn
+tr_file ./tr.atn.anc
+rr_file ./rr.atn.anc
+run_name " Doc weight == atn; Query weight == anc;"
+EOF
+
+$bin/smart retrieve spec.atn.anc
+echo "Retrieval run atn.anc done"
+
+# atn.atc experiment
+cat > spec.atn.atc << EOF
+include_file $database/spec
+query_file query.atc
+doc_file doc.atn
+inv_file inv.atn
+tr_file ./tr.atn.atc
+rr_file ./rr.atn.atc
+run_name " Doc weight == atn; Query weight == atc;"
+EOF
+
+$bin/smart retrieve spec.atn.atc
+echo "Retrieval run atn.atc done"
+
+# atn.lnn experiment
+cat > spec.atn.lnn << EOF
+include_file $database/spec
+query_file query.lnn
+doc_file doc.atn
+inv_file inv.atn
+tr_file ./tr.atn.lnn
+rr_file ./rr.atn.lnn
+run_name " Doc weight == atn; Query weight == lnn;"
+EOF
+
+$bin/smart retrieve spec.atn.lnn
+echo "Retrieval run atn.lnn done"
+
+# atn.ltn experiment
+cat > spec.atn.ltn << EOF
+include_file $database/spec
+query_file query.ltn
+doc_file doc.atn
+inv_file inv.atn
+tr_file ./tr.atn.ltn
+rr_file ./rr.atn.ltn
+run_name " Doc weight == atn; Query weight == ltn;"
+EOF
+
+$bin/smart retrieve spec.atn.ltn
+echo "Retrieval run atn.ltn done"
+
+# atn.lnc experiment
+cat > spec.atn.lnc << EOF
+include_file $database/spec
+query_file query.lnc
+doc_file doc.atn
+inv_file inv.atn
+tr_file ./tr.atn.lnc
+rr_file ./rr.atn.lnc
+run_name " Doc weight == atn; Query weight == lnc;"
+EOF
+
+$bin/smart retrieve spec.atn.lnc
+echo "Retrieval run atn.lnc done"
+
+# atn.ltc experiment
+cat > spec.atn.ltc << EOF
+include_file $database/spec
+query_file query.ltc
+doc_file doc.atn
+inv_file inv.atn
+tr_file ./tr.atn.ltc
+rr_file ./rr.atn.ltc
+run_name " Doc weight == atn; Query weight == ltc;"
+EOF
+
+$bin/smart retrieve spec.atn.ltc
+echo "Retrieval run atn.ltc done"
+
+# anc.nnn experiment
+cat > spec.anc.nnn << EOF
+include_file $database/spec
+query_file query.nnn
+doc_file doc.anc
+inv_file inv.anc
+tr_file ./tr.anc.nnn
+rr_file ./rr.anc.nnn
+run_name " Doc weight == anc; Query weight == nnn;"
+EOF
+
+$bin/smart retrieve spec.anc.nnn
+echo "Retrieval run anc.nnn done"
+
+# anc.ntn experiment
+cat > spec.anc.ntn << EOF
+include_file $database/spec
+query_file query.ntn
+doc_file doc.anc
+inv_file inv.anc
+tr_file ./tr.anc.ntn
+rr_file ./rr.anc.ntn
+run_name " Doc weight == anc; Query weight == ntn;"
+EOF
+
+$bin/smart retrieve spec.anc.ntn
+echo "Retrieval run anc.ntn done"
+
+# anc.nnc experiment
+cat > spec.anc.nnc << EOF
+include_file $database/spec
+query_file query.nnc
+doc_file doc.anc
+inv_file inv.anc
+tr_file ./tr.anc.nnc
+rr_file ./rr.anc.nnc
+run_name " Doc weight == anc; Query weight == nnc;"
+EOF
+
+$bin/smart retrieve spec.anc.nnc
+echo "Retrieval run anc.nnc done"
+
+# anc.ntc experiment
+cat > spec.anc.ntc << EOF
+include_file $database/spec
+query_file query.ntc
+doc_file doc.anc
+inv_file inv.anc
+tr_file ./tr.anc.ntc
+rr_file ./rr.anc.ntc
+run_name " Doc weight == anc; Query weight == ntc;"
+EOF
+
+$bin/smart retrieve spec.anc.ntc
+echo "Retrieval run anc.ntc done"
+
+# anc.bnn experiment
+cat > spec.anc.bnn << EOF
+include_file $database/spec
+query_file query.bnn
+doc_file doc.anc
+inv_file inv.anc
+tr_file ./tr.anc.bnn
+rr_file ./rr.anc.bnn
+run_name " Doc weight == anc; Query weight == bnn;"
+EOF
+
+$bin/smart retrieve spec.anc.bnn
+echo "Retrieval run anc.bnn done"
+
+# anc.btn experiment
+cat > spec.anc.btn << EOF
+include_file $database/spec
+query_file query.btn
+doc_file doc.anc
+inv_file inv.anc
+tr_file ./tr.anc.btn
+rr_file ./rr.anc.btn
+run_name " Doc weight == anc; Query weight == btn;"
+EOF
+
+$bin/smart retrieve spec.anc.btn
+echo "Retrieval run anc.btn done"
+
+# anc.bnc experiment
+cat > spec.anc.bnc << EOF
+include_file $database/spec
+query_file query.bnc
+doc_file doc.anc
+inv_file inv.anc
+tr_file ./tr.anc.bnc
+rr_file ./rr.anc.bnc
+run_name " Doc weight == anc; Query weight == bnc;"
+EOF
+
+$bin/smart retrieve spec.anc.bnc
+echo "Retrieval run anc.bnc done"
+
+# anc.btc experiment
+cat > spec.anc.btc << EOF
+include_file $database/spec
+query_file query.btc
+doc_file doc.anc
+inv_file inv.anc
+tr_file ./tr.anc.btc
+rr_file ./rr.anc.btc
+run_name " Doc weight == anc; Query weight == btc;"
+EOF
+
+$bin/smart retrieve spec.anc.btc
+echo "Retrieval run anc.btc done"
+
+# anc.ann experiment
+cat > spec.anc.ann << EOF
+include_file $database/spec
+query_file query.ann
+doc_file doc.anc
+inv_file inv.anc
+tr_file ./tr.anc.ann
+rr_file ./rr.anc.ann
+run_name " Doc weight == anc; Query weight == ann;"
+EOF
+
+$bin/smart retrieve spec.anc.ann
+echo "Retrieval run anc.ann done"
+
+# anc.atn experiment
+cat > spec.anc.atn << EOF
+include_file $database/spec
+query_file query.atn
+doc_file doc.anc
+inv_file inv.anc
+tr_file ./tr.anc.atn
+rr_file ./rr.anc.atn
+run_name " Doc weight == anc; Query weight == atn;"
+EOF
+
+$bin/smart retrieve spec.anc.atn
+echo "Retrieval run anc.atn done"
+
+# anc.anc experiment
+cat > spec.anc.anc << EOF
+include_file $database/spec
+query_file query.anc
+doc_file doc.anc
+inv_file inv.anc
+tr_file ./tr.anc.anc
+rr_file ./rr.anc.anc
+run_name " Doc weight == anc; Query weight == anc;"
+EOF
+
+$bin/smart retrieve spec.anc.anc
+echo "Retrieval run anc.anc done"
+
+# anc.atc experiment
+cat > spec.anc.atc << EOF
+include_file $database/spec
+query_file query.atc
+doc_file doc.anc
+inv_file inv.anc
+tr_file ./tr.anc.atc
+rr_file ./rr.anc.atc
+run_name " Doc weight == anc; Query weight == atc;"
+EOF
+
+$bin/smart retrieve spec.anc.atc
+echo "Retrieval run anc.atc done"
+
+# anc.lnn experiment
+cat > spec.anc.lnn << EOF
+include_file $database/spec
+query_file query.lnn
+doc_file doc.anc
+inv_file inv.anc
+tr_file ./tr.anc.lnn
+rr_file ./rr.anc.lnn
+run_name " Doc weight == anc; Query weight == lnn;"
+EOF
+
+$bin/smart retrieve spec.anc.lnn
+echo "Retrieval run anc.lnn done"
+
+# anc.ltn experiment
+cat > spec.anc.ltn << EOF
+include_file $database/spec
+query_file query.ltn
+doc_file doc.anc
+inv_file inv.anc
+tr_file ./tr.anc.ltn
+rr_file ./rr.anc.ltn
+run_name " Doc weight == anc; Query weight == ltn;"
+EOF
+
+$bin/smart retrieve spec.anc.ltn
+echo "Retrieval run anc.ltn done"
+
+# anc.lnc experiment
+cat > spec.anc.lnc << EOF
+include_file $database/spec
+query_file query.lnc
+doc_file doc.anc
+inv_file inv.anc
+tr_file ./tr.anc.lnc
+rr_file ./rr.anc.lnc
+run_name " Doc weight == anc; Query weight == lnc;"
+EOF
+
+$bin/smart retrieve spec.anc.lnc
+echo "Retrieval run anc.lnc done"
+
+# anc.ltc experiment
+cat > spec.anc.ltc << EOF
+include_file $database/spec
+query_file query.ltc
+doc_file doc.anc
+inv_file inv.anc
+tr_file ./tr.anc.ltc
+rr_file ./rr.anc.ltc
+run_name " Doc weight == anc; Query weight == ltc;"
+EOF
+
+$bin/smart retrieve spec.anc.ltc
+echo "Retrieval run anc.ltc done"
+
+# atc.nnn experiment
+cat > spec.atc.nnn << EOF
+include_file $database/spec
+query_file query.nnn
+doc_file doc.atc
+inv_file inv.atc
+tr_file ./tr.atc.nnn
+rr_file ./rr.atc.nnn
+run_name " Doc weight == atc; Query weight == nnn;"
+EOF
+
+$bin/smart retrieve spec.atc.nnn
+echo "Retrieval run atc.nnn done"
+
+# atc.ntn experiment
+cat > spec.atc.ntn << EOF
+include_file $database/spec
+query_file query.ntn
+doc_file doc.atc
+inv_file inv.atc
+tr_file ./tr.atc.ntn
+rr_file ./rr.atc.ntn
+run_name " Doc weight == atc; Query weight == ntn;"
+EOF
+
+$bin/smart retrieve spec.atc.ntn
+echo "Retrieval run atc.ntn done"
+
+# atc.nnc experiment
+cat > spec.atc.nnc << EOF
+include_file $database/spec
+query_file query.nnc
+doc_file doc.atc
+inv_file inv.atc
+tr_file ./tr.atc.nnc
+rr_file ./rr.atc.nnc
+run_name " Doc weight == atc; Query weight == nnc;"
+EOF
+
+$bin/smart retrieve spec.atc.nnc
+echo "Retrieval run atc.nnc done"
+
+# atc.ntc experiment
+cat > spec.atc.ntc << EOF
+include_file $database/spec
+query_file query.ntc
+doc_file doc.atc
+inv_file inv.atc
+tr_file ./tr.atc.ntc
+rr_file ./rr.atc.ntc
+run_name " Doc weight == atc; Query weight == ntc;"
+EOF
+
+$bin/smart retrieve spec.atc.ntc
+echo "Retrieval run atc.ntc done"
+
+# atc.bnn experiment
+cat > spec.atc.bnn << EOF
+include_file $database/spec
+query_file query.bnn
+doc_file doc.atc
+inv_file inv.atc
+tr_file ./tr.atc.bnn
+rr_file ./rr.atc.bnn
+run_name " Doc weight == atc; Query weight == bnn;"
+EOF
+
+$bin/smart retrieve spec.atc.bnn
+echo "Retrieval run atc.bnn done"
+
+# atc.btn experiment
+cat > spec.atc.btn << EOF
+include_file $database/spec
+query_file query.btn
+doc_file doc.atc
+inv_file inv.atc
+tr_file ./tr.atc.btn
+rr_file ./rr.atc.btn
+run_name " Doc weight == atc; Query weight == btn;"
+EOF
+
+$bin/smart retrieve spec.atc.btn
+echo "Retrieval run atc.btn done"
+
+# atc.bnc experiment
+cat > spec.atc.bnc << EOF
+include_file $database/spec
+query_file query.bnc
+doc_file doc.atc
+inv_file inv.atc
+tr_file ./tr.atc.bnc
+rr_file ./rr.atc.bnc
+run_name " Doc weight == atc; Query weight == bnc;"
+EOF
+
+$bin/smart retrieve spec.atc.bnc
+echo "Retrieval run atc.bnc done"
+
+# atc.btc experiment
+cat > spec.atc.btc << EOF
+include_file $database/spec
+query_file query.btc
+doc_file doc.atc
+inv_file inv.atc
+tr_file ./tr.atc.btc
+rr_file ./rr.atc.btc
+run_name " Doc weight == atc; Query weight == btc;"
+EOF
+
+$bin/smart retrieve spec.atc.btc
+echo "Retrieval run atc.btc done"
+
+# atc.ann experiment
+cat > spec.atc.ann << EOF
+include_file $database/spec
+query_file query.ann
+doc_file doc.atc
+inv_file inv.atc
+tr_file ./tr.atc.ann
+rr_file ./rr.atc.ann
+run_name " Doc weight == atc; Query weight == ann;"
+EOF
+
+$bin/smart retrieve spec.atc.ann
+echo "Retrieval run atc.ann done"
+
+# atc.atn experiment
+cat > spec.atc.atn << EOF
+include_file $database/spec
+query_file query.atn
+doc_file doc.atc
+inv_file inv.atc
+tr_file ./tr.atc.atn
+rr_file ./rr.atc.atn
+run_name " Doc weight == atc; Query weight == atn;"
+EOF
+
+$bin/smart retrieve spec.atc.atn
+echo "Retrieval run atc.atn done"
+
+# atc.anc experiment
+cat > spec.atc.anc << EOF
+include_file $database/spec
+query_file query.anc
+doc_file doc.atc
+inv_file inv.atc
+tr_file ./tr.atc.anc
+rr_file ./rr.atc.anc
+run_name " Doc weight == atc; Query weight == anc;"
+EOF
+
+$bin/smart retrieve spec.atc.anc
+echo "Retrieval run atc.anc done"
+
+# atc.atc experiment
+cat > spec.atc.atc << EOF
+include_file $database/spec
+query_file query.atc
+doc_file doc.atc
+inv_file inv.atc
+tr_file ./tr.atc.atc
+rr_file ./rr.atc.atc
+run_name " Doc weight == atc; Query weight == atc;"
+EOF
+
+$bin/smart retrieve spec.atc.atc
+echo "Retrieval run atc.atc done"
+
+# atc.lnn experiment
+cat > spec.atc.lnn << EOF
+include_file $database/spec
+query_file query.lnn
+doc_file doc.atc
+inv_file inv.atc
+tr_file ./tr.atc.lnn
+rr_file ./rr.atc.lnn
+run_name " Doc weight == atc; Query weight == lnn;"
+EOF
+
+$bin/smart retrieve spec.atc.lnn
+echo "Retrieval run atc.lnn done"
+
+# atc.ltn experiment
+cat > spec.atc.ltn << EOF
+include_file $database/spec
+query_file query.ltn
+doc_file doc.atc
+inv_file inv.atc
+tr_file ./tr.atc.ltn
+rr_file ./rr.atc.ltn
+run_name " Doc weight == atc; Query weight == ltn;"
+EOF
+
+$bin/smart retrieve spec.atc.ltn
+echo "Retrieval run atc.ltn done"
+
+# atc.lnc experiment
+cat > spec.atc.lnc << EOF
+include_file $database/spec
+query_file query.lnc
+doc_file doc.atc
+inv_file inv.atc
+tr_file ./tr.atc.lnc
+rr_file ./rr.atc.lnc
+run_name " Doc weight == atc; Query weight == lnc;"
+EOF
+
+$bin/smart retrieve spec.atc.lnc
+echo "Retrieval run atc.lnc done"
+
+# atc.ltc experiment
+cat > spec.atc.ltc << EOF
+include_file $database/spec
+query_file query.ltc
+doc_file doc.atc
+inv_file inv.atc
+tr_file ./tr.atc.ltc
+rr_file ./rr.atc.ltc
+run_name " Doc weight == atc; Query weight == ltc;"
+EOF
+
+$bin/smart retrieve spec.atc.ltc
+echo "Retrieval run atc.ltc done"
+
+# lnn.nnn experiment
+cat > spec.lnn.nnn << EOF
+include_file $database/spec
+query_file query.nnn
+doc_file doc.lnn
+inv_file inv.lnn
+tr_file ./tr.lnn.nnn
+rr_file ./rr.lnn.nnn
+run_name " Doc weight == lnn; Query weight == nnn;"
+EOF
+
+$bin/smart retrieve spec.lnn.nnn
+echo "Retrieval run lnn.nnn done"
+
+# lnn.ntn experiment
+cat > spec.lnn.ntn << EOF
+include_file $database/spec
+query_file query.ntn
+doc_file doc.lnn
+inv_file inv.lnn
+tr_file ./tr.lnn.ntn
+rr_file ./rr.lnn.ntn
+run_name " Doc weight == lnn; Query weight == ntn;"
+EOF
+
+$bin/smart retrieve spec.lnn.ntn
+echo "Retrieval run lnn.ntn done"
+
+# lnn.nnc experiment
+cat > spec.lnn.nnc << EOF
+include_file $database/spec
+query_file query.nnc
+doc_file doc.lnn
+inv_file inv.lnn
+tr_file ./tr.lnn.nnc
+rr_file ./rr.lnn.nnc
+run_name " Doc weight == lnn; Query weight == nnc;"
+EOF
+
+$bin/smart retrieve spec.lnn.nnc
+echo "Retrieval run lnn.nnc done"
+
+# lnn.ntc experiment
+cat > spec.lnn.ntc << EOF
+include_file $database/spec
+query_file query.ntc
+doc_file doc.lnn
+inv_file inv.lnn
+tr_file ./tr.lnn.ntc
+rr_file ./rr.lnn.ntc
+run_name " Doc weight == lnn; Query weight == ntc;"
+EOF
+
+$bin/smart retrieve spec.lnn.ntc
+echo "Retrieval run lnn.ntc done"
+
+# lnn.bnn experiment
+cat > spec.lnn.bnn << EOF
+include_file $database/spec
+query_file query.bnn
+doc_file doc.lnn
+inv_file inv.lnn
+tr_file ./tr.lnn.bnn
+rr_file ./rr.lnn.bnn
+run_name " Doc weight == lnn; Query weight == bnn;"
+EOF
+
+$bin/smart retrieve spec.lnn.bnn
+echo "Retrieval run lnn.bnn done"
+
+# lnn.btn experiment
+cat > spec.lnn.btn << EOF
+include_file $database/spec
+query_file query.btn
+doc_file doc.lnn
+inv_file inv.lnn
+tr_file ./tr.lnn.btn
+rr_file ./rr.lnn.btn
+run_name " Doc weight == lnn; Query weight == btn;"
+EOF
+
+$bin/smart retrieve spec.lnn.btn
+echo "Retrieval run lnn.btn done"
+
+# lnn.bnc experiment
+cat > spec.lnn.bnc << EOF
+include_file $database/spec
+query_file query.bnc
+doc_file doc.lnn
+inv_file inv.lnn
+tr_file ./tr.lnn.bnc
+rr_file ./rr.lnn.bnc
+run_name " Doc weight == lnn; Query weight == bnc;"
+EOF
+
+$bin/smart retrieve spec.lnn.bnc
+echo "Retrieval run lnn.bnc done"
+
+# lnn.btc experiment
+cat > spec.lnn.btc << EOF
+include_file $database/spec
+query_file query.btc
+doc_file doc.lnn
+inv_file inv.lnn
+tr_file ./tr.lnn.btc
+rr_file ./rr.lnn.btc
+run_name " Doc weight == lnn; Query weight == btc;"
+EOF
+
+$bin/smart retrieve spec.lnn.btc
+echo "Retrieval run lnn.btc done"
+
+# lnn.ann experiment
+cat > spec.lnn.ann << EOF
+include_file $database/spec
+query_file query.ann
+doc_file doc.lnn
+inv_file inv.lnn
+tr_file ./tr.lnn.ann
+rr_file ./rr.lnn.ann
+run_name " Doc weight == lnn; Query weight == ann;"
+EOF
+
+$bin/smart retrieve spec.lnn.ann
+echo "Retrieval run lnn.ann done"
+
+# lnn.atn experiment
+cat > spec.lnn.atn << EOF
+include_file $database/spec
+query_file query.atn
+doc_file doc.lnn
+inv_file inv.lnn
+tr_file ./tr.lnn.atn
+rr_file ./rr.lnn.atn
+run_name " Doc weight == lnn; Query weight == atn;"
+EOF
+
+$bin/smart retrieve spec.lnn.atn
+echo "Retrieval run lnn.atn done"
+
+# lnn.anc experiment
+cat > spec.lnn.anc << EOF
+include_file $database/spec
+query_file query.anc
+doc_file doc.lnn
+inv_file inv.lnn
+tr_file ./tr.lnn.anc
+rr_file ./rr.lnn.anc
+run_name " Doc weight == lnn; Query weight == anc;"
+EOF
+
+$bin/smart retrieve spec.lnn.anc
+echo "Retrieval run lnn.anc done"
+
+# lnn.atc experiment
+cat > spec.lnn.atc << EOF
+include_file $database/spec
+query_file query.atc
+doc_file doc.lnn
+inv_file inv.lnn
+tr_file ./tr.lnn.atc
+rr_file ./rr.lnn.atc
+run_name " Doc weight == lnn; Query weight == atc;"
+EOF
+
+$bin/smart retrieve spec.lnn.atc
+echo "Retrieval run lnn.atc done"
+
+# lnn.lnn experiment
+cat > spec.lnn.lnn << EOF
+include_file $database/spec
+query_file query.lnn
+doc_file doc.lnn
+inv_file inv.lnn
+tr_file ./tr.lnn.lnn
+rr_file ./rr.lnn.lnn
+run_name " Doc weight == lnn; Query weight == lnn;"
+EOF
+
+$bin/smart retrieve spec.lnn.lnn
+echo "Retrieval run lnn.lnn done"
+
+# lnn.ltn experiment
+cat > spec.lnn.ltn << EOF
+include_file $database/spec
+query_file query.ltn
+doc_file doc.lnn
+inv_file inv.lnn
+tr_file ./tr.lnn.ltn
+rr_file ./rr.lnn.ltn
+run_name " Doc weight == lnn; Query weight == ltn;"
+EOF
+
+$bin/smart retrieve spec.lnn.ltn
+echo "Retrieval run lnn.ltn done"
+
+# lnn.lnc experiment
+cat > spec.lnn.lnc << EOF
+include_file $database/spec
+query_file query.lnc
+doc_file doc.lnn
+inv_file inv.lnn
+tr_file ./tr.lnn.lnc
+rr_file ./rr.lnn.lnc
+run_name " Doc weight == lnn; Query weight == lnc;"
+EOF
+
+$bin/smart retrieve spec.lnn.lnc
+echo "Retrieval run lnn.lnc done"
+
+# lnn.ltc experiment
+cat > spec.lnn.ltc << EOF
+include_file $database/spec
+query_file query.ltc
+doc_file doc.lnn
+inv_file inv.lnn
+tr_file ./tr.lnn.ltc
+rr_file ./rr.lnn.ltc
+run_name " Doc weight == lnn; Query weight == ltc;"
+EOF
+
+$bin/smart retrieve spec.lnn.ltc
+echo "Retrieval run lnn.ltc done"
+
+# ltn.nnn experiment
+cat > spec.ltn.nnn << EOF
+include_file $database/spec
+query_file query.nnn
+doc_file doc.ltn
+inv_file inv.ltn
+tr_file ./tr.ltn.nnn
+rr_file ./rr.ltn.nnn
+run_name " Doc weight == ltn; Query weight == nnn;"
+EOF
+
+$bin/smart retrieve spec.ltn.nnn
+echo "Retrieval run ltn.nnn done"
+
+# ltn.ntn experiment
+cat > spec.ltn.ntn << EOF
+include_file $database/spec
+query_file query.ntn
+doc_file doc.ltn
+inv_file inv.ltn
+tr_file ./tr.ltn.ntn
+rr_file ./rr.ltn.ntn
+run_name " Doc weight == ltn; Query weight == ntn;"
+EOF
+
+$bin/smart retrieve spec.ltn.ntn
+echo "Retrieval run ltn.ntn done"
+
+# ltn.nnc experiment
+cat > spec.ltn.nnc << EOF
+include_file $database/spec
+query_file query.nnc
+doc_file doc.ltn
+inv_file inv.ltn
+tr_file ./tr.ltn.nnc
+rr_file ./rr.ltn.nnc
+run_name " Doc weight == ltn; Query weight == nnc;"
+EOF
+
+$bin/smart retrieve spec.ltn.nnc
+echo "Retrieval run ltn.nnc done"
+
+# ltn.ntc experiment
+cat > spec.ltn.ntc << EOF
+include_file $database/spec
+query_file query.ntc
+doc_file doc.ltn
+inv_file inv.ltn
+tr_file ./tr.ltn.ntc
+rr_file ./rr.ltn.ntc
+run_name " Doc weight == ltn; Query weight == ntc;"
+EOF
+
+$bin/smart retrieve spec.ltn.ntc
+echo "Retrieval run ltn.ntc done"
+
+# ltn.bnn experiment
+cat > spec.ltn.bnn << EOF
+include_file $database/spec
+query_file query.bnn
+doc_file doc.ltn
+inv_file inv.ltn
+tr_file ./tr.ltn.bnn
+rr_file ./rr.ltn.bnn
+run_name " Doc weight == ltn; Query weight == bnn;"
+EOF
+
+$bin/smart retrieve spec.ltn.bnn
+echo "Retrieval run ltn.bnn done"
+
+# ltn.btn experiment
+cat > spec.ltn.btn << EOF
+include_file $database/spec
+query_file query.btn
+doc_file doc.ltn
+inv_file inv.ltn
+tr_file ./tr.ltn.btn
+rr_file ./rr.ltn.btn
+run_name " Doc weight == ltn; Query weight == btn;"
+EOF
+
+$bin/smart retrieve spec.ltn.btn
+echo "Retrieval run ltn.btn done"
+
+# ltn.bnc experiment
+cat > spec.ltn.bnc << EOF
+include_file $database/spec
+query_file query.bnc
+doc_file doc.ltn
+inv_file inv.ltn
+tr_file ./tr.ltn.bnc
+rr_file ./rr.ltn.bnc
+run_name " Doc weight == ltn; Query weight == bnc;"
+EOF
+
+$bin/smart retrieve spec.ltn.bnc
+echo "Retrieval run ltn.bnc done"
+
+# ltn.btc experiment
+cat > spec.ltn.btc << EOF
+include_file $database/spec
+query_file query.btc
+doc_file doc.ltn
+inv_file inv.ltn
+tr_file ./tr.ltn.btc
+rr_file ./rr.ltn.btc
+run_name " Doc weight == ltn; Query weight == btc;"
+EOF
+
+$bin/smart retrieve spec.ltn.btc
+echo "Retrieval run ltn.btc done"
+
+# ltn.ann experiment
+cat > spec.ltn.ann << EOF
+include_file $database/spec
+query_file query.ann
+doc_file doc.ltn
+inv_file inv.ltn
+tr_file ./tr.ltn.ann
+rr_file ./rr.ltn.ann
+run_name " Doc weight == ltn; Query weight == ann;"
+EOF
+
+$bin/smart retrieve spec.ltn.ann
+echo "Retrieval run ltn.ann done"
+
+# ltn.atn experiment
+cat > spec.ltn.atn << EOF
+include_file $database/spec
+query_file query.atn
+doc_file doc.ltn
+inv_file inv.ltn
+tr_file ./tr.ltn.atn
+rr_file ./rr.ltn.atn
+run_name " Doc weight == ltn; Query weight == atn;"
+EOF
+
+$bin/smart retrieve spec.ltn.atn
+echo "Retrieval run ltn.atn done"
+
+# ltn.anc experiment
+cat > spec.ltn.anc << EOF
+include_file $database/spec
+query_file query.anc
+doc_file doc.ltn
+inv_file inv.ltn
+tr_file ./tr.ltn.anc
+rr_file ./rr.ltn.anc
+run_name " Doc weight == ltn; Query weight == anc;"
+EOF
+
+$bin/smart retrieve spec.ltn.anc
+echo "Retrieval run ltn.anc done"
+
+# ltn.atc experiment
+cat > spec.ltn.atc << EOF
+include_file $database/spec
+query_file query.atc
+doc_file doc.ltn
+inv_file inv.ltn
+tr_file ./tr.ltn.atc
+rr_file ./rr.ltn.atc
+run_name " Doc weight == ltn; Query weight == atc;"
+EOF
+
+$bin/smart retrieve spec.ltn.atc
+echo "Retrieval run ltn.atc done"
+
+# ltn.lnn experiment
+cat > spec.ltn.lnn << EOF
+include_file $database/spec
+query_file query.lnn
+doc_file doc.ltn
+inv_file inv.ltn
+tr_file ./tr.ltn.lnn
+rr_file ./rr.ltn.lnn
+run_name " Doc weight == ltn; Query weight == lnn;"
+EOF
+
+$bin/smart retrieve spec.ltn.lnn
+echo "Retrieval run ltn.lnn done"
+
+# ltn.ltn experiment
+cat > spec.ltn.ltn << EOF
+include_file $database/spec
+query_file query.ltn
+doc_file doc.ltn
+inv_file inv.ltn
+tr_file ./tr.ltn.ltn
+rr_file ./rr.ltn.ltn
+run_name " Doc weight == ltn; Query weight == ltn;"
+EOF
+
+$bin/smart retrieve spec.ltn.ltn
+echo "Retrieval run ltn.ltn done"
+
+# ltn.lnc experiment
+cat > spec.ltn.lnc << EOF
+include_file $database/spec
+query_file query.lnc
+doc_file doc.ltn
+inv_file inv.ltn
+tr_file ./tr.ltn.lnc
+rr_file ./rr.ltn.lnc
+run_name " Doc weight == ltn; Query weight == lnc;"
+EOF
+
+$bin/smart retrieve spec.ltn.lnc
+echo "Retrieval run ltn.lnc done"
+
+# ltn.ltc experiment
+cat > spec.ltn.ltc << EOF
+include_file $database/spec
+query_file query.ltc
+doc_file doc.ltn
+inv_file inv.ltn
+tr_file ./tr.ltn.ltc
+rr_file ./rr.ltn.ltc
+run_name " Doc weight == ltn; Query weight == ltc;"
+EOF
+
+$bin/smart retrieve spec.ltn.ltc
+echo "Retrieval run ltn.ltc done"
+
+# lnc.nnn experiment
+cat > spec.lnc.nnn << EOF
+include_file $database/spec
+query_file query.nnn
+doc_file doc.lnc
+inv_file inv.lnc
+tr_file ./tr.lnc.nnn
+rr_file ./rr.lnc.nnn
+run_name " Doc weight == lnc; Query weight == nnn;"
+EOF
+
+$bin/smart retrieve spec.lnc.nnn
+echo "Retrieval run lnc.nnn done"
+
+# lnc.ntn experiment
+cat > spec.lnc.ntn << EOF
+include_file $database/spec
+query_file query.ntn
+doc_file doc.lnc
+inv_file inv.lnc
+tr_file ./tr.lnc.ntn
+rr_file ./rr.lnc.ntn
+run_name " Doc weight == lnc; Query weight == ntn;"
+EOF
+
+$bin/smart retrieve spec.lnc.ntn
+echo "Retrieval run lnc.ntn done"
+
+# lnc.nnc experiment
+cat > spec.lnc.nnc << EOF
+include_file $database/spec
+query_file query.nnc
+doc_file doc.lnc
+inv_file inv.lnc
+tr_file ./tr.lnc.nnc
+rr_file ./rr.lnc.nnc
+run_name " Doc weight == lnc; Query weight == nnc;"
+EOF
+
+$bin/smart retrieve spec.lnc.nnc
+echo "Retrieval run lnc.nnc done"
+
+# lnc.ntc experiment
+cat > spec.lnc.ntc << EOF
+include_file $database/spec
+query_file query.ntc
+doc_file doc.lnc
+inv_file inv.lnc
+tr_file ./tr.lnc.ntc
+rr_file ./rr.lnc.ntc
+run_name " Doc weight == lnc; Query weight == ntc;"
+EOF
+
+$bin/smart retrieve spec.lnc.ntc
+echo "Retrieval run lnc.ntc done"
+
+# lnc.bnn experiment
+cat > spec.lnc.bnn << EOF
+include_file $database/spec
+query_file query.bnn
+doc_file doc.lnc
+inv_file inv.lnc
+tr_file ./tr.lnc.bnn
+rr_file ./rr.lnc.bnn
+run_name " Doc weight == lnc; Query weight == bnn;"
+EOF
+
+$bin/smart retrieve spec.lnc.bnn
+echo "Retrieval run lnc.bnn done"
+
+# lnc.btn experiment
+cat > spec.lnc.btn << EOF
+include_file $database/spec
+query_file query.btn
+doc_file doc.lnc
+inv_file inv.lnc
+tr_file ./tr.lnc.btn
+rr_file ./rr.lnc.btn
+run_name " Doc weight == lnc; Query weight == btn;"
+EOF
+
+$bin/smart retrieve spec.lnc.btn
+echo "Retrieval run lnc.btn done"
+
+# lnc.bnc experiment
+cat > spec.lnc.bnc << EOF
+include_file $database/spec
+query_file query.bnc
+doc_file doc.lnc
+inv_file inv.lnc
+tr_file ./tr.lnc.bnc
+rr_file ./rr.lnc.bnc
+run_name " Doc weight == lnc; Query weight == bnc;"
+EOF
+
+$bin/smart retrieve spec.lnc.bnc
+echo "Retrieval run lnc.bnc done"
+
+# lnc.btc experiment
+cat > spec.lnc.btc << EOF
+include_file $database/spec
+query_file query.btc
+doc_file doc.lnc
+inv_file inv.lnc
+tr_file ./tr.lnc.btc
+rr_file ./rr.lnc.btc
+run_name " Doc weight == lnc; Query weight == btc;"
+EOF
+
+$bin/smart retrieve spec.lnc.btc
+echo "Retrieval run lnc.btc done"
+
+# lnc.ann experiment
+cat > spec.lnc.ann << EOF
+include_file $database/spec
+query_file query.ann
+doc_file doc.lnc
+inv_file inv.lnc
+tr_file ./tr.lnc.ann
+rr_file ./rr.lnc.ann
+run_name " Doc weight == lnc; Query weight == ann;"
+EOF
+
+$bin/smart retrieve spec.lnc.ann
+echo "Retrieval run lnc.ann done"
+
+# lnc.atn experiment
+cat > spec.lnc.atn << EOF
+include_file $database/spec
+query_file query.atn
+doc_file doc.lnc
+inv_file inv.lnc
+tr_file ./tr.lnc.atn
+rr_file ./rr.lnc.atn
+run_name " Doc weight == lnc; Query weight == atn;"
+EOF
+
+$bin/smart retrieve spec.lnc.atn
+echo "Retrieval run lnc.atn done"
+
+# lnc.anc experiment
+cat > spec.lnc.anc << EOF
+include_file $database/spec
+query_file query.anc
+doc_file doc.lnc
+inv_file inv.lnc
+tr_file ./tr.lnc.anc
+rr_file ./rr.lnc.anc
+run_name " Doc weight == lnc; Query weight == anc;"
+EOF
+
+$bin/smart retrieve spec.lnc.anc
+echo "Retrieval run lnc.anc done"
+
+# lnc.atc experiment
+cat > spec.lnc.atc << EOF
+include_file $database/spec
+query_file query.atc
+doc_file doc.lnc
+inv_file inv.lnc
+tr_file ./tr.lnc.atc
+rr_file ./rr.lnc.atc
+run_name " Doc weight == lnc; Query weight == atc;"
+EOF
+
+$bin/smart retrieve spec.lnc.atc
+echo "Retrieval run lnc.atc done"
+
+# lnc.lnn experiment
+cat > spec.lnc.lnn << EOF
+include_file $database/spec
+query_file query.lnn
+doc_file doc.lnc
+inv_file inv.lnc
+tr_file ./tr.lnc.lnn
+rr_file ./rr.lnc.lnn
+run_name " Doc weight == lnc; Query weight == lnn;"
+EOF
+
+$bin/smart retrieve spec.lnc.lnn
+echo "Retrieval run lnc.lnn done"
+
+# lnc.ltn experiment
+cat > spec.lnc.ltn << EOF
+include_file $database/spec
+query_file query.ltn
+doc_file doc.lnc
+inv_file inv.lnc
+tr_file ./tr.lnc.ltn
+rr_file ./rr.lnc.ltn
+run_name " Doc weight == lnc; Query weight == ltn;"
+EOF
+
+$bin/smart retrieve spec.lnc.ltn
+echo "Retrieval run lnc.ltn done"
+
+# lnc.lnc experiment
+cat > spec.lnc.lnc << EOF
+include_file $database/spec
+query_file query.lnc
+doc_file doc.lnc
+inv_file inv.lnc
+tr_file ./tr.lnc.lnc
+rr_file ./rr.lnc.lnc
+run_name " Doc weight == lnc; Query weight == lnc;"
+EOF
+
+$bin/smart retrieve spec.lnc.lnc
+echo "Retrieval run lnc.lnc done"
+
+# lnc.ltc experiment
+cat > spec.lnc.ltc << EOF
+include_file $database/spec
+query_file query.ltc
+doc_file doc.lnc
+inv_file inv.lnc
+tr_file ./tr.lnc.ltc
+rr_file ./rr.lnc.ltc
+run_name " Doc weight == lnc; Query weight == ltc;"
+EOF
+
+$bin/smart retrieve spec.lnc.ltc
+echo "Retrieval run lnc.ltc done"
+
+# ltc.nnn experiment
+cat > spec.ltc.nnn << EOF
+include_file $database/spec
+query_file query.nnn
+doc_file doc.ltc
+inv_file inv.ltc
+tr_file ./tr.ltc.nnn
+rr_file ./rr.ltc.nnn
+run_name " Doc weight == ltc; Query weight == nnn;"
+EOF
+
+$bin/smart retrieve spec.ltc.nnn
+echo "Retrieval run ltc.nnn done"
+
+# ltc.ntn experiment
+cat > spec.ltc.ntn << EOF
+include_file $database/spec
+query_file query.ntn
+doc_file doc.ltc
+inv_file inv.ltc
+tr_file ./tr.ltc.ntn
+rr_file ./rr.ltc.ntn
+run_name " Doc weight == ltc; Query weight == ntn;"
+EOF
+
+$bin/smart retrieve spec.ltc.ntn
+echo "Retrieval run ltc.ntn done"
+
+# ltc.nnc experiment
+cat > spec.ltc.nnc << EOF
+include_file $database/spec
+query_file query.nnc
+doc_file doc.ltc
+inv_file inv.ltc
+tr_file ./tr.ltc.nnc
+rr_file ./rr.ltc.nnc
+run_name " Doc weight == ltc; Query weight == nnc;"
+EOF
+
+$bin/smart retrieve spec.ltc.nnc
+echo "Retrieval run ltc.nnc done"
+
+# ltc.ntc experiment
+cat > spec.ltc.ntc << EOF
+include_file $database/spec
+query_file query.ntc
+doc_file doc.ltc
+inv_file inv.ltc
+tr_file ./tr.ltc.ntc
+rr_file ./rr.ltc.ntc
+run_name " Doc weight == ltc; Query weight == ntc;"
+EOF
+
+$bin/smart retrieve spec.ltc.ntc
+echo "Retrieval run ltc.ntc done"
+
+# ltc.bnn experiment
+cat > spec.ltc.bnn << EOF
+include_file $database/spec
+query_file query.bnn
+doc_file doc.ltc
+inv_file inv.ltc
+tr_file ./tr.ltc.bnn
+rr_file ./rr.ltc.bnn
+run_name " Doc weight == ltc; Query weight == bnn;"
+EOF
+
+$bin/smart retrieve spec.ltc.bnn
+echo "Retrieval run ltc.bnn done"
+
+# ltc.btn experiment
+cat > spec.ltc.btn << EOF
+include_file $database/spec
+query_file query.btn
+doc_file doc.ltc
+inv_file inv.ltc
+tr_file ./tr.ltc.btn
+rr_file ./rr.ltc.btn
+run_name " Doc weight == ltc; Query weight == btn;"
+EOF
+
+$bin/smart retrieve spec.ltc.btn
+echo "Retrieval run ltc.btn done"
+
+# ltc.bnc experiment
+cat > spec.ltc.bnc << EOF
+include_file $database/spec
+query_file query.bnc
+doc_file doc.ltc
+inv_file inv.ltc
+tr_file ./tr.ltc.bnc
+rr_file ./rr.ltc.bnc
+run_name " Doc weight == ltc; Query weight == bnc;"
+EOF
+
+$bin/smart retrieve spec.ltc.bnc
+echo "Retrieval run ltc.bnc done"
+
+# ltc.btc experiment
+cat > spec.ltc.btc << EOF
+include_file $database/spec
+query_file query.btc
+doc_file doc.ltc
+inv_file inv.ltc
+tr_file ./tr.ltc.btc
+rr_file ./rr.ltc.btc
+run_name " Doc weight == ltc; Query weight == btc;"
+EOF
+
+$bin/smart retrieve spec.ltc.btc
+echo "Retrieval run ltc.btc done"
+
+# ltc.ann experiment
+cat > spec.ltc.ann << EOF
+include_file $database/spec
+query_file query.ann
+doc_file doc.ltc
+inv_file inv.ltc
+tr_file ./tr.ltc.ann
+rr_file ./rr.ltc.ann
+run_name " Doc weight == ltc; Query weight == ann;"
+EOF
+
+$bin/smart retrieve spec.ltc.ann
+echo "Retrieval run ltc.ann done"
+
+# ltc.atn experiment
+cat > spec.ltc.atn << EOF
+include_file $database/spec
+query_file query.atn
+doc_file doc.ltc
+inv_file inv.ltc
+tr_file ./tr.ltc.atn
+rr_file ./rr.ltc.atn
+run_name " Doc weight == ltc; Query weight == atn;"
+EOF
+
+$bin/smart retrieve spec.ltc.atn
+echo "Retrieval run ltc.atn done"
+
+# ltc.anc experiment
+cat > spec.ltc.anc << EOF
+include_file $database/spec
+query_file query.anc
+doc_file doc.ltc
+inv_file inv.ltc
+tr_file ./tr.ltc.anc
+rr_file ./rr.ltc.anc
+run_name " Doc weight == ltc; Query weight == anc;"
+EOF
+
+$bin/smart retrieve spec.ltc.anc
+echo "Retrieval run ltc.anc done"
+
+# ltc.atc experiment
+cat > spec.ltc.atc << EOF
+include_file $database/spec
+query_file query.atc
+doc_file doc.ltc
+inv_file inv.ltc
+tr_file ./tr.ltc.atc
+rr_file ./rr.ltc.atc
+run_name " Doc weight == ltc; Query weight == atc;"
+EOF
+
+$bin/smart retrieve spec.ltc.atc
+echo "Retrieval run ltc.atc done"
+
+# ltc.lnn experiment
+cat > spec.ltc.lnn << EOF
+include_file $database/spec
+query_file query.lnn
+doc_file doc.ltc
+inv_file inv.ltc
+tr_file ./tr.ltc.lnn
+rr_file ./rr.ltc.lnn
+run_name " Doc weight == ltc; Query weight == lnn;"
+EOF
+
+$bin/smart retrieve spec.ltc.lnn
+echo "Retrieval run ltc.lnn done"
+
+# ltc.ltn experiment
+cat > spec.ltc.ltn << EOF
+include_file $database/spec
+query_file query.ltn
+doc_file doc.ltc
+inv_file inv.ltc
+tr_file ./tr.ltc.ltn
+rr_file ./rr.ltc.ltn
+run_name " Doc weight == ltc; Query weight == ltn;"
+EOF
+
+$bin/smart retrieve spec.ltc.ltn
+echo "Retrieval run ltc.ltn done"
+
+# ltc.lnc experiment
+cat > spec.ltc.lnc << EOF
+include_file $database/spec
+query_file query.lnc
+doc_file doc.ltc
+inv_file inv.ltc
+tr_file ./tr.ltc.lnc
+rr_file ./rr.ltc.lnc
+run_name " Doc weight == ltc; Query weight == lnc;"
+EOF
+
+$bin/smart retrieve spec.ltc.lnc
+echo "Retrieval run ltc.lnc done"
+
+# ltc.ltc experiment
+cat > spec.ltc.ltc << EOF
+include_file $database/spec
+query_file query.ltc
+doc_file doc.ltc
+inv_file inv.ltc
+tr_file ./tr.ltc.ltc
+rr_file ./rr.ltc.ltc
+run_name " Doc weight == ltc; Query weight == ltc;"
+EOF
+
+$bin/smart retrieve spec.ltc.ltc
+echo "Retrieval run ltc.ltc done"
+

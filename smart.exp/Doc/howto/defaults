@@ -227,11 +227,7 @@ num_pp_sections                 0
         "long"     Number of keyword/pp_sections described.  Logically, each
         pp_section has a string, section_name, action, and two flags 
         (oneline_flag and newdoc_flag) defined for it; eg pp_section.1.string.
-pp_section.string               ""
-        "intstring" Used by index.preparse.pp_generic
-        Keyword string (including standard escape sequences) that
-        indicates start of this pp_section if it occurs at the beginning
-        of a line.
+        
 pp_section.section_name         -
         "string"   Used by index.preparse.pp_generic
         String, of which only the first character is significant, identifying

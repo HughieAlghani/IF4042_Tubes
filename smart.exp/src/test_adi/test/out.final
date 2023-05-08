@@ -33,15 +33,15 @@
 45c45
 < .- --- 3 /amd/beyla/d/smart.11.0/src/test_adi/coll/adi.all 1816 2292
 ---
-> .- --- 3 /media/sf_sementara/smart.exp/src/test_adi/coll/adi.all 1816 2292
+> .- --- 3 /mnt/d/Data/Personal/Kuliah/smart.exp/src/test_adi/coll/adi.all 1816 2292
 66c66
 < Smart (ntq?): 607 bytes written to file ./save.1
 ---
-> Smart (ntq?): 613 bytes written to file ./save.1
+> Smart (ntq?): 621 bytes written to file ./save.1
 5c5
 < .- --- 3 /amd/beyla/d/smart.11.0/src/test_adi/coll/adi.all 1816 2292
 ---
-> .- --- 3 /media/sf_sementara/smart.exp/src/test_adi/coll/adi.all 1816 2292
+> .- --- 3 /mnt/d/Data/Personal/Kuliah/smart.exp/src/test_adi/coll/adi.all 1816 2292
 25,39c25,39
 <     12     0.19 the materials information network . 
 <     55     0.16 satire display subsystem . 
@@ -141,7 +141,7 @@
 92c92
 < .- --- 55 /amd/beyla/d/smart.11.0/src/test_adi/coll/adi.all 24717 24884
 ---
-> .- --- 55 /media/sf_sementara/smart.exp/src/test_adi/coll/adi.all 24717 24884
+> .- --- 55 /mnt/d/Data/Personal/Kuliah/smart.exp/src/test_adi/coll/adi.all 24717 24884
 122c122,126
 <     73     0.10 microfilm and hard copy transmission from document retrieval ce
 ---
@@ -359,11 +359,11 @@
 248c248
 < .- --- 73 /amd/beyla/d/smart.11.0/src/test_adi/coll/adi.all 32680 33189
 ---
-> .- --- 73 /media/sf_sementara/smart.exp/src/test_adi/coll/adi.all 32680 33189
+> .- --- 73 /mnt/d/Data/Personal/Kuliah/smart.exp/src/test_adi/coll/adi.all 32680 33189
 268c268
 < Smart (ntq?): 641 bytes written to file ./save.2
 ---
-> Smart (ntq?): 647 bytes written to file ./save.2
+> Smart (ntq?): 655 bytes written to file ./save.2
 276,304c276,304
 < 73	0	131	 0.16697	copy
 < 73	0	219	 0.23869	alphanumer
@@ -581,7 +581,7 @@
 55c55
 < .- --- 73 /amd/beyla/d/smart.11.0/src/test_adi/coll/adi.all 32680 33189
 ---
-> .- --- 73 /media/sf_sementara/smart.exp/src/test_adi/coll/adi.all 32680 33189
+> .- --- 73 /mnt/d/Data/Personal/Kuliah/smart.exp/src/test_adi/coll/adi.all 32680 33189
 38,39c38,39
 <     Rel_ret:         80       92
 <     Trunc_ret:      476      457

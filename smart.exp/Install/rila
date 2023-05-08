@@ -1,50 +1,50 @@
-mv /home/smart.exp/src/makefile /home/smart.exp/src/makefile.old
-sed -e '/#srcdir/s?.*?SRCDIR = /home/smart.exp/src?' \
-            -e '/#prefix/s?.*?PREFIX = /home/smart.exp/src?' \
+mv /mnt/d/Data/Personal/Kuliah/smart.exp/src/makefile /mnt/d/Data/Personal/Kuliah/smart.exp/src/makefile.old
+sed -e '/#srcdir/s?.*?SRCDIR = /mnt/d/Data/Personal/Kuliah/smart.exp/src?' \
+            -e '/#prefix/s?.*?PREFIX = /mnt/d/Data/Personal/Kuliah/smart.exp/src?' \
             -e '/#gcc /s?#gcc ??' \
             -e '/#change /s?#change ??' \
             -e '/#libnotsun /s?#libnotsun ??' \
-            makefile.top > /home/smart.exp/src/makefile
-mv /home/smart.exp/src/makebin.templ /home/smart.exp/src/makebin.old
-sed -e '/#srcdir/s?.*?SRCDIR = /home/smart.exp/src?' \
-            -e '/#prefix/s?.*?PREFIX = /home/smart.exp/src?' \
-            -e '/#installbin/s?.*?INSTALLBIN = /home/smart.exp/src/bin?' \
-            -e '/#indexed/s?.*?INDEXED = /home/smart.exp/indexed_colls?' \
-            -e '/#tlibdir/s?.*?TLIBDIR = /home/smart.exp/lib?' \
+            makefile.top > /mnt/d/Data/Personal/Kuliah/smart.exp/src/makefile
+mv /mnt/d/Data/Personal/Kuliah/smart.exp/src/makebin.templ /mnt/d/Data/Personal/Kuliah/smart.exp/src/makebin.old
+sed -e '/#srcdir/s?.*?SRCDIR = /mnt/d/Data/Personal/Kuliah/smart.exp/src?' \
+            -e '/#prefix/s?.*?PREFIX = /mnt/d/Data/Personal/Kuliah/smart.exp/src?' \
+            -e '/#installbin/s?.*?INSTALLBIN = /mnt/d/Data/Personal/Kuliah/smart.exp/src/bin?' \
+            -e '/#indexed/s?.*?INDEXED = /mnt/d/Data/Personal/Kuliah/smart.exp/indexed_colls?' \
+            -e '/#tlibdir/s?.*?TLIBDIR = /mnt/d/Data/Personal/Kuliah/smart.exp/lib?' \
             -e '/#tmpdir/s?.*?TMPDIR = /tmp?' \
             -e '/#gcc /s?#gcc ??' \
-            makebin.templ > /home/smart.exp/src/makebin.templ
-mv /home/smart.exp/src/makelib.templ /home/smart.exp/src/makelib.old
-sed -e '/#srcdir/s?.*?SRCDIR = /home/smart.exp/src?' \
-            -e '/#prefix/s?.*?PREFIX = /home/smart.exp/src?' \
+            makebin.templ > /mnt/d/Data/Personal/Kuliah/smart.exp/src/makebin.templ
+mv /mnt/d/Data/Personal/Kuliah/smart.exp/src/makelib.templ /mnt/d/Data/Personal/Kuliah/smart.exp/src/makelib.old
+sed -e '/#srcdir/s?.*?SRCDIR = /mnt/d/Data/Personal/Kuliah/smart.exp/src?' \
+            -e '/#prefix/s?.*?PREFIX = /mnt/d/Data/Personal/Kuliah/smart.exp/src?' \
             -e '/#gcc /s?#gcc ??' \
             -e '/#libnotsun /s?#libnotsun ??' \
-            makelib.templ > /home/smart.exp/src/makelib.templ
-mkdir /home/smart.exp/lib
-mv /home/smart.exp/lib/spec.default /home/smart.exp/lib/spec.default.d
-sed -e '/TLIBDIR/s?TLIBDIR?/home/smart.exp/lib?' \
-            spec.default > /home/smart.exp/lib/spec.default
-mv /home/smart.exp/lib/spec.expcoll /home/smart.exp/lib/spec.expcoll.d
-sed -e '/TLIBDIR/s?TLIBDIR?/home/smart.exp/lib?' \
-            spec.expcoll > /home/smart.exp/lib/spec.expcoll
-mv /home/smart.exp/lib/common_words /home/smart.exp/lib/common_words.d
-cp common_words /home/smart.exp/lib/common_words
-if [ ! -d /home/smart.exp/src/liblocal -a change = "change" ]; then\
-                 cp -ri ./liblocalhier /home/smart.exp/src/liblocal; fi;
-if [ ! -d /home/smart.exp/src/liblocal -a change = "nochange" ]; then\
-                 cp -ri ./liblocaldir /home/smart.exp/src/liblocal; fi;
-mv /home/smart.exp/src/test_adi/make_adi /home/smart.exp/src/test_adi/make_adi.d
-sed -e '/SRCDIR/s?SRCDIR?/home/smart.exp/src?' \
-            -e '/BIN/s?BIN?/home/smart.exp/src/bin?' \
-            -e '/TLIBDIR/s?TLIBDIR?/home/smart.exp/lib?' \
-            make_adi > /home/smart.exp/src/test_adi/make_adi
-chmod 0755 /home/smart.exp/src/test_adi/make_adi
-mv /home/smart.exp/src/test_adi/test_adi /home/smart.exp/src/test_adi/test_adi.d
-sed -e '/BIN/s?BIN?/home/smart.exp/src/bin?' \
-            test_adi > /home/smart.exp/src/test_adi/test_adi
-chmod 0755 /home/smart.exp/src/test_adi/test_adi
-(cd /home/smart.exp/src; make makefiles default test_suite)
-make[1]: Entering directory `/home/smart.exp/src'
+            makelib.templ > /mnt/d/Data/Personal/Kuliah/smart.exp/src/makelib.templ
+mkdir /mnt/d/Data/Personal/Kuliah/smart.exp/lib
+mv /mnt/d/Data/Personal/Kuliah/smart.exp/lib/spec.default /mnt/d/Data/Personal/Kuliah/smart.exp/lib/spec.default.d
+sed -e '/TLIBDIR/s?TLIBDIR?/mnt/d/Data/Personal/Kuliah/smart.exp/lib?' \
+            spec.default > /mnt/d/Data/Personal/Kuliah/smart.exp/lib/spec.default
+mv /mnt/d/Data/Personal/Kuliah/smart.exp/lib/spec.expcoll /mnt/d/Data/Personal/Kuliah/smart.exp/lib/spec.expcoll.d
+sed -e '/TLIBDIR/s?TLIBDIR?/mnt/d/Data/Personal/Kuliah/smart.exp/lib?' \
+            spec.expcoll > /mnt/d/Data/Personal/Kuliah/smart.exp/lib/spec.expcoll
+mv /mnt/d/Data/Personal/Kuliah/smart.exp/lib/common_words /mnt/d/Data/Personal/Kuliah/smart.exp/lib/common_words.d
+cp common_words /mnt/d/Data/Personal/Kuliah/smart.exp/lib/common_words
+if [ ! -d /mnt/d/Data/Personal/Kuliah/smart.exp/src/liblocal -a change = "change" ]; then\
+                 cp -ri ./liblocalhier /mnt/d/Data/Personal/Kuliah/smart.exp/src/liblocal; fi;
+if [ ! -d /mnt/d/Data/Personal/Kuliah/smart.exp/src/liblocal -a change = "nochange" ]; then\
+                 cp -ri ./liblocaldir /mnt/d/Data/Personal/Kuliah/smart.exp/src/liblocal; fi;
+mv /mnt/d/Data/Personal/Kuliah/smart.exp/src/test_adi/make_adi /mnt/d/Data/Personal/Kuliah/smart.exp/src/test_adi/make_adi.d
+sed -e '/SRCDIR/s?SRCDIR?/mnt/d/Data/Personal/Kuliah/smart.exp/src?' \
+            -e '/BIN/s?BIN?/mnt/d/Data/Personal/Kuliah/smart.exp/src/bin?' \
+            -e '/TLIBDIR/s?TLIBDIR?/mnt/d/Data/Personal/Kuliah/smart.exp/lib?' \
+            make_adi > /mnt/d/Data/Personal/Kuliah/smart.exp/src/test_adi/make_adi
+chmod 0755 /mnt/d/Data/Personal/Kuliah/smart.exp/src/test_adi/make_adi
+mv /mnt/d/Data/Personal/Kuliah/smart.exp/src/test_adi/test_adi /mnt/d/Data/Personal/Kuliah/smart.exp/src/test_adi/test_adi.d
+sed -e '/BIN/s?BIN?/mnt/d/Data/Personal/Kuliah/smart.exp/src/bin?' \
+            test_adi > /mnt/d/Data/Personal/Kuliah/smart.exp/src/test_adi/test_adi
+chmod 0755 /mnt/d/Data/Personal/Kuliah/smart.exp/src/test_adi/test_adi
+(cd /mnt/d/Data/Personal/Kuliah/smart.exp/src; make makefiles default test_suite)
+make[1]: Entering directory `/mnt/d/Data/Personal/Kuliah/smart.exp/src'
 for dir in libconvert libevaluate libexp libfeedback libfile libgeneral libindexing libinter libobsolete libprint libproc libretrieve  ;\
                 do awk '/All code below this line/ {exit} {print}' \
                     < $dir/makefile > $dir/makefile.new;\
@@ -65,7 +65,7 @@ done
 for dir in liblocal ; \
                 do (cd liblocal; make makefiles) \
         done
-make[2]: Entering directory `/home/smart.exp/src/liblocal'
+make[2]: Entering directory `/mnt/d/Data/Personal/Kuliah/smart.exp/src/liblocal'
 for dir in libproc libindexing libinter libretrieve libfile libconvert libprint ;\
                 do awk '/All code below this line/ {exit} {print}' \
                     < $dir/makefile > $dir/makefile.new;\
@@ -73,102 +73,102 @@ for dir in libproc libindexing libinter libretrieve libfile libconvert libprint 
         mv $dir/makefile $dir/makefile.old;\
         	mv $dir/makefile.new $dir/makefile;\
         done
-make[2]: Leaving directory `/home/smart.exp/src/liblocal'
-make  ACTION=all "CFLAGS=-I/home/smart.exp/src/h  -L/home/smart.exp/src/lib -static -g" lib_action program_action
-make[2]: Entering directory `/home/smart.exp/src'
+make[2]: Leaving directory `/mnt/d/Data/Personal/Kuliah/smart.exp/src/liblocal'
+make  ACTION=all "CFLAGS=-I/mnt/d/Data/Personal/Kuliah/smart.exp/src/h  -L/mnt/d/Data/Personal/Kuliah/smart.exp/src/lib -static -g" lib_action program_action
+make[2]: Entering directory `/mnt/d/Data/Personal/Kuliah/smart.exp/src'
 for dir in utility libconvert libevaluate libexp libfeedback libfile libgeneral libindexing libinter libobsolete libprint libproc libretrieve  liblocal;\
                 do cd $dir ;\
-                make -k "all" "CFLAGS=-I/home/smart.exp/src/h  -L/home/smart.exp/src/lib -static -g" PREFIX=/home/smart.exp/src \
-                        "BIN=/home/smart.exp/src/bin" ;\
+                make -k "all" "CFLAGS=-I/mnt/d/Data/Personal/Kuliah/smart.exp/src/h  -L/mnt/d/Data/Personal/Kuliah/smart.exp/src/lib -static -g" PREFIX=/mnt/d/Data/Personal/Kuliah/smart.exp/src \
+                        "BIN=/mnt/d/Data/Personal/Kuliah/smart.exp/src/bin" ;\
                 cd ..;\
         done
-make[3]: Entering directory `/home/smart.exp/src/utility'
+make[3]: Entering directory `/mnt/d/Data/Personal/Kuliah/smart.exp/src/utility'
 make[3]: `all' is up to date.
-make[3]: Leaving directory `/home/smart.exp/src/utility'
-make[3]: Entering directory `/home/smart.exp/src/libconvert'
-gcc -I/home/smart.exp/src/h  -L/home/smart.exp/src/lib -static -g   -c weights_tf.c -o weights_tf.o
-ar urv /home/smart.exp/src/lib/libconvert.a weights_tf.o
+make[3]: Leaving directory `/mnt/d/Data/Personal/Kuliah/smart.exp/src/utility'
+make[3]: Entering directory `/mnt/d/Data/Personal/Kuliah/smart.exp/src/libconvert'
+gcc -I/mnt/d/Data/Personal/Kuliah/smart.exp/src/h  -L/mnt/d/Data/Personal/Kuliah/smart.exp/src/lib -static -g   -c weights_tf.c -o weights_tf.o
+ar urv /mnt/d/Data/Personal/Kuliah/smart.exp/src/lib/libconvert.a weights_tf.o
 r - weights_tf.o
-ranlib /home/smart.exp/src/lib/libconvert.a
-make[3]: Leaving directory `/home/smart.exp/src/libconvert'
-make[3]: Entering directory `/home/smart.exp/src/libevaluate'
+ranlib /mnt/d/Data/Personal/Kuliah/smart.exp/src/lib/libconvert.a
+make[3]: Leaving directory `/mnt/d/Data/Personal/Kuliah/smart.exp/src/libconvert'
+make[3]: Entering directory `/mnt/d/Data/Personal/Kuliah/smart.exp/src/libevaluate'
 make[3]: Nothing to be done for `all'.
-make[3]: Leaving directory `/home/smart.exp/src/libevaluate'
-make[3]: Entering directory `/home/smart.exp/src/libexp'
+make[3]: Leaving directory `/mnt/d/Data/Personal/Kuliah/smart.exp/src/libevaluate'
+make[3]: Entering directory `/mnt/d/Data/Personal/Kuliah/smart.exp/src/libexp'
 make[3]: Nothing to be done for `all'.
-make[3]: Leaving directory `/home/smart.exp/src/libexp'
-make[3]: Entering directory `/home/smart.exp/src/libfeedback'
+make[3]: Leaving directory `/mnt/d/Data/Personal/Kuliah/smart.exp/src/libexp'
+make[3]: Entering directory `/mnt/d/Data/Personal/Kuliah/smart.exp/src/libfeedback'
 make[3]: Nothing to be done for `all'.
-make[3]: Leaving directory `/home/smart.exp/src/libfeedback'
-make[3]: Entering directory `/home/smart.exp/src/libfile'
+make[3]: Leaving directory `/mnt/d/Data/Personal/Kuliah/smart.exp/src/libfeedback'
+make[3]: Entering directory `/mnt/d/Data/Personal/Kuliah/smart.exp/src/libfile'
 make[3]: Nothing to be done for `all'.
-make[3]: Leaving directory `/home/smart.exp/src/libfile'
-make[3]: Entering directory `/home/smart.exp/src/libgeneral'
+make[3]: Leaving directory `/mnt/d/Data/Personal/Kuliah/smart.exp/src/libfile'
+make[3]: Entering directory `/mnt/d/Data/Personal/Kuliah/smart.exp/src/libgeneral'
 make[3]: Nothing to be done for `all'.
-make[3]: Leaving directory `/home/smart.exp/src/libgeneral'
-make[3]: Entering directory `/home/smart.exp/src/libindexing'
+make[3]: Leaving directory `/mnt/d/Data/Personal/Kuliah/smart.exp/src/libgeneral'
+make[3]: Entering directory `/mnt/d/Data/Personal/Kuliah/smart.exp/src/libindexing'
 make[3]: Nothing to be done for `all'.
-make[3]: Leaving directory `/home/smart.exp/src/libindexing'
-make[3]: Entering directory `/home/smart.exp/src/libinter'
+make[3]: Leaving directory `/mnt/d/Data/Personal/Kuliah/smart.exp/src/libindexing'
+make[3]: Entering directory `/mnt/d/Data/Personal/Kuliah/smart.exp/src/libinter'
 make[3]: Nothing to be done for `all'.
-make[3]: Leaving directory `/home/smart.exp/src/libinter'
-make[3]: Entering directory `/home/smart.exp/src/libobsolete'
+make[3]: Leaving directory `/mnt/d/Data/Personal/Kuliah/smart.exp/src/libinter'
+make[3]: Entering directory `/mnt/d/Data/Personal/Kuliah/smart.exp/src/libobsolete'
 make[3]: Nothing to be done for `all'.
-make[3]: Leaving directory `/home/smart.exp/src/libobsolete'
-make[3]: Entering directory `/home/smart.exp/src/libprint'
+make[3]: Leaving directory `/mnt/d/Data/Personal/Kuliah/smart.exp/src/libobsolete'
+make[3]: Entering directory `/mnt/d/Data/Personal/Kuliah/smart.exp/src/libprint'
 make[3]: Nothing to be done for `all'.
-make[3]: Leaving directory `/home/smart.exp/src/libprint'
-make[3]: Entering directory `/home/smart.exp/src/libproc'
+make[3]: Leaving directory `/mnt/d/Data/Personal/Kuliah/smart.exp/src/libprint'
+make[3]: Entering directory `/mnt/d/Data/Personal/Kuliah/smart.exp/src/libproc'
 make[3]: Nothing to be done for `all'.
-make[3]: Leaving directory `/home/smart.exp/src/libproc'
-make[3]: Entering directory `/home/smart.exp/src/libretrieve'
+make[3]: Leaving directory `/mnt/d/Data/Personal/Kuliah/smart.exp/src/libproc'
+make[3]: Entering directory `/mnt/d/Data/Personal/Kuliah/smart.exp/src/libretrieve'
 make[3]: Nothing to be done for `all'.
-make[3]: Leaving directory `/home/smart.exp/src/libretrieve'
-make[3]: Entering directory `/home/smart.exp/src/liblocal'
+make[3]: Leaving directory `/mnt/d/Data/Personal/Kuliah/smart.exp/src/libretrieve'
+make[3]: Entering directory `/mnt/d/Data/Personal/Kuliah/smart.exp/src/liblocal'
 for dir in libproc libindexing libinter libretrieve libfile libconvert libprint ;\
                 do cd $dir ;\
-                make -k "all" "CFLAGS=-I/home/smart.exp/src/h  -L/home/smart.exp/src/lib -static -g" PREFIX=/home/smart.exp/src ; \
+                make -k "all" "CFLAGS=-I/mnt/d/Data/Personal/Kuliah/smart.exp/src/h  -L/mnt/d/Data/Personal/Kuliah/smart.exp/src/lib -static -g" PREFIX=/mnt/d/Data/Personal/Kuliah/smart.exp/src ; \
                 cd ..;\
         done
-make[4]: Entering directory `/home/smart.exp/src/liblocal/libproc'
+make[4]: Entering directory `/mnt/d/Data/Personal/Kuliah/smart.exp/src/liblocal/libproc'
 make[4]: Nothing to be done for `all'.
-make[4]: Leaving directory `/home/smart.exp/src/liblocal/libproc'
-make[4]: Entering directory `/home/smart.exp/src/liblocal/libindexing'
+make[4]: Leaving directory `/mnt/d/Data/Personal/Kuliah/smart.exp/src/liblocal/libproc'
+make[4]: Entering directory `/mnt/d/Data/Personal/Kuliah/smart.exp/src/liblocal/libindexing'
 make[4]: Nothing to be done for `all'.
-make[4]: Leaving directory `/home/smart.exp/src/liblocal/libindexing'
-make[4]: Entering directory `/home/smart.exp/src/liblocal/libinter'
+make[4]: Leaving directory `/mnt/d/Data/Personal/Kuliah/smart.exp/src/liblocal/libindexing'
+make[4]: Entering directory `/mnt/d/Data/Personal/Kuliah/smart.exp/src/liblocal/libinter'
 make[4]: Nothing to be done for `all'.
-make[4]: Leaving directory `/home/smart.exp/src/liblocal/libinter'
-make[4]: Entering directory `/home/smart.exp/src/liblocal/libretrieve'
+make[4]: Leaving directory `/mnt/d/Data/Personal/Kuliah/smart.exp/src/liblocal/libinter'
+make[4]: Entering directory `/mnt/d/Data/Personal/Kuliah/smart.exp/src/liblocal/libretrieve'
 make[4]: Nothing to be done for `all'.
-make[4]: Leaving directory `/home/smart.exp/src/liblocal/libretrieve'
-make[4]: Entering directory `/home/smart.exp/src/liblocal/libfile'
+make[4]: Leaving directory `/mnt/d/Data/Personal/Kuliah/smart.exp/src/liblocal/libretrieve'
+make[4]: Entering directory `/mnt/d/Data/Personal/Kuliah/smart.exp/src/liblocal/libfile'
 make[4]: Nothing to be done for `all'.
-make[4]: Leaving directory `/home/smart.exp/src/liblocal/libfile'
-make[4]: Entering directory `/home/smart.exp/src/liblocal/libconvert'
+make[4]: Leaving directory `/mnt/d/Data/Personal/Kuliah/smart.exp/src/liblocal/libfile'
+make[4]: Entering directory `/mnt/d/Data/Personal/Kuliah/smart.exp/src/liblocal/libconvert'
 make[4]: Nothing to be done for `all'.
-make[4]: Leaving directory `/home/smart.exp/src/liblocal/libconvert'
-make[4]: Entering directory `/home/smart.exp/src/liblocal/libprint'
+make[4]: Leaving directory `/mnt/d/Data/Personal/Kuliah/smart.exp/src/liblocal/libconvert'
+make[4]: Entering directory `/mnt/d/Data/Personal/Kuliah/smart.exp/src/liblocal/libprint'
 make[4]: Nothing to be done for `all'.
-make[4]: Leaving directory `/home/smart.exp/src/liblocal/libprint'
-make[3]: Leaving directory `/home/smart.exp/src/liblocal'
+make[4]: Leaving directory `/mnt/d/Data/Personal/Kuliah/smart.exp/src/liblocal/libprint'
+make[3]: Leaving directory `/mnt/d/Data/Personal/Kuliah/smart.exp/src/liblocal'
 for dir in smart scripts;\
                 do cd $dir ;\
-                make -k "all" "CFLAGS=-I/home/smart.exp/src/h  -L/home/smart.exp/src/lib -static -g" PREFIX=/home/smart.exp/src \
-                        "BIN=/home/smart.exp/src/bin" ;\
+                make -k "all" "CFLAGS=-I/mnt/d/Data/Personal/Kuliah/smart.exp/src/h  -L/mnt/d/Data/Personal/Kuliah/smart.exp/src/lib -static -g" PREFIX=/mnt/d/Data/Personal/Kuliah/smart.exp/src \
+                        "BIN=/mnt/d/Data/Personal/Kuliah/smart.exp/src/bin" ;\
                 cd ..;\
         done
-make[3]: Entering directory `/home/smart.exp/src/smart'
-gcc -I/home/smart.exp/src/h  -L/home/smart.exp/src/lib -static -g    \
+make[3]: Entering directory `/mnt/d/Data/Personal/Kuliah/smart.exp/src/smart'
+gcc -I/mnt/d/Data/Personal/Kuliah/smart.exp/src/h  -L/mnt/d/Data/Personal/Kuliah/smart.exp/src/lib -static -g    \
         -o smart smart.c version.c -lproc -linter -lindexing -lretrieve -lfeedback -levaluate -lprint -lconvert -lobsolete -lexp -lfile -lgeneral -llproc -llinter -llindexing -llretrieve -llconvert -llprint -llfile -lm 
-if [ -f /home/smart.exp/src/bin/smart ]; then /bin/mv /home/smart.exp/src/bin/smart /home/smart.exp/src/bin/smart.old; fi;
-/bin/mv smart /home/smart.exp/src/bin/smart
+if [ -f /mnt/d/Data/Personal/Kuliah/smart.exp/src/bin/smart ]; then /bin/mv /mnt/d/Data/Personal/Kuliah/smart.exp/src/bin/smart /mnt/d/Data/Personal/Kuliah/smart.exp/src/bin/smart.old; fi;
+/bin/mv smart /mnt/d/Data/Personal/Kuliah/smart.exp/src/bin/smart
 touch install all
-make[3]: Leaving directory `/home/smart.exp/src/smart'
-make[3]: Entering directory `/home/smart.exp/src/scripts'
+make[3]: Leaving directory `/mnt/d/Data/Personal/Kuliah/smart.exp/src/smart'
+make[3]: Entering directory `/mnt/d/Data/Personal/Kuliah/smart.exp/src/scripts'
 make[3]: `all' is up to date.
-make[3]: Leaving directory `/home/smart.exp/src/scripts'
-make[2]: Leaving directory `/home/smart.exp/src'
+make[3]: Leaving directory `/mnt/d/Data/Personal/Kuliah/smart.exp/src/scripts'
+make[2]: Leaving directory `/mnt/d/Data/Personal/Kuliah/smart.exp/src'
 (cd test_adi; ./test_adi)
 collection made
 retrieval run 1 done
@@ -212,7 +212,7 @@ The following differences detected
 45c45
 < .- --- 3 /amd/beyla/d/smart.11.0/src/test_adi/coll/adi.all 1816 2292
 ---
-> .- --- 3 /home/smart.exp/src/test_adi/coll/adi.all 1816 2292
+> .- --- 3 /mnt/d/Data/Personal/Kuliah/smart.exp/src/test_adi/coll/adi.all 1816 2292
 65,66c65,66
 < 
 < Smart (ntq?): 607 bytes written to file ./save.1
@@ -222,7 +222,7 @@ The following differences detected
 5c5
 < .- --- 3 /amd/beyla/d/smart.11.0/src/test_adi/coll/adi.all 1816 2292
 ---
-> .- --- 3 /home/smart.exp/src/test_adi/coll/adi.all 1816 2292
+> .- --- 3 /mnt/d/Data/Personal/Kuliah/smart.exp/src/test_adi/coll/adi.all 1816 2292
 25,39c25,39
 <     12     0.19 the materials information network . 
 <     55     0.16 satire display subsystem . 
@@ -324,7 +324,7 @@ The following differences detected
 92c92
 < .- --- 55 /amd/beyla/d/smart.11.0/src/test_adi/coll/adi.all 24717 24884
 ---
-> .- --- 55 /home/smart.exp/src/test_adi/coll/adi.all 24717 24884
+> .- --- 55 /mnt/d/Data/Personal/Kuliah/smart.exp/src/test_adi/coll/adi.all 24717 24884
 122c122,126
 <     73     0.10 microfilm and hard copy transmission from document retrieval ce
 ---
@@ -546,7 +546,7 @@ The following differences detected
 248c248
 < .- --- 73 /amd/beyla/d/smart.11.0/src/test_adi/coll/adi.all 32680 33189
 ---
-> .- --- 73 /home/smart.exp/src/test_adi/coll/adi.all 32680 33189
+> .- --- 73 /mnt/d/Data/Personal/Kuliah/smart.exp/src/test_adi/coll/adi.all 32680 33189
 268c268
 < Smart (ntq?): 641 bytes written to file ./save.2
 ---
@@ -770,7 +770,7 @@ The following differences detected
 55c55
 < .- --- 73 /amd/beyla/d/smart.11.0/src/test_adi/coll/adi.all 32680 33189
 ---
-> .- --- 73 /home/smart.exp/src/test_adi/coll/adi.all 32680 33189
+> .- --- 73 /mnt/d/Data/Personal/Kuliah/smart.exp/src/test_adi/coll/adi.all 32680 33189
 38,39c38,39
 <     Rel_ret:         80       92
 <     Trunc_ret:      476      457
@@ -1309,4 +1309,4 @@ The following differences detected
 > 0	625	0.1578	0.1617		0.0255	inform
 > 0	1309	0.2755	0.1764		0.0486	data
 > 0	3267	0.1981	0.1522		0.0301	retrief
-make[1]: Leaving directory `/home/smart.exp/src'
+make[1]: Leaving directory `/mnt/d/Data/Personal/Kuliah/smart.exp/src'

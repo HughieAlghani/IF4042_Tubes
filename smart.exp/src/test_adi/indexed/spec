@@ -1,9 +1,9 @@
 ## INFORMATION LOCATIONS
-database                /media/sf_sementara/smart.exp/src/test_adi/indexed
-include_file            /media/sf_sementara/smart.exp/lib/spec.expcoll
-doc_loc                 /media/sf_sementara/smart.exp/src/test_adi/indexed/doc_loc
-query_loc               /media/sf_sementara/smart.exp/src/test_adi/indexed/query_loc
-qrels_text_file         /media/sf_sementara/smart.exp/src/test_adi/coll/qrels.text
+database                /mnt/d/Data/Personal/Kuliah/smart.exp/src/test_adi/indexed
+include_file            /mnt/d/Data/Personal/Kuliah/smart.exp/lib/spec.expcoll
+doc_loc                 /mnt/d/Data/Personal/Kuliah/smart.exp/src/test_adi/indexed/doc_loc
+query_loc               /mnt/d/Data/Personal/Kuliah/smart.exp/src/test_adi/indexed/query_loc
+qrels_text_file         /mnt/d/Data/Personal/Kuliah/smart.exp/src/test_adi/coll/qrels.text
 
 ## ADI DOCDESC
 #### GENERIC PREPARSER

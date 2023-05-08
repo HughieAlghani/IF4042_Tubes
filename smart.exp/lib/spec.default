@@ -1,4 +1,4 @@
-text_stop_file          /media/sf_sementara/smart.exp/lib/common_words
+text_stop_file          /mnt/c/Users/Ghanie/project/smart.exp/lib/common_words
 database                "."
 temp_dir                ""
 

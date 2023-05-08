@@ -1,0 +1,7 @@
+include_file /mnt/c/Users/Ghanie/project/smart.exp/src/test_lisa/indexed/spec
+query_file query.nnn
+doc_file doc.atc
+inv_file inv.atc
+tr_file ./tr.atc.nnn
+rr_file ./rr.atc.nnn
+run_name " Doc weight == atc; Query weight == nnn;"

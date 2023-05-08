@@ -5,9 +5,9 @@
 # set echo verbose
 
 # 
-set bin = /media/sf_sementara/smart.exp/src/bin
-set srcdir = /media/sf_sementara/smart.exp/src
-set tlibdir = /media/sf_sementara/smart.exp/lib
+set bin = /mnt/d/Data/Personal/Kuliah/smart.exp/src/bin
+set srcdir = /mnt/d/Data/Personal/Kuliah/smart.exp/src
+set tlibdir = /mnt/d/Data/Personal/Kuliah/smart.exp/lib
 
 set current  = $srcdir/test_adi
 set database = $current/indexed

@@ -1,4 +1,4 @@
-text_stop_file          /home/smart.exp/lib/common_words
+text_stop_file          /mnt/d/Data/Personal/Kuliah/smart.exp/lib/common_words
 database                "."
 temp_dir                ""
 

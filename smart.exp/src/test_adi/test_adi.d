@@ -1,6 +1,6 @@
 #! /bin/tcsh
 
-set bin = /home/smart.exp/src/bin
+set bin = /mnt/d/Data/Personal/Kuliah/smart.exp/src/bin
 
 set current = $cwd
 set database = $current/indexed

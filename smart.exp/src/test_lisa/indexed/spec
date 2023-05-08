@@ -1,0 +1,39 @@
+## INFORMATION LOCATIONS
+database                /mnt/c/Users/Ghanie/project/smart.exp/src/test_lisa1/indexed
+include_file            /mnt/c/Users/Ghanie/project/smart.exp/lib/spec.expcoll
+doc_loc                 /mnt/c/Users/Ghanie/project/smart.exp/src/test_lisa1/indexed/doc_loc
+query_loc               /mnt/c/Users/Ghanie/project/smart.exp/src/test_lisa1/indexed/query_loc
+qrels_text_file         /mnt/c/Users/Ghanie/project/smart.exp/src/test_lisa1/coll/qrels.text
+
+## LISA DOCDESC
+#### GENERIC PREPARSER
+num_pp_sections                 3
+pp_section.0.string             "~I"
+pp_section.0.action             discard
+pp_section.0.oneline_flag       true
+pp_section.0.newdoc_flag        true
+pp_section.1.string             "~T"
+pp_section.1.section_name       t
+pp_section.2.string             "~W"
+pp_section.2.section_name       w
+
+#### DESCRIPTION OF PARSE INPUT
+index.num_sections              2
+index.section.0.name            w
+  index.section.0.method        index.parse_sect.full
+  index.section.0.word.ctype    0
+  index.section.0.proper.ctype  0
+index.section.1.name            t
+  index.section.1.method        index.parse_sect.full
+  index.section.1.word.ctype    0
+  index.section.1.proper.ctype  0
+title_section 1
+
+#### DESCRIPTION OF FINAL VECTORS
+num_ctypes                      1
+ctype.0.name                    words
+
+## ALTERATIONS OF STANDARD PARAMETERS
+dict_file_size                  20011
+
+## ALTERATIONS OF STANDARD PROCEDURES

@@ -1,0 +1,4 @@
+include_file /mnt/c/Users/Ghanie/project/smart.exp/src/test_lisa/indexed/spec
+tr_file ./tr.nnn # Retrieve n document
+rr_file ./rr.nnn # Retrieve all relevant document
+run_name "Doc weight == Query weight == nnn"
